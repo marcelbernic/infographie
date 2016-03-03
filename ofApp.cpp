@@ -1,58 +1,135 @@
-// IFT3100H16_HelloTriangle/ofApp.cpp
-// Classe principale de l'application.
-
 #include "ofApp.h"
 
-// fonction invoquée à l'initialisation de l'application
-void ofApp::setup()
-{
-    ofSetWindowTitle("HelloTriangle");
+//--------------------------------------------------------------
+void ofApp::setup(){
+	renderer1.setup("renderer1");
+	renderer2.setup("renderer2");
 
-    ofSetFrameRate(1);
+    forms.setName("Formes");
+    forms.add(square.set("square", true));
 
-    ofLog() << "<ofApp::setup>";
+	parameters.setName("settings");
+	parameters.add(vSync.set("vSync",true));
+	parameters.add(renderer1.parameters);
+	parameters.add(renderer2.parameters);
+	gui.setup(parameters);
+    gui2.setup(forms);
 
-    pointRadius = 16;
+
+    buttonSquare = new ofxButton();
+    buttonSquare->setup("Square", 19);
+    buttonSquare->setPosition(10, 10);
+
+    gui2.setPosition(10, 15 + buttonSquare->getHeight());
+
+    gui.setPosition(10, 10 + gui2.getHeight() + buttonSquare->getHeight() + 15);
+
+    buttonSquare->addListener(this, &ofApp::buttonPressed);
+
+    gui.loadFromFile("settings.xml");
+
+    font.load( OF_TTF_SANS,9,true,true);
+    ofEnableAlphaBlending();
+
 }
 
-// fonction invoquée lors d'une mise à jour de la logique de l'application
-void ofApp::update()
-{
-    vertex1_X = ofRandom(0, ofGetWidth());
-    vertex1_Y = ofRandom(0, ofGetHeight());
-    vertex2_X = ofRandom(0, ofGetWidth());
-    vertex2_Y = ofRandom(0, ofGetHeight());
-    vertex3_X = ofRandom(0, ofGetWidth());
-    vertex3_Y = ofRandom(0, ofGetHeight());
-
-    ofLog() << setprecision(4) << "<triangle: v1:("
-        << vertex1_X   << ", " << vertex1_Y << ") v2:("
-        << vertex2_X   << ", " << vertex2_Y << ") v3:("
-        << vertex3_X   << ", " << vertex3_Y << ")>";
+void ofApp::vSyncChanged(bool & vSync){
+	ofSetVerticalSync(vSync);
 }
 
-// fonction invoquée lors d'une mise à jour du rendu de la fenêtre de l'application
-void ofApp::draw()
-{
-    ofClear(191);
 
-    ofFill();
-    ofSetColor(255);
-
-    ofDrawTriangle(
-        vertex1_X, vertex1_Y,
-        vertex2_X, vertex2_Y,
-        vertex3_X, vertex3_Y);
-
-    ofSetColor(0);
-
-    ofDrawEllipse(vertex1_X, vertex1_Y, pointRadius, pointRadius);
-    ofDrawEllipse(vertex2_X, vertex2_Y, pointRadius, pointRadius);
-    ofDrawEllipse(vertex3_X, vertex3_Y, pointRadius, pointRadius);
+//--------------------------------------------------------------
+void ofApp::update(){
+	// frameNum is a readonly parameter so this will fail to compile
+	// unless we are inside the CirclesRenderer class
+	// renderer.frameNum = 5;
 }
 
-// fonction invoquée quand l'application quitte
-void ofApp::exit()
-{
-    ofLog() << "<ofApp::exit>";
+//--------------------------------------------------------------
+void ofApp::draw(){
+    ofBackgroundGradient(ofColor::white, ofColor::gray);
+	renderer1.draw();
+	renderer2.draw();
+	ofSetColor(255);
+    gui.draw();
+    gui2.draw();
+	font.drawString("frame: " + ofToString(renderer1.frameNum),ofGetWidth()-150,20);
+	font.drawString("fps: " + ofToString((int)ofGetFrameRate()),ofGetWidth()-150,40);
+    buttonSquare->draw();
+}
+
+//--------------------------------------------------------------
+void ofApp::keyPressed(int key){
+	if(key=='s'){
+		settings.serialize(parameters);
+		settings.save("settings.xml");
+	}
+	if(key=='l'){
+		settings.load("settings.xml");
+		settings.deserialize(parameters);
+	}
+	if(key=='o'){
+		cout << renderer1.parameters;
+		cout << renderer2.parameters;
+	}
+	if(key=='r'){
+		renderer1.color = ofColor(127);
+		renderer2.color = ofColor(127);
+	}
+}
+
+void ofApp::buttonPressed(const void * sender){
+    ofxButton * button = (ofxButton*)sender;
+    button->getName();
+
+    ofLog() << "Test button pressed";
+}
+//--------------------------------------------------------------
+void ofApp::keyReleased(int key){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseMoved(int x, int y ){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseDragged(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mousePressed(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseReleased(int x, int y, int button){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseEntered(int x, int y){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::mouseExited(int x, int y){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::windowResized(int w, int h){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::gotMessage(ofMessage msg){
+
+}
+
+//--------------------------------------------------------------
+void ofApp::dragEvent(ofDragInfo dragInfo){ 
+
 }

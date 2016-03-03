@@ -1,25 +1,37 @@
-// IFT3100H16_HelloTriangle/ofApp.h
-// Classe principale de l'application.
-
 #pragma once
 
 #include "ofMain.h"
+#include "ofxGui.h"
+#include "CirclesRenderer.h"
 
-class ofApp : public ofBaseApp
-{
-public:
+class ofApp : public ofBaseApp{
 
-    float vertex1_X;
-    float vertex1_Y;
-    float vertex2_X;
-    float vertex2_Y;
-    float vertex3_X;
-    float vertex3_Y;
+	public:
+		void setup();
+		void update();
+		void draw();
 
-    float pointRadius;
+		void keyPressed  (int key);
+		void keyReleased(int key);
+		void mouseMoved(int x, int y );
+		void mouseDragged(int x, int y, int button);
+		void mousePressed(int x, int y, int button);
+		void mouseReleased(int x, int y, int button);
+		void mouseEntered(int x, int y);
+		void mouseExited(int x, int y);
+		void windowResized(int w, int h);
+		void dragEvent(ofDragInfo dragInfo);
+		void gotMessage(ofMessage msg);
+        void buttonPressed(const void * sender);
+		
+		void vSyncChanged(bool & vSync);
 
-    void setup();
-    void update();
-    void draw();
-    void exit();
+        ofxPanel gui, gui2;
+		ofParameter<bool> vSync;
+        ofParameter<bool> square;
+        ofParameterGroup parameters, forms;
+		ofXml settings;
+		CirclesRenderer renderer1,renderer2;
+        ofTrueTypeFont font;
+        ofxButton *buttonSquare;
 };

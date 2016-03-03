@@ -1,15 +1,13 @@
-// IFT3100H16_HelloTriangle/main.cpp
-// Dessiner un triangle par seconde à des positions aléatoires dans la fenêtre d'affichage.
-
 #include "ofMain.h"
 #include "ofApp.h"
 
-// point d'entrée de l'application
-int main( )
-{
-    // création du contexte de rendu (OpenGL 2.1 par défaut)
-    ofSetupOpenGL(512, 512, OF_WINDOW);
+//========================================================================
+int main( ){
+	ofSetupOpenGL(1024,768, OF_WINDOW);			// <-------- setup the GL context
 
-    // instancier et lancer le framework (OpenFrameworks 0.9.0)
-    ofRunApp(new ofApp());
+	// this kicks off the running of my app
+	// can be OF_WINDOW or OF_FULLSCREEN
+	// pass in width and height too:
+	ofRunApp( new ofApp());
+
 }
