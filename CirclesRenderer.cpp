@@ -8,8 +8,7 @@
 #include "CirclesRenderer.h"
 
 CirclesRenderer::CirclesRenderer() {
-	// TODO Auto-generated constructor stub
-
+	image = nullptr;
 }
 
 
@@ -33,4 +32,36 @@ void CirclesRenderer::draw(){
 	for(int i=0;i<number;i++){
 		ofDrawCircle(position.get().x-size*((number-1)*0.5-i), position.get().y, size);
 	}
+}
+
+//void Image2D::importImage(const string fileName, ofImage * & imageDestination) {
+//	if (imageDestination != nullptr)
+//	{
+//		ofLog() << "<delete image: " << imageDestination << ">";
+//		delete imageDestination;
+//	}
+//
+//	imageDestination = new ofImage();
+//
+//	imageDestination->load(fileName);
+//
+//	ofLog() << "<import image: " << fileName << " into: " << imageDestination << ">";
+//}
+//
+//void Image2D::exportImage(const string name, const string extension) const {
+//	ofImage imageTemp;
+//
+//	string timestamp = ofGetTimestampString("-%y%m%d-%H%M%S-%i");
+//	string fileName = name + timestamp + "." + extension;
+//
+//	imageTemp.grabScreen(0, 0, ofGetWindowWidth(), ofGetWindowHeight());
+//	imageTemp.save(fileName);
+//
+//	ofLog() << "<export image: " << fileName << ">";
+//}
+
+CirclesRenderer::~CirclesRenderer()
+{
+	if (nullptr != image)
+		delete image;
 }

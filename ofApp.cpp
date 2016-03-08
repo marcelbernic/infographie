@@ -5,26 +5,38 @@ void ofApp::setup(){
 	renderer1.setup("renderer1");
 	renderer2.setup("renderer2");
 
+	//Parameters
     forms.setName("Formes");
     forms.add(square.set("square", true));
-
 	parameters.setName("settings");
 	parameters.add(vSync.set("vSync",true));
 	parameters.add(renderer1.parameters);
 	parameters.add(renderer2.parameters);
+	menuBarParams.setName("Menu");
+	importButton = new ofxButton();
+	exportButton = new ofxButton();
+	importButton->setup("Import");
+	exportButton->setup("Export");
+
+	//Setup panels
+	menuBar.setup(menuBarParams);
+	menuBar.add(importButton);
+	menuBar.add(exportButton);
 	gui.setup(parameters);
     gui2.setup(forms);
 
 
     buttonSquare = new ofxButton();
     buttonSquare->setup("Square", 19);
-    buttonSquare->setPosition(10, 10);
 
-    gui2.setPosition(10, 15 + buttonSquare->getHeight());
-
-    gui.setPosition(10, 10 + gui2.getHeight() + buttonSquare->getHeight() + 15);
+	menuBar.setPosition(10, 0);
+    gui2.setPosition(10, 15 + menuBar.getHeight());
+    gui.setPosition(10, 10 + gui2.getHeight() + menuBar.getHeight() + 15);
+	buttonSquare->setPosition(10, 20 + gui.getHeight() + gui2.getHeight() + menuBar.getHeight());
 
     buttonSquare->addListener(this, &ofApp::buttonPressed);
+	importButton->addListener(this, &ofApp::buttonPressed);
+	exportButton->addListener(this, &ofApp::buttonPressed);
 
     gui.loadFromFile("settings.xml");
 
@@ -51,6 +63,7 @@ void ofApp::draw(){
 	renderer1.draw();
 	renderer2.draw();
 	ofSetColor(255);
+	menuBar.draw();
     gui.draw();
     gui2.draw();
 	font.drawString("frame: " + ofToString(renderer1.frameNum),ofGetWidth()-150,20);
@@ -80,8 +93,11 @@ void ofApp::keyPressed(int key){
 
 void ofApp::buttonPressed(const void * sender){
     ofxButton * button = (ofxButton*)sender;
-    button->getName();
+	string btnName = button->getName();
 
+	if (btnName == "Import") {
+
+	}
     ofLog() << "Test button pressed";
 }
 //--------------------------------------------------------------

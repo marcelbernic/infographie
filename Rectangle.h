@@ -1,0 +1,15 @@
+#pragma once
+#include "Shape2D.h"
+class Rectangle : public Shape2D
+{
+private:
+	double m_width;
+	double m_height;
+
+public:
+	Rectangle(Coord p_coord, double p_width, double p_height, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill);
+	~Rectangle();
+
+	bool checkCollision(Coord p_clickPoint, double p_radius) override;
+};
+

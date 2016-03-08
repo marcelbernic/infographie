@@ -21,6 +21,7 @@ public:
 	void addToY(double p_y);
 	void addToY(int p_y);
 	void addToCoord(Coord p_coord);
+	void addToCoord(double p_x, double p_y);
 
 	~Coord();
 };

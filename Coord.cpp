@@ -63,6 +63,11 @@ void Coord::addToCoord(Coord p_coord) {
 	m_y += p_coord.getY();
 }
 
+void Coord::addToCoord(double p_x, double p_y) {
+	m_x += p_x;
+	m_y += p_y;
+}
+
 Coord::~Coord()
 {
 }

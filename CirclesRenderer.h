@@ -21,6 +21,8 @@ class ofCirclesRendererParam: public ofReadOnlyParameter<ParameterType,CirclesRe
 
 class CirclesRenderer {
 public:
+	ofImage * image;
+
 	CirclesRenderer();
 
 	void setup(string name);

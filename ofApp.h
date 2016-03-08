@@ -29,9 +29,13 @@ class ofApp : public ofBaseApp{
         ofxPanel gui, gui2;
 		ofParameter<bool> vSync;
         ofParameter<bool> square;
-        ofParameterGroup parameters, forms;
+        ofParameterGroup parameters, forms, menuBarParams;
 		ofXml settings;
 		CirclesRenderer renderer1,renderer2;
         ofTrueTypeFont font;
         ofxButton *buttonSquare;
+
+		//Menu Bar
+		ofxPanel menuBar;
+		ofxButton *importButton, *exportButton;
 };
