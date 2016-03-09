@@ -12,3 +12,8 @@ Line2D::Line2D(std::vector<Coord> p_coord, double p_angle, int p_lineStroke, int
 Line2D::~Line2D()
 {
 }
+
+//TODO
+bool Line2D::checkCollision(Coord p_clickPoint, double p_radius) {
+	return checkCollisionLineCircle(m_coordVector[0], m_coordVector[1], p_clickPoint, p_radius);
+}

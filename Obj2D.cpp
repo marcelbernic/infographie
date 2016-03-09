@@ -1,4 +1,5 @@
 #include "Obj2D.h"
+#include <exception>
 
 Obj2D::Obj2D(double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill) {
 	m_angle = p_angle;
@@ -95,8 +96,70 @@ bool Obj2D::checkCollision(Coord p_clickPoint, double p_radius) {
 	return false;
 }
 
+bool Obj2D::checkCollisionLineCircle(Coord p_coordA, Coord p_coordB, Coord p_clickPoint, double p_radius) {
+	Coord collisionCoord = Coord(0, 0);
+	double collisionX;
+	double collisionY;
+	double slope;
+	double A;
+	double B;
+	double pointAX = p_coordA.getX();
+	double pointAY = p_coordA.getY();
+	double pointBX = p_coordB.getX();
+	double pointBY = p_coordB.getY();
+
+	if (pointBX - pointAX == 0) {
+		collisionX = pointAX;
+		collisionY = p_clickPoint.getY();
+		collisionCoord = Coord((int)collisionX, (int)collisionY);
+		if (calculateDistance(p_clickPoint, collisionCoord) > p_radius) return false;
+		if ((collisionY <= pointAY && collisionY <= pointBY) ||
+			(collisionY >= pointAY && collisionY >= pointBY)) return false;
+	}
+	else if (pointBY - pointAY == 0) {
+
+		A = p_clickPoint.getX();
+		B = p_clickPoint.getY();
+		collisionX = A + sqrt(-(B*B) + (2 * B*pointAY) + (p_radius*p_radius) - (pointAY*pointAY));
+		if (pointBY > B + p_radius || pointBY < B - p_radius) return false;
+		if (calculateDistance(p_coordA, p_clickPoint) <= p_radius || calculateDistance(p_coordB, p_clickPoint) <= p_radius) return true;
+		if ((collisionX < pointAX && collisionX < pointBX) ||
+			(collisionX > pointAX && collisionX > pointBX)) return false;
+
+	}
+	else {
+		slope = (pointBY - pointAY) / (pointBX - pointAX);
+		double b = pointAY - slope*pointAX;
+		double normal = -1 / slope;
+		double b_normal = p_clickPoint.getY() - normal*p_clickPoint.getX();
+		collisionX = (b - b_normal) / (normal - slope);
+		collisionY = slope * collisionX + b;
+		collisionCoord = Coord((int)collisionX, (int)collisionY);
+
+
+		if (calculateDistance(p_clickPoint, collisionCoord) > p_radius) return false;
+		if ((collisionX <= pointAX && collisionX <= pointBX) ||
+			(collisionX >= pointAX && collisionX >= pointBX)) return false;
+	}
+	return true;
+}
+
 double Obj2D::calculateDistance(Coord p_coord1, Coord p_coord2) {
 	double x2 = pow((p_coord1.getX() - p_coord2.getX()), 2);
 	double y2 = pow((p_coord1.getY() - p_coord2.getY()), 2);
 	return sqrt(x2 + y2);
+}
+
+double Obj2D::calculateAngle(double vector1[], double vector2[]) {
+
+	double i = vector1[0] * vector2[0];
+	double j = vector1[1] * vector2[1];
+	double norm1 = sqrt(pow(vector1[0], 2) + pow(vector1[1], 2));
+	double norm2 = sqrt(pow(vector2[0], 2) + pow(vector2[1], 2));
+	try {
+		return (180 / PI)*acos((i + j) / (norm1*norm2));
+	}
+	catch (std::exception& e) {
+		return 180;
+	}
 }

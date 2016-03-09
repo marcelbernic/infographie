@@ -41,6 +41,8 @@ public:
 	EnumVectorDrawMode getType();
 
 	virtual bool checkCollision(Coord p_clickPoint, double p_radius);
-	double calculateDistance(Coord p_coord1, Coord p_coord2);
+	bool checkCollisionLineCircle(Coord p_coordA, Coord p_coordB, Coord p_clickPoint, double p_radius);
+	double calculateDistance(Coord p_coord1, Coord p_coord2);	
+	double calculateAngle(double vector1[], double vector2[]);
 };
 
