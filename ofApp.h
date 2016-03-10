@@ -53,12 +53,13 @@ class ofApp : public ofBaseApp{
 		void clearSelected();
 		void updateGroupSelection();
 
-		//void drawCircle(app::Circle *p_circle);
+		void drawCircle(app::Circle *p_circle);
 		void drawRectangle(app::Rectangle *p_rect);
 		void drawTriangle(app::Triangle *p_triangle);
 		void drawLine(app::Line2D *p_line);
 		void drawImage(app::Image2D *p_image);
 		void translateSelection(double p_x, double p_y);
+		void rotateSelection();
 
         ofxPanel gui, gui2;
 		ofParameter<bool> vSync;

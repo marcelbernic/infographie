@@ -23,6 +23,7 @@ public:
 
 	void translate(double p_x, double p_y);
 	void resize(double p_percent); // 1 = 100%
+	void rotate(Coord p_first, Coord p_sec);
 	virtual void rotate(double p_degree); // rotate from shape center
 	void rotate(Coord p_coord, double p_degree); // rotate from coord
 
@@ -41,6 +42,8 @@ public:
 	EnumVectorDrawMode getType();
 	std::vector<Coord> getCoordVector();
 
+	double getAngleSign(Coord p_first, Coord p_sec, Coord p_rotCenter);
+	Coord getRotationCenter();
 	virtual bool containedInRect(Coord p_topLeft, double p_width, double p_height);
 	bool checkSelected(Coord p_clickPoint, double p_radius);
 	virtual bool checkCollision(Coord p_clickPoint, double p_radius);

@@ -71,6 +71,16 @@ std::vector<Coord> Obj2D::getCoordVector() {
 	return m_coordVector;
 }
 
+Coord Obj2D::getRotationCenter() {
+	double xTot = 0;
+	double yTot = 0;
+	for (Coord c : m_coordVector) {
+		xTot += c.getX();
+		yTot += c.getY();
+	}
+	return Coord(xTot / m_coordVector.size(), yTot / m_coordVector.size());
+}
+
 void Obj2D::translate(double p_x, double p_y) {
 	std::vector<Coord> newCoordVector;
 	for (Coord c : m_coordVector) {
@@ -84,11 +94,22 @@ void Obj2D::resize(double p_percent) {
 
 }
 
+void Obj2D::rotate(Coord p_first, Coord p_sec) {
+	Coord rotCenter = getRotationCenter();
+	double vector1[]{ p_first.getX() - rotCenter.getX(), p_first.getY() - rotCenter.getY() };
+	double vector2[]{ p_sec.getX() - rotCenter.getX(), p_sec.getY() - rotCenter.getY() };
+	double angle = calculateAngle(vector1, vector2);
+	angle = angle * getAngleSign(p_first, p_sec, rotCenter);
+	rotate(rotCenter, angle);
+}
+
 void Obj2D::rotate(double p_degree) {
 	
 }
 
 void Obj2D::rotate(Coord p_coord, double p_degree) {
+	std::cout << p_degree << std::endl;
+	std::vector<Coord> newCoordVector;
 	double x = 0;
 	double y = 0;
 	for (Coord c : m_coordVector) {
@@ -96,8 +117,10 @@ void Obj2D::rotate(Coord p_coord, double p_degree) {
 		y = c.getY() - p_coord.getY();
 		c.setX((x*cos(p_degree*PI / 180) - y*sin(p_degree*PI / 180)) + p_coord.getX());
 		c.setY((x*sin(p_degree*PI / 180) + y*cos(p_degree*PI / 180)) + p_coord.getY());
+		newCoordVector.push_back(c);
 	}
 	m_angle += p_degree;
+	m_coordVector = newCoordVector;
 }
 
 bool Obj2D::containedInRect(Coord p_topLeft, double p_width, double p_height) {
@@ -182,4 +205,15 @@ double Obj2D::calculateAngle(double vector1[], double vector2[]) {
 	else {
 		return 180;
 	}
+}
+
+double Obj2D::getAngleSign(Coord p_first, Coord p_sec, Coord p_rotCenter) {
+	double x = p_sec.getX() - p_first.getX();
+	double y = p_sec.getY() - p_first.getY();
+	double side = (p_sec.getX() + p_first.getX())/2 - p_rotCenter.getX();
+	if (x >= 0 && y >= 0 && side >= 0) return 1;	
+	else if (x <= 0 && y >= 0 && side >= 0) return 1;
+	else if (x <= 0 && y <= 0 && side <= 0) return 1;
+	else if (x >= 0 && y <= 0 && side <= 0) return 1;
+	return -1;
 }

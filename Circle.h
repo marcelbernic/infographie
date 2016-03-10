@@ -1,6 +1,5 @@
 #pragma once
 #include "Shape2D.h"
-#include "ofApp.h"
 
 namespace app {
 	class Circle : public Shape2D

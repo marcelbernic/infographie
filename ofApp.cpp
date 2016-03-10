@@ -118,7 +118,7 @@ void ofApp::draw(){
 		switch (o->getType()) {
 			case EnumVectorDrawMode::VECTOR_PRIMITIVE_CIRCLE: {
 				app::Circle* c = dynamic_cast<app::Circle*>(o);
-				//drawcircle(c);
+				drawCircle(c);
 			}
 					break;
 			case EnumVectorDrawMode::VECTOR_PRIMITIVE_RECTANGLE: {
@@ -205,8 +205,22 @@ void ofApp::mouseMoved(int x, int y ){
 }
 
 //--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-	if (button == OF_MOUSE_BUTTON_LEFT) {
+void ofApp::mouseDragged(int x, int y, int button) {
+	if (ofGetMousePressed(OF_MOUSE_BUTTON_LEFT) && ofGetMousePressed(OF_MOUSE_BUTTON_RIGHT)) {
+		switch (m_state) {
+		case AppState::ACTION_SELECT:
+			m_buffer.push_back(Coord(x, y));
+			m_state = AppState::ACTION_ROTATE;
+			break;
+		case AppState::ACTION_ROTATE:
+			m_buffer[0] = m_buffer[1];
+			m_buffer[1].setX(x);
+			m_buffer[1].setY(y);
+			rotateSelection();
+			break;
+		}
+	}
+	else if (button == OF_MOUSE_BUTTON_LEFT) {
 		switch (m_state) {
 		case AppState::ACTION_SELECT:
 			m_buffer.push_back(Coord(x, y));
@@ -294,6 +308,7 @@ void ofApp::mousePressed(int x, int y, int button) {
 void ofApp::mouseReleased(int x, int y, int button){
 	if (button == OF_MOUSE_BUTTON_LEFT) {
 		switch (m_state) {
+		case AppState::ACTION_ROTATE:
 		case AppState::ACTION_GROUPSELECT:
 			m_buffer.clear();
 			m_state = AppState::ACTION_SELECT;
@@ -302,6 +317,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 	}
 	else if (button == OF_MOUSE_BUTTON_RIGHT) {
 		switch (m_state) {
+		case AppState::ACTION_ROTATE:
 		case AppState::ACTION_TRANSLATE:
 			m_buffer.clear();
 			m_state = AppState::ACTION_SELECT;
@@ -402,19 +418,25 @@ void ofApp::updateGroupSelection() {
 	}
 }
 
-//void ofApp::drawCircle(app::Circle *p_circle) {
-//	if (p_circle->isSelected()) {
-//		ofSetColor(255, 255, 255);
-//		ofSetLineWidth(p_circle->getLineStroke());
-//	}
-//	else {
-//		ofSetColor(255, 0, 0);
-//		ofSetLineWidth(p_circle->getLineStroke());
-//	}
-//	ofDrawCircle(p_circle->getCoordVector()[0].getX(), p_circle->getCoordVector()[0].getY(), p_circle->getRadius());
-//}
+void ofApp::drawCircle(app::Circle *p_circle) {
+	ofFill();
+	if (p_circle->isSelected()) {
+		ofSetColor(255, 255, 255);
+		ofSetLineWidth(p_circle->getLineStroke());
+	}
+	else {
+		ofSetColor(255, 0, 0);
+		ofSetLineWidth(p_circle->getLineStroke());
+	}
+	ofDrawCircle(p_circle->getCoordVector()[0].getX(), p_circle->getCoordVector()[0].getY(), p_circle->getRadius());
+	ofNoFill();
+	ofSetColor(0, 0, 0);
+	ofDrawCircle(p_circle->getCoordVector()[0].getX(), p_circle->getCoordVector()[0].getY(), p_circle->getRadius());
+	ofFill();
+}
 
 void ofApp::drawRectangle(app::Rectangle *p_rect) {
+	ofFill();
 	if (p_rect->isSelected()) {
 		ofSetColor(255, 255, 255);
 		ofSetLineWidth(p_rect->getLineStroke());
@@ -423,10 +445,23 @@ void ofApp::drawRectangle(app::Rectangle *p_rect) {
 		ofSetColor(255, 0, 0);
 		ofSetLineWidth(p_rect->getLineStroke());
 	}
-	ofDrawRectangle(p_rect->getCoordVector()[0].getX(), p_rect->getCoordVector()[0].getY(), p_rect->m_width, p_rect->m_height);
+	ofBeginShape();
+	for (Coord c : p_rect->getCoordVector()) {
+		ofVertex(c.getX(), c.getY());
+	}
+	ofEndShape();
+	ofNoFill();
+	ofSetColor(0, 0, 0);
+	for (int i = 0; i < p_rect->getCoordVector().size()-1; i++) {
+		ofDrawLine(p_rect->getCoordVector()[i].getX(), p_rect->getCoordVector()[i].getY(), p_rect->getCoordVector()[i + 1].getX(), p_rect->getCoordVector()[i + 1].getY());
+	}
+	ofDrawLine(p_rect->getCoordVector()[3].getX(), p_rect->getCoordVector()[3].getY(), p_rect->getCoordVector()[0].getX(), p_rect->getCoordVector()[0].getY());
+	ofFill();
+	//ofDrawRectangle(p_rect->getCoordVector()[0].getX(), p_rect->getCoordVector()[0].getY(), p_rect->m_width, p_rect->m_height);
 }
 
 void ofApp::drawTriangle(app::Triangle *p_tri) {
+	ofFill();
 	if (p_tri->isSelected()) {
 		ofSetColor(255, 255, 255);
 		ofSetLineWidth(p_tri->getLineStroke());
@@ -438,6 +473,16 @@ void ofApp::drawTriangle(app::Triangle *p_tri) {
 	ofDrawTriangle(p_tri->getCoordVector()[0].getX(), p_tri->getCoordVector()[0].getY(), 
 		p_tri->getCoordVector()[1].getX(), p_tri->getCoordVector()[1].getY(), 
 		p_tri->getCoordVector()[2].getX(), p_tri->getCoordVector()[2].getY());
+	if (p_tri->isSelected()) {
+		ofSetColor(0, 0, 255);
+		ofDrawCircle(p_tri->getRotationCenter().getX(), p_tri->getRotationCenter().getY(), 3);
+	}
+	ofNoFill();
+	ofSetColor(0, 0, 0);
+	ofDrawTriangle(p_tri->getCoordVector()[0].getX(), p_tri->getCoordVector()[0].getY(),
+		p_tri->getCoordVector()[1].getX(), p_tri->getCoordVector()[1].getY(),
+		p_tri->getCoordVector()[2].getX(), p_tri->getCoordVector()[2].getY());
+	ofFill();
 }
 
 void ofApp::drawLine(app::Line2D *p_line) {
@@ -461,6 +506,15 @@ void ofApp::translateSelection(double p_x, double p_y) {
 	for (Obj2D* o : m_obj2DVector) {
 		if (o->isSelected()) {
 			o->translate(p_x, p_y);
+		}
+	}
+}
+
+void ofApp::rotateSelection() {
+	cout << "rotate" << endl;
+	for (Obj2D* o : m_obj2DVector) {
+		if (o->isSelected()) {
+			o->rotate(m_buffer[0], m_buffer[1]);
 		}
 	}
 }

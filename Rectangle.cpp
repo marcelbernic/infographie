@@ -8,8 +8,9 @@ Rectangle::Rectangle(Coord p_coord, double p_width, double p_height, double p_an
 	m_coordVector = std::vector<Coord>();
 	m_coordVector.push_back(p_coord);
 	m_coordVector.push_back(Coord(p_coord.getX() + p_width, p_coord.getY()));
-	m_coordVector.push_back(Coord(p_coord.getX(), p_coord.getY() + p_height));
 	m_coordVector.push_back(Coord(p_coord.getX() + p_width, p_coord.getY() + p_height));
+	m_coordVector.push_back(Coord(p_coord.getX(), p_coord.getY() + p_height));
+	
 	m_type = EnumVectorDrawMode::VECTOR_PRIMITIVE_RECTANGLE;
 }
 
