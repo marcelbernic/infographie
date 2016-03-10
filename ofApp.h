@@ -58,6 +58,7 @@ class ofApp : public ofBaseApp{
 		void drawTriangle(app::Triangle *p_triangle);
 		void drawLine(app::Line2D *p_line);
 		void drawImage(app::Image2D *p_image);
+		void translateSelection(double p_x, double p_y);
 
         ofxPanel gui, gui2;
 		ofParameter<bool> vSync;

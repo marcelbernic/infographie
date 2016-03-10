@@ -72,9 +72,12 @@ std::vector<Coord> Obj2D::getCoordVector() {
 }
 
 void Obj2D::translate(double p_x, double p_y) {
+	std::vector<Coord> newCoordVector;
 	for (Coord c : m_coordVector) {
 		c.addToCoord(p_x, p_y);
+		newCoordVector.push_back(c);
 	}
+	m_coordVector = newCoordVector;
 }
 
 void Obj2D::resize(double p_percent) {
@@ -174,11 +177,9 @@ double Obj2D::calculateAngle(double vector1[], double vector2[]) {
 	double norm2 = sqrt(pow(vector2[0], 2) + pow(vector2[1], 2));
 	double angle = acos((i + j) / (norm1*norm2))*(180 / PI);
 	if(_isnan(angle) == 0) {
-		std::cout << angle*180/PI << std::endl;
 		return angle;
 	}
 	else {
-		std::cout << "Erreur, 180" << std::endl;
 		return 180;
 	}
 }

@@ -189,7 +189,6 @@ void ofApp::keyPressed(int key){
 void ofApp::buttonPressed(const void * sender){
     ofxButton * button = (ofxButton*)sender;
 	string btnName = button->getName();
-
 	if (btnName == "Import") {
 
 	}
@@ -207,7 +206,8 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-	switch (m_state) {
+	if (button == OF_MOUSE_BUTTON_LEFT) {
+		switch (m_state) {
 		case AppState::ACTION_SELECT:
 			m_buffer.push_back(Coord(x, y));
 			m_state = AppState::ACTION_GROUPSELECT;
@@ -217,12 +217,28 @@ void ofApp::mouseDragged(int x, int y, int button){
 			m_buffer[1].setY(y);
 			updateGroupSelection();
 			break;
+		}
+	}
+	else if (button == OF_MOUSE_BUTTON_RIGHT) {
+		switch (m_state) {
+		case AppState::ACTION_SELECT:
+			m_buffer.push_back(Coord(x, y));
+			m_state = AppState::ACTION_TRANSLATE;
+			break;
+		case AppState::ACTION_TRANSLATE:			
+			m_buffer[0] = m_buffer[1];
+			m_buffer[1].setX(x);
+			m_buffer[1].setY(y);
+			translateSelection(m_buffer[1].getX()- m_buffer[0].getX(), m_buffer[1].getY() - m_buffer[0].getY());
+			break;
+		}
 	}
 }
 
 //--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-	switch (m_state) {
+void ofApp::mousePressed(int x, int y, int button) {
+	if (button == OF_MOUSE_BUTTON_LEFT) {
+		switch (m_state) {
 		case AppState::BUILD_RECTANGLE:
 			m_buffer.push_back(Coord(x, y));
 			if (m_buffer.size() == 2) {
@@ -260,19 +276,37 @@ void ofApp::mousePressed(int x, int y, int button){
 			for (Obj2D* o : m_obj2DVector) {
 				if (o->checkSelected(Coord(x, y), m_clickRadius)) {
 					break;
-				}				
+				}
 			}
 			break;
-	}		
+		}
+	}
+	else if (button == OF_MOUSE_BUTTON_RIGHT) {
+		switch (m_state) {
+		case AppState::ACTION_SELECT:
+			m_buffer.clear();
+			m_buffer.push_back(Coord(x, y));
+		}
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-	switch (m_state) {
-	case AppState::ACTION_GROUPSELECT:
-		m_buffer.clear();
-		m_state = AppState::ACTION_SELECT;
-		break;
+	if (button == OF_MOUSE_BUTTON_LEFT) {
+		switch (m_state) {
+		case AppState::ACTION_GROUPSELECT:
+			m_buffer.clear();
+			m_state = AppState::ACTION_SELECT;
+			break;
+		}
+	}
+	else if (button == OF_MOUSE_BUTTON_RIGHT) {
+		switch (m_state) {
+		case AppState::ACTION_TRANSLATE:
+			m_buffer.clear();
+			m_state = AppState::ACTION_SELECT;
+			break;
+		}
 	}
 }
 
@@ -364,7 +398,6 @@ void ofApp::updateGroupSelection() {
 		//cout << "BOTTOM-RIGHT" << endl;
 	}
 	for (Obj2D* o : m_obj2DVector) {
-		cout << topLeft.getX() << " " << topLeft.getY() << abs(width) << " " << abs(height) << endl;
 		o->setSelected(o->containedInRect(topLeft, abs(width), abs(height)));
 	}
 }
@@ -422,4 +455,12 @@ void ofApp::drawLine(app::Line2D *p_line) {
 
 void ofApp::drawImage(app::Image2D *p_image) {
 
+}
+
+void ofApp::translateSelection(double p_x, double p_y) {
+	for (Obj2D* o : m_obj2DVector) {
+		if (o->isSelected()) {
+			o->translate(p_x, p_y);
+		}
+	}
 }
