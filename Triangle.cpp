@@ -15,8 +15,8 @@ Triangle::~Triangle()
 //TODO
 bool Triangle::checkCollision(Coord p_clickPoint, double p_radius) {
 	Coord coord1 = m_coordVector[0];
-	Coord coord2 = m_coordVector[0];
-	Coord coord3 = m_coordVector[0];
+	Coord coord2 = m_coordVector[1];
+	Coord coord3 = m_coordVector[2];
 	double angle1, angle2, angle3;
 	double total;
 

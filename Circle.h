@@ -14,6 +14,7 @@ namespace app {
 
 		bool checkCollision(Coord p_clickPoint, double p_radius) override;
 		bool containedInRect(Coord p_topLeft, double p_width, double p_height) override;
+		double getRadius();
 	};
 }
 

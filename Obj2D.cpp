@@ -1,5 +1,6 @@
 #include "Obj2D.h"
 #include <exception>
+#include <iostream>
 
 Obj2D::Obj2D(double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill) {
 	m_angle = p_angle;
@@ -66,6 +67,10 @@ EnumVectorDrawMode Obj2D::getType() {
 	return m_type;
 }
 
+std::vector<Coord> Obj2D::getCoordVector() {
+	return m_coordVector;
+}
+
 void Obj2D::translate(double p_x, double p_y) {
 	for (Coord c : m_coordVector) {
 		c.addToCoord(p_x, p_y);
@@ -96,10 +101,12 @@ bool Obj2D::containedInRect(Coord p_topLeft, double p_width, double p_height) {
 	return false;
 }
 
-void Obj2D::checkSelected(Coord p_clickPoint, double p_radius) {
+bool Obj2D::checkSelected(Coord p_clickPoint, double p_radius) {
 	if (checkCollision(p_clickPoint, p_radius)) {
 		m_isSelected = true;
+		return true;
 	}
+	return false;
 }
 
 bool Obj2D::checkCollision(Coord p_clickPoint, double p_radius) {
@@ -165,10 +172,13 @@ double Obj2D::calculateAngle(double vector1[], double vector2[]) {
 	double j = vector1[1] * vector2[1];
 	double norm1 = sqrt(pow(vector1[0], 2) + pow(vector1[1], 2));
 	double norm2 = sqrt(pow(vector2[0], 2) + pow(vector2[1], 2));
-	try {
-		return (180 / PI)*acos((i + j) / (norm1*norm2));
+	double angle = acos((i + j) / (norm1*norm2))*(180 / PI);
+	if(_isnan(angle) == 0) {
+		std::cout << angle*180/PI << std::endl;
+		return angle;
 	}
-	catch (std::exception& e) {
+	else {
+		std::cout << "Erreur, 180" << std::endl;
 		return 180;
 	}
 }

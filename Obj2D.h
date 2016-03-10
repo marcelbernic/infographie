@@ -39,9 +39,10 @@ public:
 	bool isSelected();
 	void setSelected(bool p_selected);
 	EnumVectorDrawMode getType();
+	std::vector<Coord> getCoordVector();
 
 	virtual bool containedInRect(Coord p_topLeft, double p_width, double p_height);
-	void checkSelected(Coord p_clickPoint, double p_radius);
+	bool checkSelected(Coord p_clickPoint, double p_radius);
 	virtual bool checkCollision(Coord p_clickPoint, double p_radius);
 	bool checkCollisionLineCircle(Coord p_coordA, Coord p_coordB, Coord p_clickPoint, double p_radius);
 	double calculateDistance(Coord p_coord1, Coord p_coord2);	

@@ -6,18 +6,24 @@
 #include "Coord.h"
 #include "state.h"
 #include "Obj2D.h"
+#include "Rectangle.h"
+#include "Triangle.h"
+#include "Circle.h"
+#include "Line2D.h"
+#include "Image2D.h"
 #include <vector>
 
 class ofApp : public ofBaseApp{
 	private:
 		std::vector<Coord> m_buffer;
-		std::vector<Obj2D> m_obj2DVector;
+		std::vector<Obj2D*> m_obj2DVector;
 		AppState m_state;
 		int m_lineStroke;
 		int m_lineColor;
 		int m_lineColorSelected;
 		int m_colorFill;
 		int m_clickRadius;
+		app::Rectangle* rect;
 
 	public:
 		void setup();
@@ -46,6 +52,12 @@ class ofApp : public ofBaseApp{
 		double calculateDistance(Coord p_coord1, Coord p_coord2);
 		void clearSelected();
 		void updateGroupSelection();
+
+		//void drawCircle(app::Circle *p_circle);
+		void drawRectangle(app::Rectangle *p_rect);
+		void drawTriangle(app::Triangle *p_triangle);
+		void drawLine(app::Line2D *p_line);
+		void drawImage(app::Image2D *p_image);
 
         ofxPanel gui, gui2;
 		ofParameter<bool> vSync;

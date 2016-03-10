@@ -33,3 +33,7 @@ bool Circle::containedInRect(Coord p_topLeft, double p_width, double p_height) {
 	double distanceCornerToCenter = pow(distanceX - (p_width / 2), 2) + pow(distanceY - (p_height / 2), 2);
 	return distanceCornerToCenter <= pow(m_radius, 2);
 }
+
+double Circle::getRadius() {
+	return m_radius;
+}

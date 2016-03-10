@@ -1,9 +1,5 @@
 #include "ofApp.h"
-#include "Rectangle.h"
-#include "Triangle.h"
-#include "Circle.h"
-#include "Line2D.h"
-#include "Image2D.h"
+#include <ostream>
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -13,6 +9,7 @@ void ofApp::setup(){
 	//Parameters
 	m_state = AppState::ACTION_SELECT;
 	m_lineStroke = 5;
+	m_clickRadius = 5;
     forms.setName("Formes");
     forms.add(square.set("square", true));
 	parameters.setName("settings");
@@ -117,11 +114,41 @@ void ofApp::draw(){
 		}
 		break;
 	}
+	for (Obj2D* o : m_obj2DVector) {
+		switch (o->getType()) {
+			case EnumVectorDrawMode::VECTOR_PRIMITIVE_CIRCLE: {
+				app::Circle* c = dynamic_cast<app::Circle*>(o);
+				//drawcircle(c);
+			}
+					break;
+			case EnumVectorDrawMode::VECTOR_PRIMITIVE_RECTANGLE: {
+				app::Rectangle* r = dynamic_cast<app::Rectangle*>(o);
+				drawRectangle(r);
+			}
+					break;
+			case EnumVectorDrawMode::VECTOR_PRIMITIVE_TRIANGLE: {
+				app::Triangle* t = dynamic_cast<app::Triangle*>(o);
+				drawTriangle(t);
+			}
+					break;
+			case EnumVectorDrawMode::VECTOR_PRIMITIVE_LINE: {
+				app::Line2D* l = dynamic_cast<app::Line2D*>(o);
+				drawLine(l);
+			}
+					break;
+			case EnumVectorDrawMode::VECTOR_PRIMITIVE_IMAGE: {
+				app::Image2D* i = dynamic_cast<app::Image2D*>(o);
+				drawImage(i);
+			}
+				break;
+		}
+
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	if(key=='s'){
+	/*if(key=='s'){
 		settings.serialize(parameters);
 		settings.save("settings.xml");
 	}
@@ -136,6 +163,26 @@ void ofApp::keyPressed(int key){
 	if(key=='r'){
 		renderer1.color = ofColor(127);
 		renderer2.color = ofColor(127);
+	}*/
+	if (key == 's') {
+		m_state = AppState::ACTION_SELECT;
+		m_buffer.clear();
+	}
+	if (key == 'l') {
+		m_state = AppState::BUILD_LINE;
+		m_buffer.clear();
+	}
+	if (key == 'c') {
+		m_state = AppState::BUILD_CIRCLE;
+		m_buffer.clear();
+	}
+	if (key == 'r') {
+		m_state = AppState::BUILD_RECTANGLE;
+		m_buffer.clear();
+	}
+	if (key == 't') {
+		m_state = AppState::BUILD_TRIANGLE;
+		m_buffer.clear();
 	}
 }
 
@@ -207,12 +254,13 @@ void ofApp::mousePressed(int x, int y, int button){
 		case AppState::ACTION_SELECT:
 			m_buffer.clear();
 			m_buffer.push_back(Coord(x, y));
-			if (ofGetKeyPressed(OF_KEY_LEFT_CONTROL) || ofGetKeyPressed(OF_KEY_RIGHT_CONTROL)) {
+			if (!(ofGetKeyPressed(OF_KEY_LEFT_CONTROL) || ofGetKeyPressed(OF_KEY_RIGHT_CONTROL))) {
 				clearSelected();
 			}
-			for (Obj2D o : m_obj2DVector) {
-				o.checkSelected(Coord(x, y), m_clickRadius);
-				break;
+			for (Obj2D* o : m_obj2DVector) {
+				if (o->checkSelected(Coord(x, y), m_clickRadius)) {
+					break;
+				}				
 			}
 			break;
 	}		
@@ -257,30 +305,30 @@ void ofApp::buildRectangle() {
 	double width = m_buffer[1].getX() - m_buffer[0].getX();
 	double height = m_buffer[1].getY() - m_buffer[0].getY();
 	if (width >= 0 && height >= 0) { //0 = top-left, 1 = bottom-right
-		m_obj2DVector.push_back(app::Rectangle(m_buffer[0], width, height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+		m_obj2DVector.push_back(new app::Rectangle(m_buffer[0], width, height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
 	}
-	if (width < 0 && height >= 0) { //0 = top-right, 1 = bottom-left
-		m_obj2DVector.push_back(app::Rectangle(Coord(m_buffer[1].getX(), m_buffer[0].getY()), -width, height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+	else if (width < 0 && height >= 0) { //0 = top-right, 1 = bottom-left
+		m_obj2DVector.push_back(new app::Rectangle(Coord(m_buffer[1].getX(), m_buffer[0].getY()), -width, height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
 	}
-	if (width >= 0 && height < 0) { //0 = bottom-left, 1 = top-right
-		m_obj2DVector.push_back(app::Rectangle(Coord(m_buffer[0].getX(), m_buffer[1].getY()), width, -height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+	else if (width >= 0 && height < 0) { //0 = bottom-left, 1 = top-right
+		m_obj2DVector.push_back(new app::Rectangle(Coord(m_buffer[0].getX(), m_buffer[1].getY()), width, -height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
 	}
 	else { //0 = bottom-right, 1 = top-left
-		m_obj2DVector.push_back(app::Rectangle(m_buffer[1], -width, -height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+		m_obj2DVector.push_back(new app::Rectangle(m_buffer[1], -width, -height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
 	}
 }
 
 void ofApp::buildTriangle() {
-	m_obj2DVector.push_back(app::Triangle(m_buffer, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+	m_obj2DVector.push_back(new app::Triangle(m_buffer, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
 }
 
 void ofApp::buildCircle() {
 	double radius = calculateDistance(m_buffer[0], m_buffer[1]);
-	m_obj2DVector.push_back(app::Circle(m_buffer[0], radius, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+	m_obj2DVector.push_back(new app::Circle(m_buffer[0], radius, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
 }
 
 void ofApp::buildLine() {
-	m_obj2DVector.push_back(app::Line2D(m_buffer, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+	m_obj2DVector.push_back(new app::Line2D(m_buffer, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
 }
 
 double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {
@@ -290,8 +338,8 @@ double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {
 }
 
 void ofApp::clearSelected() {
-	for (Obj2D o : m_obj2DVector) {
-		o.setSelected(false);
+	for (Obj2D* o : m_obj2DVector) {
+		o->setSelected(false);
 	}
 }
 
@@ -300,18 +348,78 @@ void ofApp::updateGroupSelection() {
 	double height = m_buffer[1].getY() - m_buffer[0].getY();
 	Coord topLeft = Coord(0,0);
 	if (width >= 0 && height >= 0) { //0 = top-left, 1 = bottom-right
-		Coord topLeft = m_buffer[0];
+		topLeft = m_buffer[0];
+		//cout << "TOP-LEFT" << endl;
 	}
-	if (width < 0 && height >= 0) { //0 = top-right, 1 = bottom-left
-		Coord topLeft = Coord(m_buffer[1].getX(), m_buffer[0].getY());
+	else if (width < 0 && height >= 0) { //0 = top-right, 1 = bottom-left
+		topLeft = Coord(m_buffer[1].getX(), m_buffer[0].getY());
+		//cout << "TOP-RIGHT" << endl;
 	}
-	if (width >= 0 && height < 0) { //0 = bottom-left, 1 = top-right
-		Coord topLeft = Coord(m_buffer[0].getX(), m_buffer[1].getY());
+	else if (width >= 0 && height < 0) { //0 = bottom-left, 1 = top-right
+		topLeft = Coord(m_buffer[0].getX(), m_buffer[1].getY());
+		//cout << "BOTTOM-LEFT" << endl;
 	}
 	else { //0 = bottom-right, 1 = top-left
-		Coord topLeft = m_buffer[1];
+		topLeft = m_buffer[1];
+		//cout << "BOTTOM-RIGHT" << endl;
 	}
-	for (Obj2D o : m_obj2DVector) {
-		o.setSelected(o.containedInRect(topLeft, abs(width), abs(height)));
+	for (Obj2D* o : m_obj2DVector) {
+		cout << topLeft.getX() << " " << topLeft.getY() << abs(width) << " " << abs(height) << endl;
+		o->setSelected(o->containedInRect(topLeft, abs(width), abs(height)));
 	}
+}
+
+//void ofApp::drawCircle(app::Circle *p_circle) {
+//	if (p_circle->isSelected()) {
+//		ofSetColor(255, 255, 255);
+//		ofSetLineWidth(p_circle->getLineStroke());
+//	}
+//	else {
+//		ofSetColor(255, 0, 0);
+//		ofSetLineWidth(p_circle->getLineStroke());
+//	}
+//	ofDrawCircle(p_circle->getCoordVector()[0].getX(), p_circle->getCoordVector()[0].getY(), p_circle->getRadius());
+//}
+
+void ofApp::drawRectangle(app::Rectangle *p_rect) {
+	if (p_rect->isSelected()) {
+		ofSetColor(255, 255, 255);
+		ofSetLineWidth(p_rect->getLineStroke());
+	}
+	else {
+		ofSetColor(255, 0, 0);
+		ofSetLineWidth(p_rect->getLineStroke());
+	}
+	ofDrawRectangle(p_rect->getCoordVector()[0].getX(), p_rect->getCoordVector()[0].getY(), p_rect->m_width, p_rect->m_height);
+}
+
+void ofApp::drawTriangle(app::Triangle *p_tri) {
+	if (p_tri->isSelected()) {
+		ofSetColor(255, 255, 255);
+		ofSetLineWidth(p_tri->getLineStroke());
+	}
+	else {
+		ofSetColor(255, 0, 0);
+		ofSetLineWidth(p_tri->getLineStroke());
+	}
+	ofDrawTriangle(p_tri->getCoordVector()[0].getX(), p_tri->getCoordVector()[0].getY(), 
+		p_tri->getCoordVector()[1].getX(), p_tri->getCoordVector()[1].getY(), 
+		p_tri->getCoordVector()[2].getX(), p_tri->getCoordVector()[2].getY());
+}
+
+void ofApp::drawLine(app::Line2D *p_line) {
+	if (p_line->isSelected()) {
+		ofSetColor(255, 255, 255);
+		ofSetLineWidth(p_line->getLineStroke());
+	}
+	else {
+		ofSetColor(255, 0, 0);
+		ofSetLineWidth(p_line->getLineStroke());
+	}
+	ofDrawLine(p_line->getCoordVector()[0].getX(), p_line->getCoordVector()[0].getY(), 
+		p_line->getCoordVector()[1].getX(), p_line->getCoordVector()[1].getY());
+}
+
+void ofApp::drawImage(app::Image2D *p_image) {
+
 }
