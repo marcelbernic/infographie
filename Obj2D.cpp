@@ -92,6 +92,16 @@ void Obj2D::rotate(Coord p_coord, double p_degree) {
 	m_angle += p_degree;
 }
 
+bool Obj2D::containedInRect(Coord p_topLeft, double p_width, double p_height) {
+	return false;
+}
+
+void Obj2D::checkSelected(Coord p_clickPoint, double p_radius) {
+	if (checkCollision(p_clickPoint, p_radius)) {
+		m_isSelected = true;
+	}
+}
+
 bool Obj2D::checkCollision(Coord p_clickPoint, double p_radius) {
 	return false;
 }
@@ -151,7 +161,6 @@ double Obj2D::calculateDistance(Coord p_coord1, Coord p_coord2) {
 }
 
 double Obj2D::calculateAngle(double vector1[], double vector2[]) {
-
 	double i = vector1[0] * vector2[0];
 	double j = vector1[1] * vector2[1];
 	double norm1 = sqrt(pow(vector1[0], 2) + pow(vector1[1], 2));

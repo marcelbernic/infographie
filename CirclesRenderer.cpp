@@ -60,8 +60,8 @@ void CirclesRenderer::draw(){
 //	ofLog() << "<export image: " << fileName << ">";
 //}
 
-CirclesRenderer::~CirclesRenderer()
-{
-	if (nullptr != image)
-		delete image;
-}
+//CirclesRenderer::~CirclesRenderer()
+//{
+//	if (nullptr != image)
+//		delete image;
+//}

@@ -1,6 +1,5 @@
 #include "Triangle.h"
-
-
+using namespace app;
 
 Triangle::Triangle(std::vector<Coord> p_coord, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill)
 	: Shape2D(p_angle, p_lineStroke, p_lineColor, p_lineColorSelected, p_colorFill) {
@@ -58,4 +57,15 @@ bool Triangle::checkCollision(Coord p_clickPoint, double p_radius) {
 	//System.out.println("Fin\n***************************************\n\n");
 
 	return round(total) == 360;
+}
+
+bool Triangle::containedInRect(Coord p_topLeft, double p_width, double p_height) {
+	double distanceX = 0;
+	double distanceY = 0;
+	for (Coord c : m_coordVector) {
+		distanceX = c.getX() - p_topLeft.getX();
+		distanceY = c.getY() - p_topLeft.getY();
+		if (distanceX <= p_width && distanceY <= p_height && distanceX >= 0 && distanceY >= 0) return true;
+	}
+	return false;
 }
