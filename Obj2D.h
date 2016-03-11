@@ -2,6 +2,8 @@
 #include "Coord.h"
 #include <vector>
 #include "primitive.h"
+#include <cmath>
+#include <stdlib.h>
 
 #define PI (3.141592653589793)
 
