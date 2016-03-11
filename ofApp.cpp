@@ -15,6 +15,8 @@ void ofApp::setup(){
 
 	//Panels params
 	menuBarParams.setName("Menu");
+	menuBarParams.add(b2D.set("2D", true));
+	menuBarParams.add(b3D.set("3D", false));
 	importButton = new ofxButton();
 	exportButton = new ofxButton();
 	mergeButton = new ofxButton();
@@ -49,6 +51,8 @@ void ofApp::setup(){
 	shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
 
 	//Listeners
+	b2D.addListener(this, &ofApp::b2DChanged);
+	b3D.addListener(this, &ofApp::b3DChanged);
 	importButton->addListener(this, &ofApp::buttonPressed);
 	exportButton->addListener(this, &ofApp::buttonPressed);
 	mergeButton->addListener(this, &ofApp::buttonPressed);
@@ -66,9 +70,32 @@ void ofApp::setup(){
 
 	//Default Parameters
 	m_state = AppState::ACTION_SELECT;
+	m_mode = MODE_2D;
 	m_clickRadius = 5;
 	isTakingScreenshot = false;
+	isClearingButtonsShapes = false;
+	isClearingButtonsModes = false;
 
+}
+
+void ofApp::b2DChanged(bool & p_2D) {
+	if (!isClearingButtonsModes) {
+		isClearingButtonsModes = true;
+		b3D.set(false);
+		b2D.set(true);
+		isClearingButtonsModes = false;
+		m_mode = MODE_2D;
+	}
+}
+
+void ofApp::b3DChanged(bool & p_3D) {
+	if (!isClearingButtonsModes) {
+		isClearingButtonsModes = true;
+		b2D.set(false);
+		b3D.set(true);
+		isClearingButtonsModes = false;
+		m_mode = MODE_3D;
+	}
 }
 
 void ofApp::vSyncChanged(bool & vSync){
@@ -76,42 +103,48 @@ void ofApp::vSyncChanged(bool & vSync){
 }
 
 void ofApp::bLineChanged(bool & pLine) {
-	if (pLine) {
+	if (!isClearingButtonsShapes) {
 		clearButtons();
+		isClearingButtonsShapes = false;
 		bLine.set(true);
 		m_state = AppState::BUILD_LINE;
 	}
 }
 void ofApp::bTriangleChanged(bool & pTriangle) {
-	if (pTriangle) {
+	if (!isClearingButtonsShapes) {
 		clearButtons();
+		isClearingButtonsShapes = false;
 		bTriangle.set(true);
 		m_state = AppState::BUILD_TRIANGLE;
 	}
 }
 void ofApp::bRectangleChanged(bool & pRectangle) {
-	if (pRectangle) {
+	if (!isClearingButtonsShapes) {
 		clearButtons();
+		isClearingButtonsShapes = false;
 		bRectangle.set(true);
 		m_state = AppState::BUILD_RECTANGLE;
 	}
 }
 void ofApp::bCircleChanged(bool & pCircle) {
-	if (pCircle) {
+	if (!isClearingButtonsShapes) {
 		clearButtons();
+		isClearingButtonsShapes = false;
 		bCircle.set(true);
 		m_state = AppState::BUILD_CIRCLE;
 	}
 }
 void ofApp::bSelectChanged(bool & pSelect) {
-	if (pSelect) {
+	if (!isClearingButtonsShapes) {
 		clearButtons();
+		isClearingButtonsShapes = false;
 		bSelect.set(true);
 		m_state = AppState::ACTION_SELECT;
 	}
 }
 
 void ofApp::clearButtons() {
+	isClearingButtonsShapes = true;
 	bSelect.set(false);
 	bLine.set(false);
 	bTriangle.set(false);

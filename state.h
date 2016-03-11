@@ -13,3 +13,9 @@ typedef enum
 	ACTION_ROTATE,
 	ACTION_RESIZE
 }   AppState;
+
+typedef enum
+{
+	MODE_2D,
+	MODE_3D
+}   AppMode;

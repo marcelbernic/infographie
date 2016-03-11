@@ -22,8 +22,10 @@ class ofApp : public ofBaseApp{
 		std::vector<Coord> m_buffer;
 		std::vector<Obj2D*> m_obj2DVector;
 		AppState m_state;
+		AppMode m_mode;
 		int m_clickRadius;
 		bool isTakingScreenshot;
+		bool isClearingButtonsShapes, isClearingButtonsModes;
 
 		ofApp();
 		~ofApp();
@@ -48,6 +50,8 @@ class ofApp : public ofBaseApp{
         void buttonPressed(const void * sender);
 		
 		void vSyncChanged(bool & vSync);
+		void b2DChanged(bool & p_2D);
+		void b3DChanged(bool & p_3D);
 		void bLineChanged(bool & p_Line);
 		void bTriangleChanged(bool & p_Triangle);
 		void bRectangleChanged(bool & p_Rectangle);
@@ -71,6 +75,7 @@ class ofApp : public ofBaseApp{
 
 		ofxPanel shapesPanel, shapesParamsPanel, menuPanel;
 		ofParameter<bool> vSync;
+		ofParameter<bool> b2D, b3D;
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams;
 		ofXml settings;
