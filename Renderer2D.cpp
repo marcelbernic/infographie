@@ -18,15 +18,20 @@ void Renderer2D::setup(const string p_name, ofApp *p_app) {
 
 	//Default values:
 	strokeWidth.set("Stroke Width", 5, 0, 10);
-	colorStroke.set("Stroke Color", ofColor(0), ofColor(0), ofColor(255));
-	colorFill.set("Fill Color", ofColor(255, 0, 0), ofColor(0), ofColor(255));
-	colorSelected.set("Selection Color", ofColor(255), ofColor(0), ofColor(255));
+	colorStroke.set("Stroke Color", ofColor(0), ofColor(0,0), ofColor(255));
+	colorFill.set("Fill Color", ofColor(255, 0, 0), ofColor(0, 0), ofColor(255));
+	colorSelected.set("Selection Color", ofColor(255), ofColor(0, 0), ofColor(255));
 	
 	parameters.setName(p_name);
 	parameters.add(strokeWidth);
 	parameters.add(colorStroke);
 	parameters.add(colorFill);
 	parameters.add(colorSelected);
+
+	strokeWidth.addListener(this, &Renderer2D::bStrokeWidthChanged);
+	colorStroke.addListener(this, &Renderer2D::bColorStrokeChanged);
+	colorFill.addListener(this, &Renderer2D::bColorFillChanged);
+	colorSelected.addListener(this, &Renderer2D::bColorSelectedChanged);
 }
 
 void Renderer2D::draw() {
@@ -243,6 +248,35 @@ void Renderer2D::drawCollection(app::Obj2DCollection *p_coll) {
 			drawCollection(i);
 		}
 			break;
+		}
+	}
+}
+
+void Renderer2D::bStrokeWidthChanged(int & p_strokeWidth) {
+	for (Obj2D* o : m_app->m_obj2DVector) {
+		if (o->isSelected()) {
+			o->setLineStroke(p_strokeWidth);
+		}
+	}
+}
+void Renderer2D::bColorStrokeChanged(ofColor & p_colorStroke) {
+	for (Obj2D* o : m_app->m_obj2DVector) {
+		if (o->isSelected()) {
+			o->setLineColor(p_colorStroke);
+		}
+	}
+}
+void Renderer2D::bColorFillChanged(ofColor & p_colorFill) {
+	for (Obj2D* o : m_app->m_obj2DVector) {
+		if (o->isSelected()) {
+			o->setColorFill(p_colorFill);
+		}
+	}
+}
+void Renderer2D::bColorSelectedChanged(ofColor & p_colorSelected) {
+	for (Obj2D* o : m_app->m_obj2DVector) {
+		if (o->isSelected()) {
+			o->setLineColorSelected(p_colorSelected);
 		}
 	}
 }

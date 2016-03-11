@@ -14,7 +14,7 @@ public:
 	void setSelected(bool p_selected);
 	bool checkSelected(Coord p_clickPoint, double p_radius) override;
 	bool checkCollision(Coord p_clickPoint, double p_radius);
-	bool Obj2DCollection::containedInRect(Coord p_topLeft, double p_width, double p_height);
+	bool containedInRect(Coord p_topLeft, double p_width, double p_height);
 	void rotate(Coord p_coord, double p_degree) override;
 	void translate(double p_x, double p_y) override;
 };

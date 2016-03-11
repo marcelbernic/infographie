@@ -48,11 +48,11 @@ class ofApp : public ofBaseApp{
         void buttonPressed(const void * sender);
 		
 		void vSyncChanged(bool & vSync);
-		void bLineChanged(bool & bLine);
-		void bTriangleChanged(bool & bTriangle);
-		void bRectangleChanged(bool & bRectangle);
-		void bCircleChanged(bool & bCircle);
-		void bSelectChanged(bool & bSelect);
+		void bLineChanged(bool & p_Line);
+		void bTriangleChanged(bool & p_Triangle);
+		void bRectangleChanged(bool & p_Rectangle);
+		void bCircleChanged(bool & p_Circle);
+		void bSelectChanged(bool & p_Select);
 		void clearButtons();
 
 		void buildRectangle();

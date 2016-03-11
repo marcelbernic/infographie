@@ -6,7 +6,9 @@
 #include <cmath>
 #include <stdlib.h>
 
+#ifndef PI
 #define PI (3.141592653589793)
+#endif 
 
 class Obj2D
 {
@@ -36,11 +38,11 @@ public:
 	int getLineStroke();
 	void setLineStroke(int p_lineStroke);
 	ofColor getLineColor();
-	void setLineColor(int p_lineColor);
+	void setLineColor(ofColor p_lineColor);
 	ofColor getLineColorSelected();
-	void setLineColorSelected(int p_lineColorSelected);
+	void setLineColorSelected(ofColor p_lineColorSelected);
 	ofColor getColorFill();
-	void setColorFill(int p_colorFill);
+	void setColorFill(ofColor p_colorFill);
 	bool isSelected();
 	virtual void setSelected(bool p_selected);
 	EnumVectorDrawMode getType();

@@ -35,7 +35,7 @@ ofColor Obj2D::getLineColor() {
 	return m_lineColor;
 }
 
-void Obj2D::setLineColor(int p_lineColor) {
+void Obj2D::setLineColor(ofColor p_lineColor) {
 	m_lineColor = p_lineColor;
 }
 
@@ -43,7 +43,7 @@ ofColor Obj2D::getLineColorSelected() {
 	return m_lineColorSelected;
 }
 
-void Obj2D::setLineColorSelected(int p_lineColorSelected) {
+void Obj2D::setLineColorSelected(ofColor p_lineColorSelected) {
 	m_lineColorSelected = p_lineColorSelected;
 }
 
@@ -51,7 +51,7 @@ ofColor Obj2D::getColorFill() {
 	return m_colorFill;
 }
 
-void Obj2D::setColorFill(int p_colorFill) {
+void Obj2D::setColorFill(ofColor p_colorFill) {
 	m_colorFill = p_colorFill;
 }
 
