@@ -239,6 +239,18 @@ void ofApp::keyPressed(int key){
 		m_state = AppState::BUILD_TRIANGLE;
 		m_buffer.clear();
 	}
+	if (key == '+') {
+		for (Obj2D* o : m_obj2DVector) {
+			o->resize(2);
+		}
+		m_buffer.clear();
+	}
+	if (key == '-') {
+		for (Obj2D* o : m_obj2DVector) {
+			o->resize(0.5);
+		}
+		m_buffer.clear();
+	}
 }
 
 void ofApp::buttonPressed(const void * sender){

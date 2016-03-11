@@ -12,6 +12,11 @@ Circle::~Circle()
 {
 }
 
+void Circle::resize(Coord p_coord, double p_percent) {
+	Shape2D::resize(p_coord, p_percent);
+	m_radius *= p_percent;
+}
+
 bool Circle::checkCollision(Coord p_clickPoint, double p_radius) {
 	return calculateDistance(p_clickPoint, m_coordVector[0]) <= (p_radius + m_radius);
 }

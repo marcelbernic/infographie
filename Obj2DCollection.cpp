@@ -52,20 +52,24 @@ bool Obj2DCollection::containedInRect(Coord p_topLeft, double p_width, double p_
 	return false;
 }
 
+void Obj2DCollection::resize(Coord p_coord, double p_percent) {
+	Obj2D::resize(p_coord, p_percent);
+	for (Obj2D* o : m_objVector) {
+		o->resize(p_coord, p_percent);
+	}
+}
+
 void Obj2DCollection::rotate(Coord p_coord, double p_degree) {
+	Obj2D::rotate(p_coord, p_degree);
 	for (Obj2D* o : m_objVector) {
 		o->rotate(p_coord, p_degree);
 	}
 }
 
 void Obj2DCollection::translate(double p_x, double p_y) {
+	Obj2D::translate(p_x, p_y);
 	for (Obj2D* o : m_objVector) {
 		o->translate(p_x, p_y);
 	}
-	std::vector<Coord> newCoordVector;
-	for (Coord c : m_coordVector) {
-		c.addToCoord(p_x, p_y);
-		newCoordVector.push_back(c);
-	}
-	m_coordVector = newCoordVector;
+	
 }

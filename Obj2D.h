@@ -24,7 +24,8 @@ public:
 	~Obj2D();
 
 	virtual void translate(double p_x, double p_y);
-	void resize(double p_percent); // 1 = 100%
+	virtual void resize(double p_percent); // 1 = 100%
+	virtual void resize(Coord p_coord, double p_percent); // 1 = 100%
 	void rotate(Coord p_first, Coord p_sec);
 	void rotate(double p_degree); // rotate from shape center
 	virtual void rotate(Coord p_coord, double p_degree); // rotate from coord

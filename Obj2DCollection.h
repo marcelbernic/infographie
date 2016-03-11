@@ -10,6 +10,7 @@ public:
 	~Obj2DCollection();
 
 	std::vector<Obj2D*> getObjVector();
+	void resize(Coord p_coord, double p_percent) override;
 	void setSelected(bool p_selected);
 	bool checkSelected(Coord p_clickPoint, double p_radius) override;
 	bool checkCollision(Coord p_clickPoint, double p_radius);

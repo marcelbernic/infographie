@@ -18,6 +18,12 @@ Rectangle::~Rectangle()
 {
 }
 
+void Rectangle::resize(Coord p_coord, double p_percent) {
+	Shape2D::resize(p_coord, p_percent);
+	m_width *= p_percent;
+	m_height *= p_percent;
+}
+
 //TODO
 bool Rectangle::checkCollision(Coord p_clickPoint, double p_radius) {
 	//Rotate circle center from rectangle top-left corner standpoint
