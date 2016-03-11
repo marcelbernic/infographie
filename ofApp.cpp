@@ -311,8 +311,6 @@ void ofApp::buttonPressed(const void * sender){
 					m_obj2DVector.push_back(newImage);
 				}
 			}
-
-			ofLog() << "Import button pressed";
 		}
 
 		else if (btnName == "Export") {
@@ -325,8 +323,6 @@ void ofApp::buttonPressed(const void * sender){
 			if (file.getPath() != "") {
 				renderer2d->imageExport(file.getPath(), "png");
 			}
-
-			ofLog() << "Export button pressed";
 		}
 
 		else if (btnName == "Merge Shapes") {
