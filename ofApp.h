@@ -37,7 +37,7 @@ class ofApp : public ofBaseApp{
 		void drawCursor();
 		bool mouseIsOverPanel();
 
-		void keyPressed  (int key);
+		void keyPressed(int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
 		void mouseDragged(int x, int y, int button);
@@ -69,6 +69,7 @@ class ofApp : public ofBaseApp{
 		void updateGroupSelection();
 		void translateSelection(double p_x, double p_y);
 		void rotateSelection();
+		void deleteSelection();
 		
 		Renderer2D *renderer2d;
 

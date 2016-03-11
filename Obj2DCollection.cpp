@@ -18,6 +18,34 @@ Obj2DCollection::~Obj2DCollection()
 {
 }
 
+void Obj2DCollection::setLineStroke(int p_lineStroke) {
+	Obj2D::setLineStroke(p_lineStroke);
+	for (Obj2D* o : m_objVector) {
+		o->setLineStroke(p_lineStroke);
+	}
+}
+
+void Obj2DCollection::setLineColor(ofColor p_lineColor) {
+	Obj2D::setLineColor(p_lineColor);
+	for (Obj2D* o : m_objVector) {
+		o->setLineColor(p_lineColor);
+	}
+}
+
+void Obj2DCollection::setLineColorSelected(ofColor p_lineColorSelected) {
+	Obj2D::setLineColorSelected(p_lineColorSelected);
+	for (Obj2D* o : m_objVector) {
+		o->setLineColorSelected(p_lineColorSelected);
+	}
+}
+
+void Obj2DCollection::setColorFill(ofColor p_colorFill) {
+	Obj2D::setColorFill(p_colorFill);
+	for (Obj2D* o : m_objVector) {
+		o->setColorFill(p_colorFill);
+	}
+}
+
 std::vector<Obj2D*> Obj2DCollection::getObjVector() {
 	return m_objVector;
 }
