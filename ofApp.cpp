@@ -333,7 +333,7 @@ void ofApp::buttonPressed(const void * sender){
 		std::vector<Obj2D*> glued;
 		int size = m_obj2DVector.size();
 		for (int i = 0; i < m_obj2DVector.size(); i++) {
-			if (m_obj2DVector[i]->getType() == EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION) {
+			if (m_obj2DVector[i]->getType() == EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION && m_obj2DVector[i]->isSelected()) {
 				app::Obj2DCollection* j = dynamic_cast<app::Obj2DCollection*>(m_obj2DVector[i]);
 				for (Obj2D* o : getCollectionObjects(j)) {
 					glued.push_back(o);
