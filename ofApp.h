@@ -2,7 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
-#include "CirclesRenderer.h"
+#include "Renderer2D.h"
 #include "Coord.h"
 #include "state.h"
 #include "Obj2D.h"
@@ -24,8 +24,13 @@ class ofApp : public ofBaseApp{
 		int m_colorFill;
 		int m_clickRadius;
 		app::Rectangle* rect;
+		bool isTakingScreenshot;
 
 	public:
+		ofApp();
+		~ofApp();
+		void exit();
+
 		void setup();
 		void update();
 		void draw();
@@ -66,7 +71,7 @@ class ofApp : public ofBaseApp{
         ofParameter<bool> square;
         ofParameterGroup parameters, forms, menuBarParams;
 		ofXml settings;
-		CirclesRenderer renderer1,renderer2;
+		Renderer2D *renderer2d;
         ofTrueTypeFont font;
         ofxButton *buttonSquare;
 

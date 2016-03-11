@@ -1,21 +1,32 @@
 #include "ofApp.h"
 #include <ostream>
+#include "Image2D.h"
+
+ofApp::ofApp()
+{
+	renderer2d = nullptr;
+}
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	renderer1.setup("renderer1");
-	renderer2.setup("renderer2");
+	ofSetWindowTitle("TP2");
+	renderer2d = new Renderer2D();
+	renderer2d->setup();
+
+	/*renderer1.setup("renderer1");
+	renderer2.setup("renderer2");*/
 
 	//Parameters
 	m_state = AppState::ACTION_SELECT;
 	m_lineStroke = 5;
 	m_clickRadius = 5;
+	isTakingScreenshot = false;
     forms.setName("Formes");
     forms.add(square.set("square", true));
 	parameters.setName("settings");
 	parameters.add(vSync.set("vSync",true));
-	parameters.add(renderer1.parameters);
-	parameters.add(renderer2.parameters);
+	//parameters.add(renderer1.parameters);
+	//parameters.add(renderer2.parameters);
 	menuBarParams.setName("Menu");
 	importButton = new ofxButton();
 	exportButton = new ofxButton();
@@ -30,15 +41,15 @@ void ofApp::setup(){
     gui2.setup(forms);
 
 
-    buttonSquare = new ofxButton();
-    buttonSquare->setup("Square", 19);
+    /*buttonSquare = new ofxButton();
+    buttonSquare->setup("Square", 19);*/
 
 	menuBar.setPosition(10, 0);
     gui2.setPosition(10, 15 + menuBar.getHeight());
     gui.setPosition(10, 10 + gui2.getHeight() + menuBar.getHeight() + 15);
-	buttonSquare->setPosition(10, 20 + gui.getHeight() + gui2.getHeight() + menuBar.getHeight());
+	//buttonSquare->setPosition(10, 20 + gui.getHeight() + gui2.getHeight() + menuBar.getHeight());
 
-    buttonSquare->addListener(this, &ofApp::buttonPressed);
+    //buttonSquare->addListener(this, &ofApp::buttonPressed);
 	importButton->addListener(this, &ofApp::buttonPressed);
 	exportButton->addListener(this, &ofApp::buttonPressed);
 
@@ -64,15 +75,15 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackgroundGradient(ofColor::white, ofColor::gray);
-	renderer1.draw();
-	renderer2.draw();
+	//renderer1.draw();
+	//renderer2.draw();
 	ofSetColor(255);
-	menuBar.draw();
-    gui.draw();
-    gui2.draw();
-	font.drawString("frame: " + ofToString(renderer1.frameNum),ofGetWidth()-150,20);
-	font.drawString("fps: " + ofToString((int)ofGetFrameRate()),ofGetWidth()-150,40);
-    buttonSquare->draw();
+	if (!isTakingScreenshot) {
+		menuBar.draw();
+		gui.draw();
+		gui2.draw();
+	}	
+    //buttonSquare->draw();
 
 	switch (m_state) {
 	case AppState::ACTION_GROUPSELECT:
@@ -189,10 +200,20 @@ void ofApp::keyPressed(int key){
 void ofApp::buttonPressed(const void * sender){
     ofxButton * button = (ofxButton*)sender;
 	string btnName = button->getName();
-	if (btnName == "Import") {
 
+	if (btnName == "Import") {
+		//app::Image2D newImg = app::Image2D
+		ofLog() << "Import button pressed";
 	}
-    ofLog() << "Test button pressed";
+
+	else if (btnName == "Export") {
+		isTakingScreenshot = true;
+		draw();
+		isTakingScreenshot = false;
+
+		renderer2d->imageExport("TP2", "png");
+		ofLog() << "Export button pressed";
+	}
 }
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
@@ -517,4 +538,15 @@ void ofApp::rotateSelection() {
 			o->rotate(m_buffer[0], m_buffer[1]);
 		}
 	}
+}
+
+void ofApp::exit()
+{
+	ofLog() << "<ofApp::exit>";
+}
+
+ofApp::~ofApp()
+{
+	if (nullptr != renderer2d)
+		delete renderer2d;
 }
