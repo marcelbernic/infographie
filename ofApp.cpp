@@ -533,7 +533,7 @@ void ofApp::buildCircle() {
 }
 
 void ofApp::buildLine() {
-	m_obj2DVector.push_back(new app::Line2D(m_buffer, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
+	m_obj2DVector.push_back(new app::Line2D(m_buffer, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorStroke.get()));
 }
 
 double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {
