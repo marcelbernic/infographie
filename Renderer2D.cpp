@@ -53,6 +53,10 @@ void Renderer2D::draw() {
 				ofSetColor(colorFill);
 				ofSetLineWidth(strokeWidth);
 				ofDrawCircle(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), m_app->calculateDistance(m_app->m_buffer[0], Coord(ofGetMouseX(), ofGetMouseY())));
+				ofNoFill();
+				ofSetColor(colorStroke);
+				ofDrawCircle(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), m_app->calculateDistance(m_app->m_buffer[0], Coord(ofGetMouseX(), ofGetMouseY())));
+				ofFill();
 			}
 			break;
 		case AppState::BUILD_RECTANGLE:
@@ -60,16 +64,25 @@ void Renderer2D::draw() {
 				ofSetColor(colorFill);
 				ofSetLineWidth(strokeWidth);
 				ofDrawRectangle(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), ofGetMouseX() - m_app->m_buffer[0].getX(), ofGetMouseY() - m_app->m_buffer[0].getY());
+				ofNoFill();
+				ofSetColor(colorStroke);
+				ofDrawRectangle(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), ofGetMouseX() - m_app->m_buffer[0].getX(), ofGetMouseY() - m_app->m_buffer[0].getY());
+				ofFill();
 			}
 			break;
-		case AppState::BUILD_TRIANGLE:
-			ofSetColor(colorFill);
+		case AppState::BUILD_TRIANGLE:			
 			ofSetLineWidth(strokeWidth);
 			if (m_app->m_buffer.size() == 1) {
+				ofSetColor(colorStroke);
 				ofDrawLine(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
 			}
 			if (m_app->m_buffer.size() == 2) {
+				ofSetColor(colorFill);
 				ofDrawTriangle(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), m_app->m_buffer[1].getX(), m_app->m_buffer[1].getY(), ofGetMouseX(), ofGetMouseY());
+				ofNoFill();
+				ofSetColor(colorStroke);
+				ofDrawTriangle(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), m_app->m_buffer[1].getX(), m_app->m_buffer[1].getY(), ofGetMouseX(), ofGetMouseY());
+				ofFill();
 			}
 			break;
 		case AppState::BUILD_LINE:

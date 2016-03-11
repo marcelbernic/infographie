@@ -246,6 +246,10 @@ void ofApp::keyPressed(int key){
 		renderer1.color = ofColor(127);
 		renderer2.color = ofColor(127);
 	}*/
+	if (ofGetKeyPressed(OF_KEY_DEL)) {
+		deleteSelection();
+		m_buffer.clear();
+	}
 	if (key == 's') {
 		m_state = AppState::ACTION_SELECT;
 		m_buffer.clear();
@@ -267,7 +271,6 @@ void ofApp::keyPressed(int key){
 		}
 		m_obj2DVector.push_back(new app::Obj2DCollection(glued));
 		m_obj2DVector.back()->setSelected(true);
-		cout << "Created" << endl;
 		m_buffer.clear();
 	}
 	if (key == 'u') {
@@ -625,6 +628,18 @@ void ofApp::rotateSelection() {
 
 std::vector<Obj2D*> ofApp::getCollectionObjects(app::Obj2DCollection* p_coll) {
 	return p_coll->getObjVector();
+}
+
+void ofApp::deleteSelection() {
+	int size = m_obj2DVector.size();
+	for (int i = 0; i < m_obj2DVector.size(); i++) {
+		if (m_obj2DVector[i]->isSelected()) {
+			//DELETE OBJ
+			m_obj2DVector.erase(m_obj2DVector.begin() + i);
+			i--;
+			size--;
+		}
+	}
 }
 
 void ofApp::exit()

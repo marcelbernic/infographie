@@ -36,13 +36,13 @@ public:
 	double getAngle();
 	void setAngle(double p_angle);
 	int getLineStroke();
-	void setLineStroke(int p_lineStroke);
+	virtual void setLineStroke(int p_lineStroke);
 	ofColor getLineColor();
-	void setLineColor(ofColor p_lineColor);
+	virtual void setLineColor(ofColor p_lineColor);
 	ofColor getLineColorSelected();
-	void setLineColorSelected(ofColor p_lineColorSelected);
+	virtual void setLineColorSelected(ofColor p_lineColorSelected);
 	ofColor getColorFill();
-	void setColorFill(ofColor p_colorFill);
+	virtual void setColorFill(ofColor p_colorFill);
 	bool isSelected();
 	virtual void setSelected(bool p_selected);
 	EnumVectorDrawMode getType();
