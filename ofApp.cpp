@@ -164,7 +164,12 @@ void ofApp::draw(){
     ofBackgroundGradient(ofColor::white, ofColor::gray);
 	font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 150, 0);
 
-	renderer2d->draw();
+	if (m_mode == MODE_2D) {
+		renderer2d->draw();
+	}
+	else {
+		//renderer3d->draw();
+	}
 
 	ofSetColor(255);
 	if (!isTakingScreenshot) {
@@ -177,9 +182,14 @@ void ofApp::draw(){
 }
 
 void ofApp::drawCursor() {
-	//TODO: showCursor() si over GUIpanel
 	int mouseX = ofGetMouseX();
 	int mouseY = ofGetMouseY();
+
+	if (mouseIsOverPanel()) {
+		ofShowCursor();
+		return;
+	}
+
 	ofHideCursor();
 	ofSetColor(0);
 	ofSetLineWidth(4);
@@ -228,90 +238,46 @@ void ofApp::drawCursor() {
 	ofFill();
 }
 
+bool ofApp::mouseIsOverPanel() {
+	int mouseX = ofGetMouseX();
+	int mouseY = ofGetMouseY();
+
+	if ((menuPanel.getPosition().x <= mouseX) && (mouseX <= (menuPanel.getPosition().x + menuPanel.getWidth()))
+		&& (menuPanel.getPosition().y <= mouseY) && (mouseY <= (menuPanel.getPosition().y + menuPanel.getHeight()))) {
+		return true;
+	}
+
+	else if ((shapesPanel.getPosition().x <= mouseX) && (mouseX <= (shapesPanel.getPosition().x + shapesPanel.getWidth()))
+		&& (shapesPanel.getPosition().y <= mouseY) && (mouseY <= (shapesPanel.getPosition().y + shapesPanel.getHeight()))) {
+		return true;
+	}
+
+	else if ((shapesParamsPanel.getPosition().x <= mouseX) && (mouseX <= (shapesParamsPanel.getPosition().x + shapesParamsPanel.getWidth()))
+		&& (shapesParamsPanel.getPosition().y <= mouseY) && (mouseY <= (shapesParamsPanel.getPosition().y + shapesParamsPanel.getHeight()))) {
+		return true;
+	}
+
+	return false;
+}
+
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-	/*if(key=='s'){
-		settings.serialize(parameters);
-		settings.save("settings.xml");
-	}
-	if(key=='l'){
-		settings.load("settings.xml");
-		settings.deserialize(parameters);
-	}
-	if(key=='o'){
-		cout << renderer1.parameters;
-		cout << renderer2.parameters;
-	}
-	if(key=='r'){
-		renderer1.color = ofColor(127);
-		renderer2.color = ofColor(127);
-	}*/
-	if (key == 's') {
-		m_state = AppState::ACTION_SELECT;
-		m_buffer.clear();
-	}
-	if (key == 'l') {
-		m_state = AppState::BUILD_LINE;
-		m_buffer.clear();
-	}
-	if (key == 'k') {
-		std::vector<Obj2D*> glued;
-		int size = m_obj2DVector.size();
-		for (int i = 0; i < m_obj2DVector.size(); i++) {
-			if (m_obj2DVector[i]->isSelected()) {
-				glued.push_back(m_obj2DVector[i]);
-				m_obj2DVector.erase(m_obj2DVector.begin() + i);
-				i--;
-				size--;
+	if (m_mode == MODE_2D) {
+		if (key == '+') {
+			for (Obj2D* o : m_obj2DVector) {
+				o->resize(2);
 			}
+			m_buffer.clear();
 		}
-		m_obj2DVector.push_back(new app::Obj2DCollection(glued));
-		m_obj2DVector.back()->setSelected(true);
-		cout << "Created" << endl;
-		m_buffer.clear();
-	}
-	if (key == 'u') {
-		std::vector<Obj2D*> glued;
-		int size = m_obj2DVector.size();
-		for (int i = 0; i < m_obj2DVector.size(); i++) {
-			if (m_obj2DVector[i]->getType() == EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION) {
-				app::Obj2DCollection* j = dynamic_cast<app::Obj2DCollection*>(m_obj2DVector[i]);
-				for (Obj2D* o : getCollectionObjects(j)) {
-					glued.push_back(o);
-				}
-				m_obj2DVector.erase(m_obj2DVector.begin() + i);
-				i--;
-				size--;
+		if (key == '-') {
+			for (Obj2D* o : m_obj2DVector) {
+				o->resize(0.5);
 			}
+			m_buffer.clear();
 		}
-		for (Obj2D* o : glued) {
-			m_obj2DVector.push_back(o);
-		}
-		m_buffer.clear();
 	}
-	if (key == 'c') {
-		m_state = AppState::BUILD_CIRCLE;
-		m_buffer.clear();
-	}
-	if (key == 'r') {
-		m_state = AppState::BUILD_RECTANGLE;
-		m_buffer.clear();
-	}
-	if (key == 't') {
-		m_state = AppState::BUILD_TRIANGLE;
-		m_buffer.clear();
-	}
-	if (key == '+') {
-		for (Obj2D* o : m_obj2DVector) {
-			o->resize(2);
-		}
-		m_buffer.clear();
-	}
-	if (key == '-') {
-		for (Obj2D* o : m_obj2DVector) {
-			o->resize(0.5);
-		}
-		m_buffer.clear();
+	else {
+		//3D
 	}
 }
 
@@ -319,68 +285,74 @@ void ofApp::buttonPressed(const void * sender){
     ofxButton * button = (ofxButton*)sender;
 	string btnName = button->getName();
 
-	if (btnName == "Import") {
-		ofFileDialogResult file = ofSystemLoadDialog("Load Image", false);
-		if (file.getPath() != "") {
-			app::Image2D *newImage = new app::Image2D(file.getPath(), 64, 64, Coord(ofGetWidth() / 2, ofGetHeight() / 2), 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get());
-			if (newImage->getImage().getTextureReference().isAllocated()) {
-				m_obj2DVector.push_back(newImage);
-			}			
-		}
-		
-		ofLog() << "Import button pressed";
-	}
-
-	else if (btnName == "Export") {
-		isTakingScreenshot = true;
-		draw();
-		isTakingScreenshot = false;
-
-		ofFileDialogResult file =  ofSystemSaveDialog("Save", "Export");
-		
-		if (file.getPath() != "") {
-			renderer2d->imageExport(file.getPath(), "png");
-		}
-	
-		ofLog() << "Export button pressed";
-	}
-
-	else if (btnName == "Merge Shapes") {
-		std::vector<Obj2D*> glued;
-		int size = m_obj2DVector.size();
-		for (int i = 0; i < m_obj2DVector.size(); i++) {
-			if (m_obj2DVector[i]->isSelected()) {
-				glued.push_back(m_obj2DVector[i]);
-				m_obj2DVector.erase(m_obj2DVector.begin() + i);
-				i--;
-				size--;
-			}
-		}
-		m_obj2DVector.push_back(new app::Obj2DCollection(glued));
-		m_obj2DVector.back()->setSelected(true);
-		cout << "Created" << endl;
-		m_buffer.clear();
-	}
-
-	else if (btnName == "Unmerge Shapes") {
-		std::vector<Obj2D*> glued;
-		int size = m_obj2DVector.size();
-		for (int i = 0; i < m_obj2DVector.size(); i++) {
-			if (m_obj2DVector[i]->getType() == EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION && m_obj2DVector[i]->isSelected()) {
-				app::Obj2DCollection* j = dynamic_cast<app::Obj2DCollection*>(m_obj2DVector[i]);
-				for (Obj2D* o : getCollectionObjects(j)) {
-					glued.push_back(o);
+	if (m_mode == MODE_2D) {
+		if (btnName == "Import") {
+			ofFileDialogResult file = ofSystemLoadDialog("Load Image", false);
+			if (file.getPath() != "") {
+				app::Image2D *newImage = new app::Image2D(file.getPath(), 64, 64, Coord(ofGetWidth() / 2, ofGetHeight() / 2), 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get());
+				if (newImage->getImage().getTextureReference().isAllocated()) {
+					m_obj2DVector.push_back(newImage);
 				}
-				m_obj2DVector.erase(m_obj2DVector.begin() + i);
-				i--;
-				size--;
 			}
+
+			ofLog() << "Import button pressed";
 		}
-		for (Obj2D* o : glued) {
-			m_obj2DVector.push_back(o);
+
+		else if (btnName == "Export") {
+			isTakingScreenshot = true;
+			draw();
+			isTakingScreenshot = false;
+
+			ofFileDialogResult file = ofSystemSaveDialog("Save", "Export");
+
+			if (file.getPath() != "") {
+				renderer2d->imageExport(file.getPath(), "png");
+			}
+
+			ofLog() << "Export button pressed";
 		}
-		m_buffer.clear();
+
+		else if (btnName == "Merge Shapes") {
+			std::vector<Obj2D*> glued;
+			int size = m_obj2DVector.size();
+			for (int i = 0; i < m_obj2DVector.size(); i++) {
+				if (m_obj2DVector[i]->isSelected()) {
+					glued.push_back(m_obj2DVector[i]);
+					m_obj2DVector.erase(m_obj2DVector.begin() + i);
+					i--;
+					size--;
+				}
+			}
+			m_obj2DVector.push_back(new app::Obj2DCollection(glued));
+			m_obj2DVector.back()->setSelected(true);
+			cout << "Created" << endl;
+			m_buffer.clear();
+		}
+
+		else if (btnName == "Unmerge Shapes") {
+			std::vector<Obj2D*> glued;
+			int size = m_obj2DVector.size();
+			for (int i = 0; i < m_obj2DVector.size(); i++) {
+				if (m_obj2DVector[i]->getType() == EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION && m_obj2DVector[i]->isSelected()) {
+					app::Obj2DCollection* j = dynamic_cast<app::Obj2DCollection*>(m_obj2DVector[i]);
+					for (Obj2D* o : getCollectionObjects(j)) {
+						glued.push_back(o);
+					}
+					m_obj2DVector.erase(m_obj2DVector.begin() + i);
+					i--;
+					size--;
+				}
+			}
+			for (Obj2D* o : glued) {
+				m_obj2DVector.push_back(o);
+			}
+			m_buffer.clear();
+		}
 	}
+	else {
+		//3D
+	}
+	
 }
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
@@ -394,124 +366,148 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button) {
-	if (ofGetMousePressed(OF_MOUSE_BUTTON_LEFT) && ofGetMousePressed(OF_MOUSE_BUTTON_RIGHT)) {
-		switch (m_state) {
-		case AppState::ACTION_SELECT:
-			m_buffer.push_back(Coord(x, y));
-			m_state = AppState::ACTION_ROTATE;
-			break;
-		case AppState::ACTION_ROTATE:
-			m_buffer[0] = m_buffer[1];
-			m_buffer[1].setX(x);
-			m_buffer[1].setY(y);
-			rotateSelection();
-			break;
+	if (m_mode == MODE_2D) {
+		if (ofGetMousePressed(OF_MOUSE_BUTTON_LEFT) && ofGetMousePressed(OF_MOUSE_BUTTON_RIGHT)) {
+			switch (m_state) {
+			case AppState::ACTION_SELECT:
+				m_buffer.clear();
+				m_buffer.push_back(Coord(x, y));
+				m_buffer.push_back(Coord(x, y));
+				m_state = AppState::ACTION_ROTATE;
+				break;
+			case AppState::ACTION_ROTATE:
+				m_buffer[0] = m_buffer[1];
+				m_buffer[1].setX(x);
+				m_buffer[1].setY(y);
+				rotateSelection();
+				break;
+			}
+		}
+		else if (button == OF_MOUSE_BUTTON_LEFT) {
+			switch (m_state) {
+			case AppState::ACTION_SELECT:
+				m_buffer.clear();
+				m_buffer.push_back(Coord(x, y));
+				m_buffer.push_back(Coord(x, y));
+				m_state = AppState::ACTION_GROUPSELECT;
+				break;
+			case AppState::ACTION_GROUPSELECT:
+				m_buffer[1].setX(x);
+				m_buffer[1].setY(y);
+				updateGroupSelection();
+				break;
+			}
+		}
+		else if (button == OF_MOUSE_BUTTON_RIGHT) {
+			switch (m_state) {
+			case AppState::ACTION_SELECT:
+				m_buffer.clear();
+				m_buffer.push_back(Coord(x, y));
+				m_buffer.push_back(Coord(x, y));
+				m_state = AppState::ACTION_TRANSLATE;
+				break;
+			case AppState::ACTION_TRANSLATE:
+				m_buffer[0] = m_buffer[1];
+				m_buffer[1].setX(x);
+				m_buffer[1].setY(y);
+				translateSelection(m_buffer[1].getX() - m_buffer[0].getX(), m_buffer[1].getY() - m_buffer[0].getY());
+				break;
+			}
 		}
 	}
-	else if (button == OF_MOUSE_BUTTON_LEFT) {
-		switch (m_state) {
-		case AppState::ACTION_SELECT:
-			m_buffer.push_back(Coord(x, y));
-			m_state = AppState::ACTION_GROUPSELECT;
-			break;
-		case AppState::ACTION_GROUPSELECT:
-			m_buffer[1].setX(x);
-			m_buffer[1].setY(y);
-			updateGroupSelection();
-			break;
-		}
+	else {
+		//3D
 	}
-	else if (button == OF_MOUSE_BUTTON_RIGHT) {
-		switch (m_state) {
-		case AppState::ACTION_SELECT:
-			m_buffer.push_back(Coord(x, y));
-			m_state = AppState::ACTION_TRANSLATE;
-			break;
-		case AppState::ACTION_TRANSLATE:			
-			m_buffer[0] = m_buffer[1];
-			m_buffer[1].setX(x);
-			m_buffer[1].setY(y);
-			translateSelection(m_buffer[1].getX()- m_buffer[0].getX(), m_buffer[1].getY() - m_buffer[0].getY());
-			break;
-		}
-	}
+	
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button) {
-	if (button == OF_MOUSE_BUTTON_LEFT) {
-		switch (m_state) {
-		case AppState::BUILD_RECTANGLE:
-			m_buffer.push_back(Coord(x, y));
-			if (m_buffer.size() == 2) {
-				buildRectangle();
-				m_buffer.clear();
-			}
-			break;
-		case AppState::BUILD_TRIANGLE:
-			m_buffer.push_back(Coord(x, y));
-			if (m_buffer.size() == 3) {
-				buildTriangle();
-				m_buffer.clear();
-			}
-			break;
-		case AppState::BUILD_CIRCLE:
-			m_buffer.push_back(Coord(x, y));
-			if (m_buffer.size() == 2) {
-				buildCircle();
-				m_buffer.clear();
-			}
-			break;
-		case AppState::BUILD_LINE:
-			m_buffer.push_back(Coord(x, y));
-			if (m_buffer.size() == 2) {
-				buildLine();
-				m_buffer.clear();
-			}
-			break;
-		case AppState::ACTION_SELECT:
-			m_buffer.clear();
-			m_buffer.push_back(Coord(x, y));
-			if (!(ofGetKeyPressed(OF_KEY_LEFT_CONTROL) || ofGetKeyPressed(OF_KEY_RIGHT_CONTROL))) {
-				clearSelected();
-			}
-			for (Obj2D* o : m_obj2DVector) {
-				if (o->checkSelected(Coord(x, y), m_clickRadius)) {
-					break;
+	bool isMouseOnPanels = mouseIsOverPanel();
+	if (m_mode == MODE_2D && !isMouseOnPanels) {
+		if (button == OF_MOUSE_BUTTON_LEFT) {
+			switch (m_state) {
+			case AppState::BUILD_RECTANGLE:
+				m_buffer.push_back(Coord(x, y));
+				if (m_buffer.size() == 2) {
+					buildRectangle();
+					m_buffer.clear();
 				}
+				break;
+			case AppState::BUILD_TRIANGLE:
+				m_buffer.push_back(Coord(x, y));
+				if (m_buffer.size() == 3) {
+					buildTriangle();
+					m_buffer.clear();
+				}
+				break;
+			case AppState::BUILD_CIRCLE:
+				m_buffer.push_back(Coord(x, y));
+				if (m_buffer.size() == 2) {
+					buildCircle();
+					m_buffer.clear();
+				}
+				break;
+			case AppState::BUILD_LINE:
+				m_buffer.push_back(Coord(x, y));
+				if (m_buffer.size() == 2) {
+					buildLine();
+					m_buffer.clear();
+				}
+				break;
+			case AppState::ACTION_SELECT:
+				m_buffer.clear();
+				m_buffer.push_back(Coord(x, y));
+				if (!(ofGetKeyPressed(OF_KEY_LEFT_CONTROL) || ofGetKeyPressed(OF_KEY_RIGHT_CONTROL))) {
+					clearSelected();
+				}
+				for (Obj2D* o : m_obj2DVector) {
+					if (o->checkSelected(Coord(x, y), m_clickRadius)) {
+						break;
+					}
+				}
+				break;
 			}
-			break;
+		}
+		else if (button == OF_MOUSE_BUTTON_RIGHT) {
+			switch (m_state) {
+			case AppState::ACTION_SELECT:
+				m_buffer.clear();
+				m_buffer.push_back(Coord(x, y));
+			}
 		}
 	}
-	else if (button == OF_MOUSE_BUTTON_RIGHT) {
-		switch (m_state) {
-		case AppState::ACTION_SELECT:
-			m_buffer.clear();
-			m_buffer.push_back(Coord(x, y));
-		}
+	else if (m_mode == MODE_3D && !isMouseOnPanels) {
+		//3D
 	}
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-	if (button == OF_MOUSE_BUTTON_LEFT) {
-		switch (m_state) {
-		case AppState::ACTION_ROTATE:
-		case AppState::ACTION_GROUPSELECT:
-			m_buffer.clear();
-			m_state = AppState::ACTION_SELECT;
-			break;
+	if (m_mode == MODE_2D) {
+		if (button == OF_MOUSE_BUTTON_LEFT) {
+			switch (m_state) {
+			case AppState::ACTION_ROTATE:
+			case AppState::ACTION_GROUPSELECT:
+				m_buffer.clear();
+				m_state = AppState::ACTION_SELECT;
+				break;
+			}
+		}
+		else if (button == OF_MOUSE_BUTTON_RIGHT) {
+			switch (m_state) {
+			case AppState::ACTION_ROTATE:
+			case AppState::ACTION_TRANSLATE:
+				m_buffer.clear();
+				m_state = AppState::ACTION_SELECT;
+				break;
+			}
 		}
 	}
-	else if (button == OF_MOUSE_BUTTON_RIGHT) {
-		switch (m_state) {
-		case AppState::ACTION_ROTATE:
-		case AppState::ACTION_TRANSLATE:
-			m_buffer.clear();
-			m_state = AppState::ACTION_SELECT;
-			break;
-		}
+	else {
+		//3D
 	}
+	
 }
 
 //--------------------------------------------------------------
