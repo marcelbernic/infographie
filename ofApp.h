@@ -57,14 +57,16 @@ class ofApp : public ofBaseApp{
 		double calculateDistance(Coord p_coord1, Coord p_coord2);
 		void clearSelected();
 		void updateGroupSelection();
+		void translateSelection(double p_x, double p_y);
+		void rotateSelection();
 
+		void drawCursor();
 		void drawCircle(app::Circle *p_circle);
 		void drawRectangle(app::Rectangle *p_rect);
 		void drawTriangle(app::Triangle *p_triangle);
 		void drawLine(app::Line2D *p_line);
 		void drawImage(app::Image2D *p_image);
-		void translateSelection(double p_x, double p_y);
-		void rotateSelection();
+		
 
         ofxPanel gui, gui2;
 		

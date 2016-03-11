@@ -9,6 +9,7 @@ ofApp::ofApp()
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+	ofSetFrameRate(60);
 	ofSetWindowTitle("TP2");
 	renderer2d = new Renderer2D();
 	renderer2d->setup();
@@ -75,6 +76,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackgroundGradient(ofColor::white, ofColor::gray);
+	font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 150, 40);
 	//renderer1.draw();
 	//renderer2.draw();
 	ofSetColor(255);
@@ -156,6 +158,7 @@ void ofApp::draw(){
 		}
 
 	}
+	drawCursor();
 }
 
 //--------------------------------------------------------------
@@ -578,4 +581,55 @@ ofApp::~ofApp()
 {
 	if (nullptr != renderer2d)
 		delete renderer2d;
+}
+
+void ofApp::drawCursor() {
+	int mouseX = ofGetMouseX();
+	int mouseY = ofGetMouseY();
+	ofHideCursor();
+	ofSetColor(0);
+	ofSetLineWidth(4);
+	ofNoFill();
+	switch (m_state) {
+	case AppState::ACTION_SELECT:
+	case AppState::ACTION_GROUPSELECT:
+		ofShowCursor();
+		break;
+	case AppState::BUILD_RECTANGLE:
+		ofDrawRectangle(mouseX, mouseY, 16, 16);
+		break;
+	case AppState::BUILD_TRIANGLE:
+		ofDrawTriangle(mouseX, mouseY, mouseX + 16, mouseY, mouseX, mouseY + 16);
+		ofFill();
+		ofDrawCircle(mouseX, mouseY, 2);
+		ofDrawCircle(mouseX+16, mouseY, 2);
+		ofDrawCircle(mouseX, mouseY+16, 2);
+		break;
+	case AppState::BUILD_CIRCLE:
+		ofCircle(mouseX+6, mouseY+6, 8);
+		break;
+	case AppState::BUILD_LINE:
+		ofDrawLine(mouseX, mouseY, mouseX+16, mouseY+16);
+		break;	
+	case AppState::ACTION_TRANSLATE:
+		ofSetLineWidth(2);
+		ofDrawArrow( ofVec3f(mouseX + 8, mouseY + 8),  ofVec3f(mouseX, mouseY + 8),2);
+		ofDrawArrow( ofVec3f(mouseX + 8, mouseY + 8),  ofVec3f(mouseX+16, mouseY + 8), 2);
+		ofDrawArrow( ofVec3f(mouseX + 8, mouseY + 8),  ofVec3f(mouseX+8, mouseY), 2);
+		ofDrawArrow( ofVec3f(mouseX + 8, mouseY + 8),  ofVec3f(mouseX+8, mouseY + 16), 2);
+		break;
+	case AppState::ACTION_ROTATE:
+		ofDrawBezier(mouseX, mouseY, mouseX + 8, mouseY + 2, mouseX + 14, mouseY + 8, mouseX + 16, mouseY + 16);
+		break;
+	case AppState::ACTION_RESIZE:
+		ofSetLineWidth(2);
+		ofDrawArrow(ofVec3f(mouseX + 4, mouseY + 4), ofVec3f(mouseX, mouseY), 2);
+		ofDrawArrow(ofVec3f(mouseX + 12, mouseY + 12), ofVec3f(mouseX + 16, mouseY + 16), 2);
+		ofDrawRectangle(mouseX + 4, mouseY + 4, 8, 8);
+		break;
+	default:
+		ofShowCursor();
+		break;
+	}
+	ofFill();
 }
