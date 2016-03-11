@@ -84,46 +84,47 @@ void ofApp::draw(){
 		gui2.draw();
 	}	
     //buttonSquare->draw();
-
-	switch (m_state) {
-	case AppState::ACTION_GROUPSELECT:
-		ofSetColor(255, 0, 0);
-		ofSetLineWidth(5);
-		ofNoFill();
-		ofDrawRectangle(m_buffer[0].getX(), m_buffer[0].getY(), m_buffer[1].getX() - m_buffer[0].getX(), m_buffer[1].getY() - m_buffer[0].getY());
-		ofFill();
-		break;
-	case AppState::BUILD_CIRCLE:
-		if (m_buffer.size() == 1) {
+	if (!isTakingScreenshot) {
+		switch (m_state) {
+		case AppState::ACTION_GROUPSELECT:
+			ofSetColor(255, 0, 0);
+			ofSetLineWidth(5);
+			ofNoFill();
+			ofDrawRectangle(m_buffer[0].getX(), m_buffer[0].getY(), m_buffer[1].getX() - m_buffer[0].getX(), m_buffer[1].getY() - m_buffer[0].getY());
+			ofFill();
+			break;
+		case AppState::BUILD_CIRCLE:
+			if (m_buffer.size() == 1) {
+				ofSetColor(255, 0, 0);
+				ofSetLineWidth(m_lineStroke);
+				ofDrawCircle(m_buffer[0].getX(), m_buffer[0].getY(), calculateDistance(m_buffer[0], Coord(ofGetMouseX(), ofGetMouseY())));
+			}
+			break;
+		case AppState::BUILD_RECTANGLE:
+			if (m_buffer.size() == 1) {
+				ofSetColor(255, 0, 0);
+				ofSetLineWidth(m_lineStroke);
+				ofDrawRectangle(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX() - m_buffer[0].getX(), ofGetMouseY() - m_buffer[0].getY());
+			}
+			break;
+		case AppState::BUILD_TRIANGLE:
 			ofSetColor(255, 0, 0);
 			ofSetLineWidth(m_lineStroke);
-			ofDrawCircle(m_buffer[0].getX(), m_buffer[0].getY(), calculateDistance(m_buffer[0], Coord(ofGetMouseX(), ofGetMouseY())));
-		}		
-		break;
-	case AppState::BUILD_RECTANGLE:
-		if (m_buffer.size() == 1) {
-			ofSetColor(255, 0, 0);
-			ofSetLineWidth(m_lineStroke);
-			ofDrawRectangle(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX() - m_buffer[0].getX(), ofGetMouseY() - m_buffer[0].getY());
+			if (m_buffer.size() == 1) {
+				ofDrawLine(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
+			}
+			if (m_buffer.size() == 2) {
+				ofDrawTriangle(m_buffer[0].getX(), m_buffer[0].getY(), m_buffer[1].getX(), m_buffer[1].getY(), ofGetMouseX(), ofGetMouseY());
+			}
+			break;
+		case AppState::BUILD_LINE:
+			if (m_buffer.size() == 1) {
+				ofSetColor(255, 0, 0);
+				ofSetLineWidth(m_lineStroke);
+				ofDrawLine(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
+			}
+			break;
 		}
-		break;
-	case AppState::BUILD_TRIANGLE:
-		ofSetColor(255, 0, 0);
-		ofSetLineWidth(m_lineStroke);
-		if (m_buffer.size() == 1) {
-			ofDrawLine(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
-		}
-		if (m_buffer.size() == 2) {
-			ofDrawTriangle(m_buffer[0].getX(), m_buffer[0].getY(), m_buffer[1].getX(), m_buffer[1].getY(), ofGetMouseX(), ofGetMouseY());
-		}
-		break;
-	case AppState::BUILD_LINE:		
-		if (m_buffer.size() == 1) {
-			ofSetColor(255, 0, 0);
-			ofSetLineWidth(m_lineStroke);
-			ofDrawLine(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
-		}
-		break;
 	}
 	for (Obj2D* o : m_obj2DVector) {
 		switch (o->getType()) {
@@ -202,7 +203,14 @@ void ofApp::buttonPressed(const void * sender){
 	string btnName = button->getName();
 
 	if (btnName == "Import") {
-		//app::Image2D newImg = app::Image2D
+		ofFileDialogResult file = ofSystemLoadDialog("Load Image", false);
+		if (file.getPath() != "") {
+			app::Image2D *newImage = new app::Image2D(file.getPath(), 64, 64, Coord(ofGetWidth() / 2, ofGetHeight() / 2), 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill);
+			if (newImage->getImage().getTextureReference().isAllocated()) {
+				m_obj2DVector.push_back(newImage);
+			}			
+		}
+		
 		ofLog() << "Import button pressed";
 	}
 
@@ -211,7 +219,12 @@ void ofApp::buttonPressed(const void * sender){
 		draw();
 		isTakingScreenshot = false;
 
-		renderer2d->imageExport("TP2", "png");
+		ofFileDialogResult file =  ofSystemSaveDialog("Save", "Export");
+		
+		if (file.getPath() != "") {
+			renderer2d->imageExport(file.getPath(), "png");
+		}
+	
 		ofLog() << "Export button pressed";
 	}
 }
@@ -507,6 +520,7 @@ void ofApp::drawTriangle(app::Triangle *p_tri) {
 }
 
 void ofApp::drawLine(app::Line2D *p_line) {
+	ofFill();
 	if (p_line->isSelected()) {
 		ofSetColor(255, 255, 255);
 		ofSetLineWidth(p_line->getLineStroke());
@@ -520,7 +534,22 @@ void ofApp::drawLine(app::Line2D *p_line) {
 }
 
 void ofApp::drawImage(app::Image2D *p_image) {
+	ofSetColor(255);
+	ofNoFill();
+	if (p_image->isSelected()) {
+		ofFill();
+		ofSetColor(255, 0, 0);
+		ofSetLineWidth(p_image->getLineStroke());
+	}
+	ofImage img = p_image->getImage();
+	ofTranslate(p_image->getCoordVector()[0].getX(), p_image->getCoordVector()[0].getY());
+	ofRotate(p_image->getAngle());
+	img.getTextureReference().draw(0, 0, p_image->getWidth(), p_image->getHeight());
+	ofRotate(-p_image->getAngle());
+	ofTranslate(-p_image->getCoordVector()[0].getX(), -p_image->getCoordVector()[0].getY());	
+	ofFill();
 
+	//img.getTextureReference().unbind()
 }
 
 void ofApp::translateSelection(double p_x, double p_y) {

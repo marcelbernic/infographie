@@ -51,11 +51,10 @@ void Renderer2D::drawZone(float x1, float y1, float x2, float y2) const
 //	ofDrawLine(x, y - offset, x, y - offset - length);
 //}
 
-void Renderer2D::imageExport(const string name, const string extension) const
+void Renderer2D::imageExport(const string path, const string extension) const
 {
 	ofImage imageTemp;
-	string timestamp = ofGetTimestampString("-%y%m%d-%H%M%S-%i");
-	string fileName = name + timestamp + "." + extension;
+	string fileName = path + "." + extension;
 
 
 

@@ -67,6 +67,7 @@ class ofApp : public ofBaseApp{
 		void rotateSelection();
 
         ofxPanel gui, gui2;
+		
 		ofParameter<bool> vSync;
         ofParameter<bool> square;
         ofParameterGroup parameters, forms, menuBarParams;
