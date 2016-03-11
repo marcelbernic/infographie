@@ -1,6 +1,5 @@
 #include "ofApp.h"
 #include <ostream>
-#include "Image2D.h"
 
 ofApp::ofApp()
 {
@@ -12,52 +11,60 @@ void ofApp::setup(){
 	ofSetFrameRate(60);
 	ofSetWindowTitle("TP2");
 	renderer2d = new Renderer2D();
-	renderer2d->setup();
+	renderer2d->setup("2D", this);
 
-	/*renderer1.setup("renderer1");
-	renderer2.setup("renderer2");*/
-
-	//Parameters
-	m_state = AppState::ACTION_SELECT;
-	m_lineStroke = 5;
-	m_clickRadius = 5;
-	isTakingScreenshot = false;
-    forms.setName("Formes");
-    forms.add(square.set("square", true));
-	parameters.setName("settings");
-	parameters.add(vSync.set("vSync",true));
-	//parameters.add(renderer1.parameters);
-	//parameters.add(renderer2.parameters);
+	//Panels params
 	menuBarParams.setName("Menu");
+	menuBarParams.add(bSelect.set("Selection", false));
 	importButton = new ofxButton();
 	exportButton = new ofxButton();
+	mergeButton = new ofxButton();
+
+    shapesParams.setName("2D Shapes");
+	shapesParams.add(bLine.set("Line", false));
+	shapesParams.add(bTriangle.set("Triangle", false));
+	shapesParams.add(bRectangle.set("Rectangle", false));
+	shapesParams.add(bCircle.set("Circle", false));
+
+	shapesSettingsParams.setName("2D Settings");
+	shapesSettingsParams.add(vSync.set("vSync",true));
+	shapesSettingsParams.add(renderer2d->parameters);
+
 	importButton->setup("Import");
 	exportButton->setup("Export");
+	mergeButton->setup("Merge Shapes");
 
 	//Setup panels
-	menuBar.setup(menuBarParams);
-	menuBar.add(importButton);
-	menuBar.add(exportButton);
-	gui.setup(parameters);
-    gui2.setup(forms);
+	menuPanel.setup(menuBarParams);
+	menuPanel.add(importButton);
+	menuPanel.add(exportButton);
+	shapesPanel.setup(shapesParams);
+	shapesPanel.add(mergeButton);
+    shapesParamsPanel.setup(shapesSettingsParams);
+	menuPanel.setPosition(0, 0);
+	shapesPanel.setPosition(0, 5 + menuPanel.getHeight());
+	shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
 
-
-    /*buttonSquare = new ofxButton();
-    buttonSquare->setup("Square", 19);*/
-
-	menuBar.setPosition(10, 0);
-    gui2.setPosition(10, 15 + menuBar.getHeight());
-    gui.setPosition(10, 10 + gui2.getHeight() + menuBar.getHeight() + 15);
-	//buttonSquare->setPosition(10, 20 + gui.getHeight() + gui2.getHeight() + menuBar.getHeight());
-
-    //buttonSquare->addListener(this, &ofApp::buttonPressed);
+	//Listeners
 	importButton->addListener(this, &ofApp::buttonPressed);
 	exportButton->addListener(this, &ofApp::buttonPressed);
+	mergeButton->addListener(this, &ofApp::buttonPressed);
+	bLine.addListener(this, &ofApp::bLineChanged);
+	bTriangle.addListener(this, &ofApp::bTriangleChanged);
+	bRectangle.addListener(this, &ofApp::bRectangleChanged);
+	bCircle.addListener(this, &ofApp::bCircleChanged);
+	bSelect.addListener(this, &ofApp::bSelectChanged);
 
-    gui.loadFromFile("settings.xml");
+    //gui.loadFromFile("settings.xml");
 
-    font.load( OF_TTF_SANS,9,true,true);
+    font.load(OF_TTF_SANS, 10, true, true);
     ofEnableAlphaBlending();
+
+	//Default Parameters
+	m_state = AppState::ACTION_SELECT;
+	m_lineStroke = renderer2d->strokeWidth; //5
+	m_clickRadius = 5;
+	isTakingScreenshot = false;
 
 }
 
@@ -65,6 +72,49 @@ void ofApp::vSyncChanged(bool & vSync){
 	ofSetVerticalSync(vSync);
 }
 
+void ofApp::bLineChanged(bool & pLine) {
+	if (pLine) {
+		clearButtons();
+		bLine.set(true);
+		m_state = AppState::BUILD_LINE;
+	}
+}
+void ofApp::bTriangleChanged(bool & pTriangle) {
+	if (pTriangle) {
+		clearButtons();
+		bTriangle.set(true);
+		m_state = AppState::BUILD_TRIANGLE;
+	}
+}
+void ofApp::bRectangleChanged(bool & pRectangle) {
+	if (pRectangle) {
+		clearButtons();
+		bRectangle.set(true);
+		m_state = AppState::BUILD_RECTANGLE;
+	}
+}
+void ofApp::bCircleChanged(bool & pCircle) {
+	if (pCircle) {
+		clearButtons();
+		bCircle.set(true);
+		m_state = AppState::BUILD_CIRCLE;
+	}
+}
+void ofApp::bSelectChanged(bool & pSelect) {
+	if (pSelect) {
+		clearButtons();
+		bSelect.set(true);
+		m_state = AppState::ACTION_SELECT;
+	}
+}
+
+void ofApp::clearButtons() {
+	bSelect.set(false);
+	bLine.set(false);
+	bTriangle.set(false);
+	bRectangle.set(false);
+	bCircle.set(false);
+}
 
 //--------------------------------------------------------------
 void ofApp::update(){
@@ -76,89 +126,70 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     ofBackgroundGradient(ofColor::white, ofColor::gray);
-	font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 150, 40);
-	//renderer1.draw();
-	//renderer2.draw();
+	font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 150, 0);
+
+	renderer2d->draw();
+
 	ofSetColor(255);
 	if (!isTakingScreenshot) {
-		menuBar.draw();
-		gui.draw();
-		gui2.draw();
-	}	
-    //buttonSquare->draw();
-	if (!isTakingScreenshot) {
-		switch (m_state) {
-		case AppState::ACTION_GROUPSELECT:
-			ofSetColor(255, 0, 0);
-			ofSetLineWidth(5);
-			ofNoFill();
-			ofDrawRectangle(m_buffer[0].getX(), m_buffer[0].getY(), m_buffer[1].getX() - m_buffer[0].getX(), m_buffer[1].getY() - m_buffer[0].getY());
-			ofFill();
-			break;
-		case AppState::BUILD_CIRCLE:
-			if (m_buffer.size() == 1) {
-				ofSetColor(255, 0, 0);
-				ofSetLineWidth(m_lineStroke);
-				ofDrawCircle(m_buffer[0].getX(), m_buffer[0].getY(), calculateDistance(m_buffer[0], Coord(ofGetMouseX(), ofGetMouseY())));
-			}
-			break;
-		case AppState::BUILD_RECTANGLE:
-			if (m_buffer.size() == 1) {
-				ofSetColor(255, 0, 0);
-				ofSetLineWidth(m_lineStroke);
-				ofDrawRectangle(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX() - m_buffer[0].getX(), ofGetMouseY() - m_buffer[0].getY());
-			}
-			break;
-		case AppState::BUILD_TRIANGLE:
-			ofSetColor(255, 0, 0);
-			ofSetLineWidth(m_lineStroke);
-			if (m_buffer.size() == 1) {
-				ofDrawLine(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
-			}
-			if (m_buffer.size() == 2) {
-				ofDrawTriangle(m_buffer[0].getX(), m_buffer[0].getY(), m_buffer[1].getX(), m_buffer[1].getY(), ofGetMouseX(), ofGetMouseY());
-			}
-			break;
-		case AppState::BUILD_LINE:
-			if (m_buffer.size() == 1) {
-				ofSetColor(255, 0, 0);
-				ofSetLineWidth(m_lineStroke);
-				ofDrawLine(m_buffer[0].getX(), m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
-			}
-			break;
-		}
+		menuPanel.draw();
+		shapesPanel.draw();
+		shapesParamsPanel.draw();
 	}
-	for (Obj2D* o : m_obj2DVector) {
-		switch (o->getType()) {
-			case EnumVectorDrawMode::VECTOR_PRIMITIVE_CIRCLE: {
-				app::Circle* c = dynamic_cast<app::Circle*>(o);
-				drawCircle(c);
-			}
-					break;
-			case EnumVectorDrawMode::VECTOR_PRIMITIVE_RECTANGLE: {
-				app::Rectangle* r = dynamic_cast<app::Rectangle*>(o);
-				drawRectangle(r);
-			}
-					break;
-			case EnumVectorDrawMode::VECTOR_PRIMITIVE_TRIANGLE: {
-				app::Triangle* t = dynamic_cast<app::Triangle*>(o);
-				drawTriangle(t);
-			}
-					break;
-			case EnumVectorDrawMode::VECTOR_PRIMITIVE_LINE: {
-				app::Line2D* l = dynamic_cast<app::Line2D*>(o);
-				drawLine(l);
-			}
-					break;
-			case EnumVectorDrawMode::VECTOR_PRIMITIVE_IMAGE: {
-				app::Image2D* i = dynamic_cast<app::Image2D*>(o);
-				drawImage(i);
-			}
-				break;
-		}
 
-	}
 	drawCursor();
+}
+
+void ofApp::drawCursor() {
+	//TODO: showCursor() si over GUIpanel
+	int mouseX = ofGetMouseX();
+	int mouseY = ofGetMouseY();
+	ofHideCursor();
+	ofSetColor(0);
+	ofSetLineWidth(4);
+	ofNoFill();
+	switch (m_state) {
+	case AppState::ACTION_SELECT:
+	case AppState::ACTION_GROUPSELECT:
+		ofShowCursor();
+		break;
+	case AppState::BUILD_RECTANGLE:
+		ofDrawRectangle(mouseX, mouseY, 16, 16);
+		break;
+	case AppState::BUILD_TRIANGLE:
+		ofDrawTriangle(mouseX, mouseY, mouseX + 16, mouseY, mouseX, mouseY + 16);
+		ofFill();
+		ofDrawCircle(mouseX, mouseY, 2);
+		ofDrawCircle(mouseX + 16, mouseY, 2);
+		ofDrawCircle(mouseX, mouseY + 16, 2);
+		break;
+	case AppState::BUILD_CIRCLE:
+		ofCircle(mouseX + 6, mouseY + 6, 8);
+		break;
+	case AppState::BUILD_LINE:
+		ofDrawLine(mouseX, mouseY, mouseX + 16, mouseY + 16);
+		break;
+	case AppState::ACTION_TRANSLATE:
+		ofSetLineWidth(2);
+		ofDrawArrow(ofVec3f(mouseX + 8, mouseY + 8), ofVec3f(mouseX, mouseY + 8), 2);
+		ofDrawArrow(ofVec3f(mouseX + 8, mouseY + 8), ofVec3f(mouseX + 16, mouseY + 8), 2);
+		ofDrawArrow(ofVec3f(mouseX + 8, mouseY + 8), ofVec3f(mouseX + 8, mouseY), 2);
+		ofDrawArrow(ofVec3f(mouseX + 8, mouseY + 8), ofVec3f(mouseX + 8, mouseY + 16), 2);
+		break;
+	case AppState::ACTION_ROTATE:
+		ofDrawBezier(mouseX, mouseY, mouseX + 8, mouseY + 2, mouseX + 14, mouseY + 8, mouseX + 16, mouseY + 16);
+		break;
+	case AppState::ACTION_RESIZE:
+		ofSetLineWidth(2);
+		ofDrawArrow(ofVec3f(mouseX + 4, mouseY + 4), ofVec3f(mouseX, mouseY), 2);
+		ofDrawArrow(ofVec3f(mouseX + 12, mouseY + 12), ofVec3f(mouseX + 16, mouseY + 16), 2);
+		ofDrawRectangle(mouseX + 4, mouseY + 4, 8, 8);
+		break;
+	default:
+		ofShowCursor();
+		break;
+	}
+	ofFill();
 }
 
 //--------------------------------------------------------------
@@ -229,6 +260,10 @@ void ofApp::buttonPressed(const void * sender){
 		}
 	
 		ofLog() << "Export button pressed";
+	}
+
+	else if (btnName == "Merge Shapes") {
+		
 	}
 }
 //--------------------------------------------------------------
@@ -455,106 +490,6 @@ void ofApp::updateGroupSelection() {
 	}
 }
 
-void ofApp::drawCircle(app::Circle *p_circle) {
-	ofFill();
-	if (p_circle->isSelected()) {
-		ofSetColor(255, 255, 255);
-		ofSetLineWidth(p_circle->getLineStroke());
-	}
-	else {
-		ofSetColor(255, 0, 0);
-		ofSetLineWidth(p_circle->getLineStroke());
-	}
-	ofDrawCircle(p_circle->getCoordVector()[0].getX(), p_circle->getCoordVector()[0].getY(), p_circle->getRadius());
-	ofNoFill();
-	ofSetColor(0, 0, 0);
-	ofDrawCircle(p_circle->getCoordVector()[0].getX(), p_circle->getCoordVector()[0].getY(), p_circle->getRadius());
-	ofFill();
-}
-
-void ofApp::drawRectangle(app::Rectangle *p_rect) {
-	ofFill();
-	if (p_rect->isSelected()) {
-		ofSetColor(255, 255, 255);
-		ofSetLineWidth(p_rect->getLineStroke());
-	}
-	else {
-		ofSetColor(255, 0, 0);
-		ofSetLineWidth(p_rect->getLineStroke());
-	}
-	ofBeginShape();
-	for (Coord c : p_rect->getCoordVector()) {
-		ofVertex(c.getX(), c.getY());
-	}
-	ofEndShape();
-	ofNoFill();
-	ofSetColor(0, 0, 0);
-	for (int i = 0; i < p_rect->getCoordVector().size()-1; i++) {
-		ofDrawLine(p_rect->getCoordVector()[i].getX(), p_rect->getCoordVector()[i].getY(), p_rect->getCoordVector()[i + 1].getX(), p_rect->getCoordVector()[i + 1].getY());
-	}
-	ofDrawLine(p_rect->getCoordVector()[3].getX(), p_rect->getCoordVector()[3].getY(), p_rect->getCoordVector()[0].getX(), p_rect->getCoordVector()[0].getY());
-	ofFill();
-	//ofDrawRectangle(p_rect->getCoordVector()[0].getX(), p_rect->getCoordVector()[0].getY(), p_rect->m_width, p_rect->m_height);
-}
-
-void ofApp::drawTriangle(app::Triangle *p_tri) {
-	ofFill();
-	if (p_tri->isSelected()) {
-		ofSetColor(255, 255, 255);
-		ofSetLineWidth(p_tri->getLineStroke());
-	}
-	else {
-		ofSetColor(255, 0, 0);
-		ofSetLineWidth(p_tri->getLineStroke());
-	}
-	ofDrawTriangle(p_tri->getCoordVector()[0].getX(), p_tri->getCoordVector()[0].getY(), 
-		p_tri->getCoordVector()[1].getX(), p_tri->getCoordVector()[1].getY(), 
-		p_tri->getCoordVector()[2].getX(), p_tri->getCoordVector()[2].getY());
-	if (p_tri->isSelected()) {
-		ofSetColor(0, 0, 255);
-		ofDrawCircle(p_tri->getRotationCenter().getX(), p_tri->getRotationCenter().getY(), 3);
-	}
-	ofNoFill();
-	ofSetColor(0, 0, 0);
-	ofDrawTriangle(p_tri->getCoordVector()[0].getX(), p_tri->getCoordVector()[0].getY(),
-		p_tri->getCoordVector()[1].getX(), p_tri->getCoordVector()[1].getY(),
-		p_tri->getCoordVector()[2].getX(), p_tri->getCoordVector()[2].getY());
-	ofFill();
-}
-
-void ofApp::drawLine(app::Line2D *p_line) {
-	ofFill();
-	if (p_line->isSelected()) {
-		ofSetColor(255, 255, 255);
-		ofSetLineWidth(p_line->getLineStroke());
-	}
-	else {
-		ofSetColor(255, 0, 0);
-		ofSetLineWidth(p_line->getLineStroke());
-	}
-	ofDrawLine(p_line->getCoordVector()[0].getX(), p_line->getCoordVector()[0].getY(), 
-		p_line->getCoordVector()[1].getX(), p_line->getCoordVector()[1].getY());
-}
-
-void ofApp::drawImage(app::Image2D *p_image) {
-	ofSetColor(255);
-	ofNoFill();
-	if (p_image->isSelected()) {
-		ofFill();
-		ofSetColor(255, 0, 0);
-		ofSetLineWidth(p_image->getLineStroke());
-	}
-	ofImage img = p_image->getImage();
-	ofTranslate(p_image->getCoordVector()[0].getX(), p_image->getCoordVector()[0].getY());
-	ofRotate(p_image->getAngle());
-	img.getTextureReference().draw(0, 0, p_image->getWidth(), p_image->getHeight());
-	ofRotate(-p_image->getAngle());
-	ofTranslate(-p_image->getCoordVector()[0].getX(), -p_image->getCoordVector()[0].getY());	
-	ofFill();
-
-	//img.getTextureReference().unbind()
-}
-
 void ofApp::translateSelection(double p_x, double p_y) {
 	for (Obj2D* o : m_obj2DVector) {
 		if (o->isSelected()) {
@@ -581,55 +516,4 @@ ofApp::~ofApp()
 {
 	if (nullptr != renderer2d)
 		delete renderer2d;
-}
-
-void ofApp::drawCursor() {
-	int mouseX = ofGetMouseX();
-	int mouseY = ofGetMouseY();
-	ofHideCursor();
-	ofSetColor(0);
-	ofSetLineWidth(4);
-	ofNoFill();
-	switch (m_state) {
-	case AppState::ACTION_SELECT:
-	case AppState::ACTION_GROUPSELECT:
-		ofShowCursor();
-		break;
-	case AppState::BUILD_RECTANGLE:
-		ofDrawRectangle(mouseX, mouseY, 16, 16);
-		break;
-	case AppState::BUILD_TRIANGLE:
-		ofDrawTriangle(mouseX, mouseY, mouseX + 16, mouseY, mouseX, mouseY + 16);
-		ofFill();
-		ofDrawCircle(mouseX, mouseY, 2);
-		ofDrawCircle(mouseX+16, mouseY, 2);
-		ofDrawCircle(mouseX, mouseY+16, 2);
-		break;
-	case AppState::BUILD_CIRCLE:
-		ofCircle(mouseX+6, mouseY+6, 8);
-		break;
-	case AppState::BUILD_LINE:
-		ofDrawLine(mouseX, mouseY, mouseX+16, mouseY+16);
-		break;	
-	case AppState::ACTION_TRANSLATE:
-		ofSetLineWidth(2);
-		ofDrawArrow( ofVec3f(mouseX + 8, mouseY + 8),  ofVec3f(mouseX, mouseY + 8),2);
-		ofDrawArrow( ofVec3f(mouseX + 8, mouseY + 8),  ofVec3f(mouseX+16, mouseY + 8), 2);
-		ofDrawArrow( ofVec3f(mouseX + 8, mouseY + 8),  ofVec3f(mouseX+8, mouseY), 2);
-		ofDrawArrow( ofVec3f(mouseX + 8, mouseY + 8),  ofVec3f(mouseX+8, mouseY + 16), 2);
-		break;
-	case AppState::ACTION_ROTATE:
-		ofDrawBezier(mouseX, mouseY, mouseX + 8, mouseY + 2, mouseX + 14, mouseY + 8, mouseX + 16, mouseY + 16);
-		break;
-	case AppState::ACTION_RESIZE:
-		ofSetLineWidth(2);
-		ofDrawArrow(ofVec3f(mouseX + 4, mouseY + 4), ofVec3f(mouseX, mouseY), 2);
-		ofDrawArrow(ofVec3f(mouseX + 12, mouseY + 12), ofVec3f(mouseX + 16, mouseY + 16), 2);
-		ofDrawRectangle(mouseX + 4, mouseY + 4, 8, 8);
-		break;
-	default:
-		ofShowCursor();
-		break;
-	}
-	ofFill();
 }

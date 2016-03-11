@@ -1,19 +1,49 @@
 #pragma once
 
-#include "ofMain.h"
+//#include "ofMain.h"
+#include "ofParameterGroup.h"
+#include "ofParameter.h"
+#include "ofApp.h"
+#include "Obj2D.h"
+#include "Rectangle.h"
+#include "Triangle.h"
+#include "Circle.h"
+#include "Line2D.h"
+#include "Image2D.h"
+
+class Renderer2D;
+class ofApp;
+
+template<typename ParameterType>
+class ofRendererParam : public ofReadOnlyParameter<ParameterType, Renderer2D> {
+	friend class Renderer2D;
+};
 
 class Renderer2D
 {
+private:
+	ofApp * m_app;
 public:
 	Renderer2D();
 	~Renderer2D();
 
-	void setup();
-
+	void setup(const string p_name, ofApp *p_app);
+	
 	void draw();
-	void drawZone(float x1, float y1, float x2, float y2) const;
-	//void Renderer::drawCursor(float x, float y) const;
+	void drawCircle(app::Circle *p_circle);
+	void drawRectangle(app::Rectangle *p_rect);
+	void drawTriangle(app::Triangle *p_triangle);
+	void drawLine(app::Line2D *p_line);
+	void drawImage(app::Image2D *p_image);
 
 	void imageExport(const string path, const string extension) const;
+
+	ofParameterGroup parameters;
+	//ofParameter<float> size;
+	ofParameter<int> strokeWidth;
+	//ofParameter<ofVec2f> position;
+	ofParameter<ofColor> colorStroke;
+	ofParameter<ofColor> colorFill;
+	ofParameter<ofColor> colorSelected;
 };
 

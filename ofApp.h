@@ -13,8 +13,11 @@
 #include "Image2D.h"
 #include <vector>
 
+class Renderer2D;
+
 class ofApp : public ofBaseApp{
-	private:
+	public:
+
 		std::vector<Coord> m_buffer;
 		std::vector<Obj2D*> m_obj2DVector;
 		AppState m_state;
@@ -23,10 +26,8 @@ class ofApp : public ofBaseApp{
 		int m_lineColorSelected;
 		int m_colorFill;
 		int m_clickRadius;
-		app::Rectangle* rect;
 		bool isTakingScreenshot;
 
-	public:
 		ofApp();
 		~ofApp();
 		void exit();
@@ -34,6 +35,7 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+		void drawCursor();
 
 		void keyPressed  (int key);
 		void keyReleased(int key);
@@ -49,6 +51,12 @@ class ofApp : public ofBaseApp{
         void buttonPressed(const void * sender);
 		
 		void vSyncChanged(bool & vSync);
+		void bLineChanged(bool & bLine);
+		void bTriangleChanged(bool & bTriangle);
+		void bRectangleChanged(bool & bRectangle);
+		void bCircleChanged(bool & bCircle);
+		void bSelectChanged(bool & bSelect);
+		void clearButtons();
 
 		void buildRectangle();
 		void buildTriangle();
@@ -59,26 +67,15 @@ class ofApp : public ofBaseApp{
 		void updateGroupSelection();
 		void translateSelection(double p_x, double p_y);
 		void rotateSelection();
-
-		void drawCursor();
-		void drawCircle(app::Circle *p_circle);
-		void drawRectangle(app::Rectangle *p_rect);
-		void drawTriangle(app::Triangle *p_triangle);
-		void drawLine(app::Line2D *p_line);
-		void drawImage(app::Image2D *p_image);
 		
-
-        ofxPanel gui, gui2;
-		
-		ofParameter<bool> vSync;
-        ofParameter<bool> square;
-        ofParameterGroup parameters, forms, menuBarParams;
-		ofXml settings;
 		Renderer2D *renderer2d;
-        ofTrueTypeFont font;
-        ofxButton *buttonSquare;
 
-		//Menu Bar
-		ofxPanel menuBar;
-		ofxButton *importButton, *exportButton;
+		ofxPanel shapesPanel, shapesParamsPanel, menuPanel;
+		ofParameter<bool> vSync;
+        ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect;
+        ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams;
+		ofXml settings;
+        ofTrueTypeFont font;
+		ofxButton *importButton, *exportButton, *mergeButton;
+		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 };
