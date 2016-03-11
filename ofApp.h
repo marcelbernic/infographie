@@ -11,6 +11,7 @@
 #include "Circle.h"
 #include "Line2D.h"
 #include "Image2D.h"
+#include "Obj2DCollection.h"
 #include <vector>
 
 class Renderer2D;
@@ -69,6 +70,8 @@ class ofApp : public ofBaseApp{
 		void rotateSelection();
 		
 		Renderer2D *renderer2d;
+		void drawCollection(app::Obj2DCollection *p_coll);
+		std::vector<Obj2D*> getCollectionObjects(app::Obj2DCollection* p_coll);
 
 		ofxPanel shapesPanel, shapesParamsPanel, menuPanel;
 		ofParameter<bool> vSync;

@@ -91,7 +91,19 @@ void Obj2D::translate(double p_x, double p_y) {
 }
 
 void Obj2D::resize(double p_percent) {
+	resize(getRotationCenter(), p_percent);
+}
 
+void Obj2D::resize(Coord p_coord, double p_percent) {
+	std::vector<Coord> newCoordVector;
+	double newDistanceX = 0;
+	double newDistanceY = 0;
+	for (Coord c : m_coordVector) {
+		newDistanceX = p_percent*(c.getX() - p_coord.getX());
+		newDistanceY = p_percent*(c.getY() - p_coord.getY());
+		newCoordVector.push_back(Coord(p_coord.getX() + newDistanceX, p_coord.getY() + newDistanceY));
+	}
+	m_coordVector = newCoordVector;
 }
 
 void Obj2D::rotate(Coord p_first, Coord p_sec) {
@@ -108,7 +120,6 @@ void Obj2D::rotate(double p_degree) {
 }
 
 void Obj2D::rotate(Coord p_coord, double p_degree) {
-	std::cout << p_degree << std::endl;
 	std::vector<Coord> newCoordVector;
 	double x = 0;
 	double y = 0;

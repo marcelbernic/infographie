@@ -46,6 +46,12 @@ double Image2D::getHeight() {
 	return m_height;
 }
 
+void Image2D::resize(Coord p_coord, double p_percent) {
+	Obj2D::resize(p_coord, p_percent);
+	m_width *= p_percent;
+	m_height *= p_percent;
+}
+
 //TODO
 bool Image2D::checkCollision(Coord p_clickPoint, double p_radius) {
 	//Rotate circle center from rectangle top-left corner standpoint
