@@ -68,6 +68,7 @@ class ofApp : public ofBaseApp{
 		void clearSelected();
 		void updateGroupSelection();
 		void translateSelection(double p_x, double p_y);
+		void resizeSelection();
 		void rotateSelection();
 		void deleteSelection();
 		

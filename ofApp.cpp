@@ -107,6 +107,7 @@ void ofApp::bLineChanged(bool & pLine) {
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bLine.set(true);
+		m_buffer.clear();
 		m_state = AppState::BUILD_LINE;
 	}
 }
@@ -115,6 +116,7 @@ void ofApp::bTriangleChanged(bool & pTriangle) {
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bTriangle.set(true);
+		m_buffer.clear();
 		m_state = AppState::BUILD_TRIANGLE;
 	}
 }
@@ -123,6 +125,7 @@ void ofApp::bRectangleChanged(bool & pRectangle) {
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bRectangle.set(true);
+		m_buffer.clear();
 		m_state = AppState::BUILD_RECTANGLE;
 	}
 }
@@ -131,6 +134,7 @@ void ofApp::bCircleChanged(bool & pCircle) {
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bCircle.set(true);
+		m_buffer.clear();
 		m_state = AppState::BUILD_CIRCLE;
 	}
 }
@@ -139,6 +143,7 @@ void ofApp::bSelectChanged(bool & pSelect) {
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bSelect.set(true);
+		m_buffer.clear();
 		m_state = AppState::ACTION_SELECT;
 	}
 }
@@ -411,6 +416,23 @@ void ofApp::mouseDragged(int x, int y, int button) {
 				break;
 			}
 		}
+		else if (button == OF_MOUSE_BUTTON_RIGHT &&
+				(ofGetKeyPressed(OF_KEY_LEFT_CONTROL) || ofGetKeyPressed(OF_KEY_RIGHT_CONTROL))) {
+			switch (m_state) {
+			case AppState::ACTION_SELECT:
+				m_buffer.clear();
+				m_buffer.push_back(Coord(x, y));
+				m_buffer.push_back(Coord(x, y));
+				m_state = AppState::ACTION_RESIZE;
+				break;
+			case AppState::ACTION_RESIZE:
+				m_buffer[0] = m_buffer[1];
+				m_buffer[1].setX(x);
+				m_buffer[1].setY(y);
+				resizeSelection();
+				break;
+			}
+		}
 		else if (button == OF_MOUSE_BUTTON_RIGHT) {
 			switch (m_state) {
 			case AppState::ACTION_SELECT:
@@ -510,6 +532,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 		else if (button == OF_MOUSE_BUTTON_RIGHT) {
 			switch (m_state) {
 			case AppState::ACTION_ROTATE:
+			case AppState::ACTION_RESIZE:
 			case AppState::ACTION_TRANSLATE:
 				m_buffer.clear();
 				m_state = AppState::ACTION_SELECT;
@@ -628,6 +651,14 @@ void ofApp::rotateSelection() {
 	for (Obj2D* o : m_obj2DVector) {
 		if (o->isSelected()) {
 			o->rotate(m_buffer[0], m_buffer[1]);
+		}
+	}
+}
+
+void ofApp::resizeSelection() {
+	for (Obj2D* o : m_obj2DVector) {
+		if (o->isSelected()) {
+			o->resize(calculateDistance(m_buffer[1], o->getRotationCenter()) / calculateDistance(m_buffer[0], o->getRotationCenter()));
 		}
 	}
 }
