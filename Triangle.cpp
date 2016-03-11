@@ -1,7 +1,7 @@
 #include "Triangle.h"
 using namespace app;
 
-Triangle::Triangle(std::vector<Coord> p_coord, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill)
+Triangle::Triangle(std::vector<Coord> p_coord, double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill)
 	: Shape2D(p_angle, p_lineStroke, p_lineColor, p_lineColorSelected, p_colorFill) {
 	m_coordVector = p_coord;
 	m_type = EnumVectorDrawMode::VECTOR_PRIMITIVE_TRIANGLE;

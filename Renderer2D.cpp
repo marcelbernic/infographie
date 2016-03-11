@@ -45,21 +45,21 @@ void Renderer2D::draw() {
 			break;
 		case AppState::BUILD_CIRCLE:
 			if (m_app->m_buffer.size() == 1) {
-				ofSetColor(255, 0, 0);
-				ofSetLineWidth(m_app->m_lineStroke);
+				ofSetColor(colorFill);
+				ofSetLineWidth(strokeWidth);
 				ofDrawCircle(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), m_app->calculateDistance(m_app->m_buffer[0], Coord(ofGetMouseX(), ofGetMouseY())));
 			}
 			break;
 		case AppState::BUILD_RECTANGLE:
 			if (m_app->m_buffer.size() == 1) {
-				ofSetColor(255, 0, 0);
-				ofSetLineWidth(m_app->m_lineStroke);
+				ofSetColor(colorFill);
+				ofSetLineWidth(strokeWidth);
 				ofDrawRectangle(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), ofGetMouseX() - m_app->m_buffer[0].getX(), ofGetMouseY() - m_app->m_buffer[0].getY());
 			}
 			break;
 		case AppState::BUILD_TRIANGLE:
-			ofSetColor(255, 0, 0);
-			ofSetLineWidth(m_app->m_lineStroke);
+			ofSetColor(colorFill);
+			ofSetLineWidth(strokeWidth);
 			if (m_app->m_buffer.size() == 1) {
 				ofDrawLine(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
 			}
@@ -69,8 +69,8 @@ void Renderer2D::draw() {
 			break;
 		case AppState::BUILD_LINE:
 			if (m_app->m_buffer.size() == 1) {
-				ofSetColor(255, 0, 0);
-				ofSetLineWidth(m_app->m_lineStroke);
+				ofSetColor(colorFill);
+				ofSetLineWidth(strokeWidth);
 				ofDrawLine(m_app->m_buffer[0].getX(), m_app->m_buffer[0].getY(), ofGetMouseX(), ofGetMouseY());
 			}
 			break;
@@ -119,12 +119,12 @@ void Renderer2D::drawCircle(app::Circle *p_circle) {
 		ofSetLineWidth(p_circle->getLineStroke());
 	}
 	else {
-		ofSetColor(255, 0, 0);
+		ofSetColor(p_circle->getColorFill());
 		ofSetLineWidth(p_circle->getLineStroke());
 	}
 	ofDrawCircle(p_circle->getCoordVector()[0].getX(), p_circle->getCoordVector()[0].getY(), p_circle->getRadius());
 	ofNoFill();
-	ofSetColor(0, 0, 0);
+	ofSetColor(p_circle->getLineColor());
 	ofDrawCircle(p_circle->getCoordVector()[0].getX(), p_circle->getCoordVector()[0].getY(), p_circle->getRadius());
 	ofFill();
 }
@@ -136,7 +136,7 @@ void Renderer2D::drawRectangle(app::Rectangle *p_rect) {
 		ofSetLineWidth(p_rect->getLineStroke());
 	}
 	else {
-		ofSetColor(255, 0, 0);
+		ofSetColor(p_rect->getColorFill());
 		ofSetLineWidth(p_rect->getLineStroke());
 	}
 	ofBeginShape();
@@ -145,7 +145,7 @@ void Renderer2D::drawRectangle(app::Rectangle *p_rect) {
 	}
 	ofEndShape();
 	ofNoFill();
-	ofSetColor(0, 0, 0);
+	ofSetColor(p_rect->getLineColor());
 	for (int i = 0; i < p_rect->getCoordVector().size() - 1; i++) {
 		ofDrawLine(p_rect->getCoordVector()[i].getX(), p_rect->getCoordVector()[i].getY(), p_rect->getCoordVector()[i + 1].getX(), p_rect->getCoordVector()[i + 1].getY());
 	}
@@ -161,7 +161,7 @@ void Renderer2D::drawTriangle(app::Triangle *p_tri) {
 		ofSetLineWidth(p_tri->getLineStroke());
 	}
 	else {
-		ofSetColor(255, 0, 0);
+		ofSetColor(p_tri->getColorFill());
 		ofSetLineWidth(p_tri->getLineStroke());
 	}
 	ofDrawTriangle(p_tri->getCoordVector()[0].getX(), p_tri->getCoordVector()[0].getY(),
@@ -172,7 +172,7 @@ void Renderer2D::drawTriangle(app::Triangle *p_tri) {
 		ofDrawCircle(p_tri->getRotationCenter().getX(), p_tri->getRotationCenter().getY(), 3);
 	}
 	ofNoFill();
-	ofSetColor(0, 0, 0);
+	ofSetColor(p_tri->getLineColor());
 	ofDrawTriangle(p_tri->getCoordVector()[0].getX(), p_tri->getCoordVector()[0].getY(),
 		p_tri->getCoordVector()[1].getX(), p_tri->getCoordVector()[1].getY(),
 		p_tri->getCoordVector()[2].getX(), p_tri->getCoordVector()[2].getY());
@@ -186,7 +186,7 @@ void Renderer2D::drawLine(app::Line2D *p_line) {
 		ofSetLineWidth(p_line->getLineStroke());
 	}
 	else {
-		ofSetColor(255, 0, 0);
+		ofSetColor(p_line->getColorFill());
 		ofSetLineWidth(p_line->getLineStroke());
 	}
 	ofDrawLine(p_line->getCoordVector()[0].getX(), p_line->getCoordVector()[0].getY(),

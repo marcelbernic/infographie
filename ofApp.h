@@ -22,10 +22,6 @@ class ofApp : public ofBaseApp{
 		std::vector<Coord> m_buffer;
 		std::vector<Obj2D*> m_obj2DVector;
 		AppState m_state;
-		int m_lineStroke;
-		int m_lineColor;
-		int m_lineColorSelected;
-		int m_colorFill;
 		int m_clickRadius;
 		bool isTakingScreenshot;
 

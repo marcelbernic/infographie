@@ -12,8 +12,8 @@ namespace app {
 		double m_height;
 
 	public:
-		Image2D(std::string p_url, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill);
-		Image2D(std::string p_url, double p_width, double p_height, Coord p_pos, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFilld);
+		Image2D(std::string p_url, double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill);
+		Image2D(std::string p_url, double p_width, double p_height, Coord p_pos, double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFilld);
 		~Image2D();
 
 		void resize(Coord p_coord, double p_percent) override;

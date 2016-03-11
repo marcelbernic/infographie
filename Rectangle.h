@@ -9,7 +9,7 @@ namespace app {
 	public:
 		double m_width;
 		double m_height;
-		Rectangle(Coord p_coord, double p_width, double p_height, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill);
+		Rectangle(Coord p_coord, double p_width, double p_height, double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill);
 		~Rectangle();
 
 		void resize(Coord p_coord, double p_percent) override; // 1 = 100%

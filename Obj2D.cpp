@@ -2,7 +2,7 @@
 #include <exception>
 #include <iostream>
 
-Obj2D::Obj2D(double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill) {
+Obj2D::Obj2D(double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill) {
 	m_angle = p_angle;
 	m_lineStroke = p_lineStroke;
 	m_lineColor = p_lineColor;
@@ -31,7 +31,7 @@ void Obj2D::setLineStroke(int p_lineStroke) {
 	m_lineStroke = p_lineStroke;
 }
 
-int Obj2D::getLineColor() {
+ofColor Obj2D::getLineColor() {
 	return m_lineColor;
 }
 
@@ -39,7 +39,7 @@ void Obj2D::setLineColor(int p_lineColor) {
 	m_lineColor = p_lineColor;
 }
 
-int Obj2D::getLineColorSelected() {
+ofColor Obj2D::getLineColorSelected() {
 	return m_lineColorSelected;
 }
 
@@ -47,7 +47,7 @@ void Obj2D::setLineColorSelected(int p_lineColorSelected) {
 	m_lineColorSelected = p_lineColorSelected;
 }
 
-int Obj2D::getColorFill() {
+ofColor Obj2D::getColorFill() {
 	return m_colorFill;
 }
 

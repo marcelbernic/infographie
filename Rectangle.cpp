@@ -1,7 +1,7 @@
 #include "Rectangle.h"
 using namespace app;
 
-Rectangle::Rectangle(Coord p_coord, double p_width, double p_height, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill)
+Rectangle::Rectangle(Coord p_coord, double p_width, double p_height, double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill)
 	: Shape2D(p_angle, p_lineStroke, p_lineColor, p_lineColorSelected, p_colorFill) {
 	m_width = p_width;
 	m_height = p_height;

@@ -1,7 +1,7 @@
 #include "Circle.h"
 using namespace app;
 
-Circle::Circle(Coord p_coord, double p_radius, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill)
+Circle::Circle(Coord p_coord, double p_radius, double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill)
 	: Shape2D(p_angle, p_lineStroke, p_lineColor, p_lineColorSelected, p_colorFill) {
 	m_type = EnumVectorDrawMode::VECTOR_PRIMITIVE_CIRCLE;
 	m_radius = p_radius;

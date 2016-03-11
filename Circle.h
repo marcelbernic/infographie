@@ -8,7 +8,7 @@ namespace app {
 		double m_radius;
 
 	public:
-		Circle(Coord p_coord, double p_radius, double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFill);
+		Circle(Coord p_coord, double p_radius, double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill);
 		~Circle();
 
 		void resize(Coord p_coord, double p_percent) override; // 1 = 100%

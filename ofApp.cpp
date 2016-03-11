@@ -66,7 +66,6 @@ void ofApp::setup(){
 
 	//Default Parameters
 	m_state = AppState::ACTION_SELECT;
-	m_lineStroke = renderer2d->strokeWidth; //5
 	m_clickRadius = 5;
 	isTakingScreenshot = false;
 
@@ -290,7 +289,7 @@ void ofApp::buttonPressed(const void * sender){
 	if (btnName == "Import") {
 		ofFileDialogResult file = ofSystemLoadDialog("Load Image", false);
 		if (file.getPath() != "") {
-			app::Image2D *newImage = new app::Image2D(file.getPath(), 64, 64, Coord(ofGetWidth() / 2, ofGetHeight() / 2), 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill);
+			app::Image2D *newImage = new app::Image2D(file.getPath(), 64, 64, Coord(ofGetWidth() / 2, ofGetHeight() / 2), 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get());
 			if (newImage->getImage().getTextureReference().isAllocated()) {
 				m_obj2DVector.push_back(newImage);
 			}			
@@ -511,30 +510,30 @@ void ofApp::buildRectangle() {
 	double width = m_buffer[1].getX() - m_buffer[0].getX();
 	double height = m_buffer[1].getY() - m_buffer[0].getY();
 	if (width >= 0 && height >= 0) { //0 = top-left, 1 = bottom-right
-		m_obj2DVector.push_back(new app::Rectangle(m_buffer[0], width, height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+		m_obj2DVector.push_back(new app::Rectangle(m_buffer[0], width, height, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 	}
 	else if (width < 0 && height >= 0) { //0 = top-right, 1 = bottom-left
-		m_obj2DVector.push_back(new app::Rectangle(Coord(m_buffer[1].getX(), m_buffer[0].getY()), -width, height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+		m_obj2DVector.push_back(new app::Rectangle(Coord(m_buffer[1].getX(), m_buffer[0].getY()), -width, height, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 	}
 	else if (width >= 0 && height < 0) { //0 = bottom-left, 1 = top-right
-		m_obj2DVector.push_back(new app::Rectangle(Coord(m_buffer[0].getX(), m_buffer[1].getY()), width, -height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+		m_obj2DVector.push_back(new app::Rectangle(Coord(m_buffer[0].getX(), m_buffer[1].getY()), width, -height, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 	}
 	else { //0 = bottom-right, 1 = top-left
-		m_obj2DVector.push_back(new app::Rectangle(m_buffer[1], -width, -height, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+		m_obj2DVector.push_back(new app::Rectangle(m_buffer[1], -width, -height, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 	}
 }
 
 void ofApp::buildTriangle() {
-	m_obj2DVector.push_back(new app::Triangle(m_buffer, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+	m_obj2DVector.push_back(new app::Triangle(m_buffer, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 }
 
 void ofApp::buildCircle() {
 	double radius = calculateDistance(m_buffer[0], m_buffer[1]);
-	m_obj2DVector.push_back(new app::Circle(m_buffer[0], radius, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+	m_obj2DVector.push_back(new app::Circle(m_buffer[0], radius, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 }
 
 void ofApp::buildLine() {
-	m_obj2DVector.push_back(new app::Line2D(m_buffer, 0, m_lineStroke, m_lineColor, m_lineColorSelected, m_colorFill));
+	m_obj2DVector.push_back(new app::Line2D(m_buffer, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 }
 
 double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {

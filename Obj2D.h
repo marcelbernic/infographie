@@ -1,5 +1,6 @@
 #pragma once
 #include "Coord.h"
+#include "ofColor.h"
 #include <vector>
 #include "primitive.h"
 #include <cmath>
@@ -13,14 +14,14 @@ protected:
 	std::vector<Coord> m_coordVector;
 	double m_angle;
 	int m_lineStroke;
-	int m_lineColor;
-	int m_lineColorSelected;
-	int m_colorFill;
+	ofColor m_lineColor;
+	ofColor m_lineColorSelected;
+	ofColor m_colorFill;
 	bool m_isSelected;
 	EnumVectorDrawMode m_type;
 
 public:
-	Obj2D(double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFills);
+	Obj2D(double p_angle, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFills);
 	~Obj2D();
 
 	virtual void translate(double p_x, double p_y);
@@ -34,11 +35,11 @@ public:
 	void setAngle(double p_angle);
 	int getLineStroke();
 	void setLineStroke(int p_lineStroke);
-	int getLineColor();
+	ofColor getLineColor();
 	void setLineColor(int p_lineColor);
-	int getLineColorSelected();
+	ofColor getLineColorSelected();
 	void setLineColorSelected(int p_lineColorSelected);
-	int getColorFill();
+	ofColor getColorFill();
 	void setColorFill(int p_colorFill);
 	bool isSelected();
 	virtual void setSelected(bool p_selected);
