@@ -103,6 +103,11 @@ void Renderer2D::draw() {
 			drawImage(i);
 		}
 			break;
+		case EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION: {
+			app::Obj2DCollection* i = dynamic_cast<app::Obj2DCollection*>(o);
+			drawCollection(i);
+		}
+			break;
 		}
 	}
 }
@@ -205,6 +210,43 @@ void Renderer2D::drawImage(app::Image2D *p_image) {
 	ofFill();
 
 	//img.getTextureReference().unbind()
+}
+
+void Renderer2D::drawCollection(app::Obj2DCollection *p_coll) {
+	for (Obj2D* o : p_coll->getObjVector()) {
+		switch (o->getType()) {
+		case EnumVectorDrawMode::VECTOR_PRIMITIVE_CIRCLE: {
+			app::Circle* c = dynamic_cast<app::Circle*>(o);
+			drawCircle(c);
+		}
+			break;
+		case EnumVectorDrawMode::VECTOR_PRIMITIVE_RECTANGLE: {
+			app::Rectangle* r = dynamic_cast<app::Rectangle*>(o);
+			drawRectangle(r);
+		}
+			break;
+		case EnumVectorDrawMode::VECTOR_PRIMITIVE_TRIANGLE: {
+			app::Triangle* t = dynamic_cast<app::Triangle*>(o);
+			drawTriangle(t);
+		}
+			break;
+		case EnumVectorDrawMode::VECTOR_PRIMITIVE_LINE: {
+			app::Line2D* l = dynamic_cast<app::Line2D*>(o);
+			drawLine(l);
+		}
+			break;
+		case EnumVectorDrawMode::VECTOR_PRIMITIVE_IMAGE: {
+			app::Image2D* i = dynamic_cast<app::Image2D*>(o);
+			drawImage(i);
+		}
+			break;
+		case EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION: {
+			app::Obj2DCollection* i = dynamic_cast<app::Obj2DCollection*>(o);
+			drawCollection(i);
+		}
+			break;
+		}
+	}
 }
 
 void Renderer2D::imageExport(const string path, const string extension) const

@@ -15,10 +15,10 @@ void ofApp::setup(){
 
 	//Panels params
 	menuBarParams.setName("Menu");
-	menuBarParams.add(bSelect.set("Selection", false));
 	importButton = new ofxButton();
 	exportButton = new ofxButton();
 	mergeButton = new ofxButton();
+	unmergeButton = new ofxButton();
 
     shapesParams.setName("2D Shapes");
 	shapesParams.add(bLine.set("Line", false));
@@ -33,13 +33,16 @@ void ofApp::setup(){
 	importButton->setup("Import");
 	exportButton->setup("Export");
 	mergeButton->setup("Merge Shapes");
+	unmergeButton->setup("Unmerge Shapes");
 
 	//Setup panels
 	menuPanel.setup(menuBarParams);
 	menuPanel.add(importButton);
 	menuPanel.add(exportButton);
+	menuPanel.add(bSelect.set("Selection", false));
 	shapesPanel.setup(shapesParams);
 	shapesPanel.add(mergeButton);
+	shapesPanel.add(unmergeButton);
     shapesParamsPanel.setup(shapesSettingsParams);
 	menuPanel.setPosition(0, 0);
 	shapesPanel.setPosition(0, 5 + menuPanel.getHeight());
@@ -49,6 +52,7 @@ void ofApp::setup(){
 	importButton->addListener(this, &ofApp::buttonPressed);
 	exportButton->addListener(this, &ofApp::buttonPressed);
 	mergeButton->addListener(this, &ofApp::buttonPressed);
+	unmergeButton->addListener(this, &ofApp::buttonPressed);
 	bLine.addListener(this, &ofApp::bLineChanged);
 	bTriangle.addListener(this, &ofApp::bTriangleChanged);
 	bRectangle.addListener(this, &ofApp::bRectangleChanged);
@@ -188,11 +192,6 @@ void ofApp::drawCursor() {
 	default:
 		ofShowCursor();
 		break;
-			case EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION: {
-				app::Obj2DCollection* i = dynamic_cast<app::Obj2DCollection*>(o);
-				drawCollection(i);
-			}
-				break;
 	}
 	ofFill();
 }
@@ -315,7 +314,40 @@ void ofApp::buttonPressed(const void * sender){
 	}
 
 	else if (btnName == "Merge Shapes") {
-		
+		std::vector<Obj2D*> glued;
+		int size = m_obj2DVector.size();
+		for (int i = 0; i < m_obj2DVector.size(); i++) {
+			if (m_obj2DVector[i]->isSelected()) {
+				glued.push_back(m_obj2DVector[i]);
+				m_obj2DVector.erase(m_obj2DVector.begin() + i);
+				i--;
+				size--;
+			}
+		}
+		m_obj2DVector.push_back(new app::Obj2DCollection(glued));
+		m_obj2DVector.back()->setSelected(true);
+		cout << "Created" << endl;
+		m_buffer.clear();
+	}
+
+	else if (btnName == "Unmerge Shapes") {
+		std::vector<Obj2D*> glued;
+		int size = m_obj2DVector.size();
+		for (int i = 0; i < m_obj2DVector.size(); i++) {
+			if (m_obj2DVector[i]->getType() == EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION) {
+				app::Obj2DCollection* j = dynamic_cast<app::Obj2DCollection*>(m_obj2DVector[i]);
+				for (Obj2D* o : getCollectionObjects(j)) {
+					glued.push_back(o);
+				}
+				m_obj2DVector.erase(m_obj2DVector.begin() + i);
+				i--;
+				size--;
+			}
+		}
+		for (Obj2D* o : glued) {
+			m_obj2DVector.push_back(o);
+		}
+		m_buffer.clear();
 	}
 }
 //--------------------------------------------------------------
@@ -539,43 +571,6 @@ void ofApp::updateGroupSelection() {
 	}
 	for (Obj2D* o : m_obj2DVector) {
 		o->setSelected(o->containedInRect(topLeft, abs(width), abs(height)));
-	}
-}
-
-void ofApp::drawCollection(app::Obj2DCollection *p_coll) {
-	for (Obj2D* o : p_coll->getObjVector()) {
-		switch (o->getType()) {
-		case EnumVectorDrawMode::VECTOR_PRIMITIVE_CIRCLE: {
-			app::Circle* c = dynamic_cast<app::Circle*>(o);
-			drawCircle(c);
-		}
-			break;
-		case EnumVectorDrawMode::VECTOR_PRIMITIVE_RECTANGLE: {
-			app::Rectangle* r = dynamic_cast<app::Rectangle*>(o);
-			drawRectangle(r);
-		}
-			break;
-		case EnumVectorDrawMode::VECTOR_PRIMITIVE_TRIANGLE: {
-			app::Triangle* t = dynamic_cast<app::Triangle*>(o);
-			drawTriangle(t);
-		}
-			break;
-		case EnumVectorDrawMode::VECTOR_PRIMITIVE_LINE: {
-			app::Line2D* l = dynamic_cast<app::Line2D*>(o);
-			drawLine(l);
-		}
-			break;
-		case EnumVectorDrawMode::VECTOR_PRIMITIVE_IMAGE: {
-			app::Image2D* i = dynamic_cast<app::Image2D*>(o);
-			drawImage(i);
-		}
-			break;
-		case EnumVectorDrawMode::VECTOR_PRIMITIVE_COLLECTION: {
-			app::Obj2DCollection* i = dynamic_cast<app::Obj2DCollection*>(o);
-			drawCollection(i);
-		}
-			break;
-		}
 	}
 }
 

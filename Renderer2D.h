@@ -10,6 +10,7 @@
 #include "Circle.h"
 #include "Line2D.h"
 #include "Image2D.h"
+#include "Obj2DCollection.h"
 
 class Renderer2D;
 class ofApp;
@@ -35,6 +36,7 @@ public:
 	void drawTriangle(app::Triangle *p_triangle);
 	void drawLine(app::Line2D *p_line);
 	void drawImage(app::Image2D *p_image);
+	void drawCollection(app::Obj2DCollection *p_coll);
 
 	void imageExport(const string path, const string extension) const;
 

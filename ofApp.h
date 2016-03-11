@@ -70,7 +70,7 @@ class ofApp : public ofBaseApp{
 		void rotateSelection();
 		
 		Renderer2D *renderer2d;
-		void drawCollection(app::Obj2DCollection *p_coll);
+
 		std::vector<Obj2D*> getCollectionObjects(app::Obj2DCollection* p_coll);
 
 		ofxPanel shapesPanel, shapesParamsPanel, menuPanel;
@@ -79,6 +79,6 @@ class ofApp : public ofBaseApp{
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams;
 		ofXml settings;
         ofTrueTypeFont font;
-		ofxButton *importButton, *exportButton, *mergeButton;
+		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton;
 		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 };
