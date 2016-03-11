@@ -23,8 +23,8 @@ bool Rectangle::checkCollision(Coord p_clickPoint, double p_radius) {
 	//Rotate circle center from rectangle top-left corner standpoint
 	double x = p_clickPoint.getX() - m_coordVector[0].getX();
 	double y = p_clickPoint.getY() - m_coordVector[0].getY();
-	double circleRotatedX = (x*cos(m_angle*PI / 180) - y*sin(m_angle*PI / 180)) + m_coordVector[0].getX();
-	double circleRotatedY = (x*sin(m_angle*PI / 180) + y*cos(m_angle*PI / 180)) + m_coordVector[0].getY();
+	double circleRotatedX = (x*cos(-m_angle*PI / 180) - y*sin(-m_angle*PI / 180)) + m_coordVector[0].getX();
+	double circleRotatedY = (x*sin(-m_angle*PI / 180) + y*cos(-m_angle*PI / 180)) + m_coordVector[0].getY();
 
 	//Hitbox detection
 	double centerX = m_coordVector[0].getX() + (m_width / 2);

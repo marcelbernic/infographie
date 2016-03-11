@@ -11,6 +11,7 @@
 #include "Circle.h"
 #include "Line2D.h"
 #include "Image2D.h"
+#include "Obj2DCollection.h"
 #include <vector>
 
 class ofApp : public ofBaseApp{
@@ -66,6 +67,8 @@ class ofApp : public ofBaseApp{
 		void drawTriangle(app::Triangle *p_triangle);
 		void drawLine(app::Line2D *p_line);
 		void drawImage(app::Image2D *p_image);
+		void drawCollection(app::Obj2DCollection *p_coll);
+		std::vector<Obj2D*> getCollectionObjects(app::Obj2DCollection* p_coll);
 		
 
         ofxPanel gui, gui2;

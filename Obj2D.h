@@ -23,11 +23,11 @@ public:
 	Obj2D(double p_angle, int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFills);
 	~Obj2D();
 
-	void translate(double p_x, double p_y);
+	virtual void translate(double p_x, double p_y);
 	void resize(double p_percent); // 1 = 100%
 	void rotate(Coord p_first, Coord p_sec);
-	virtual void rotate(double p_degree); // rotate from shape center
-	void rotate(Coord p_coord, double p_degree); // rotate from coord
+	void rotate(double p_degree); // rotate from shape center
+	virtual void rotate(Coord p_coord, double p_degree); // rotate from coord
 
 	double getAngle();
 	void setAngle(double p_angle);
@@ -40,14 +40,14 @@ public:
 	int getColorFill();
 	void setColorFill(int p_colorFill);
 	bool isSelected();
-	void setSelected(bool p_selected);
+	virtual void setSelected(bool p_selected);
 	EnumVectorDrawMode getType();
 	std::vector<Coord> getCoordVector();
 
 	double getAngleSign(Coord p_first, Coord p_sec, Coord p_rotCenter);
 	Coord getRotationCenter();
 	virtual bool containedInRect(Coord p_topLeft, double p_width, double p_height);
-	bool checkSelected(Coord p_clickPoint, double p_radius);
+	virtual bool checkSelected(Coord p_clickPoint, double p_radius);
 	virtual bool checkCollision(Coord p_clickPoint, double p_radius);
 	bool checkCollisionLineCircle(Coord p_coordA, Coord p_coordB, Coord p_clickPoint, double p_radius);
 	double calculateDistance(Coord p_coord1, Coord p_coord2);	

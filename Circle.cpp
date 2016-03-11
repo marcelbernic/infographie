@@ -8,7 +8,6 @@ Circle::Circle(Coord p_coord, double p_radius, double p_angle, int p_lineStroke,
 	m_coordVector.push_back(p_coord);
 }
 
-
 Circle::~Circle()
 {
 }
