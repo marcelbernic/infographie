@@ -388,6 +388,8 @@ void ofApp::mouseDragged(int x, int y, int button) {
 		if (ofGetMousePressed(OF_MOUSE_BUTTON_LEFT) && ofGetMousePressed(OF_MOUSE_BUTTON_RIGHT)) {
 			switch (m_state) {
 			case AppState::ACTION_SELECT:
+			case AppState::ACTION_TRANSLATE:
+			case AppState::ACTION_GROUPSELECT:
 				m_buffer.clear();
 				m_buffer.push_back(Coord(x, y));
 				m_buffer.push_back(Coord(x, y));
