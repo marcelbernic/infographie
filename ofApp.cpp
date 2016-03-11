@@ -263,6 +263,11 @@ bool ofApp::mouseIsOverPanel() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 	if (m_mode == MODE_2D) {
+		if (ofGetKeyPressed(OF_KEY_DEL)) {
+			deleteSelection();
+			m_buffer.clear();
+		}
+
 		if (key == '+') {
 			for (Obj2D* o : m_obj2DVector) {
 				o->resize(2);
@@ -278,6 +283,18 @@ void ofApp::keyPressed(int key){
 	}
 	else {
 		//3D
+	}
+}
+
+void ofApp::deleteSelection() {
+	int size = m_obj2DVector.size();
+	for (int i = 0; i < m_obj2DVector.size(); i++) {
+		if (m_obj2DVector[i]->isSelected()) {
+			//DELETE OBJ
+			m_obj2DVector.erase(m_obj2DVector.begin() + i);
+			i--;
+			size--;
+		}
 	}
 }
 
