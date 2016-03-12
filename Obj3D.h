@@ -9,6 +9,7 @@
 #include "primitive.h"
 #include <cmath>
 #include <stdlib.h>
+#include "ofApp.h"
 
 #define PI (3.141592653589793)
 
@@ -22,6 +23,7 @@ protected:
     bool m_isSelected;
     std::vector<Coord3D> m_coordVector;
     EnumVectorDrawMode m_type;
+    ofMesh mesh;
 
 public:
     Obj3D(int p_lineStroke, int p_lineColor, int p_lineColorSelected, int p_colorFills);

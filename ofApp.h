@@ -2,6 +2,10 @@
 
 #include "ofMain.h"
 #include "ofxGui.h"
+#include "ofxOpenCv.h"
+#include "of3dGraphics.h"
+#include "of3dPrimitives.h"
+#include "of3dUtils.h"
 #include "Renderer2D.h"
 #include "Coord.h"
 #include "state.h"
@@ -21,6 +25,8 @@ class ofApp : public ofBaseApp{
 
 		std::vector<Coord> m_buffer;
 		std::vector<Obj2D*> m_obj2DVector;
+        std::vector<Coord> m_buffer3;
+        std::vector<Obj2D*> m_obj3DVector;
 		AppState m_state;
 		AppMode m_mode;
 		int m_clickRadius;
