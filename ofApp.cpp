@@ -28,6 +28,9 @@ void ofApp::setup(){
 	shapesParams.add(bRectangle.set("Rectangle", false));
 	shapesParams.add(bCircle.set("Circle", false));
 
+    shapes3DParams.setName("3D Shapes");
+    shapes3DParams.add(bCube.set("Cube", false));
+
 	shapesSettingsParams.setName("2D Settings");
 	shapesSettingsParams.add(vSync.set("vSync",true));
 	shapesSettingsParams.add(renderer2d->parameters);
@@ -46,9 +49,11 @@ void ofApp::setup(){
 	shapesPanel.add(mergeButton);
 	shapesPanel.add(unmergeButton);
     shapesParamsPanel.setup(shapesSettingsParams);
+    shapes3DPanel.setup(shapes3DParams);
 	menuPanel.setPosition(0, 0);
 	shapesPanel.setPosition(0, 5 + menuPanel.getHeight());
 	shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
+    shapes3DPanel.setPosition(205, 0);
 
 	//Listeners
 	b2D.addListener(this, &ofApp::b2DChanged);
@@ -62,6 +67,7 @@ void ofApp::setup(){
 	bRectangle.addListener(this, &ofApp::bRectangleChanged);
 	bCircle.addListener(this, &ofApp::bCircleChanged);
 	bSelect.addListener(this, &ofApp::bSelectChanged);
+    bCube.addListener(this, &ofApp::bSelectChanged);
 
     //gui.loadFromFile("settings.xml");
 
@@ -148,6 +154,16 @@ void ofApp::bSelectChanged(bool & pSelect) {
 	}
 }
 
+void ofApp::bCubeChanged(bool & pCube) {
+    if (!isClearingButtonsShapes) {
+        clearButtons();
+        isClearingButtonsShapes = false;
+        bCube.set(true);
+        m_buffer.clear();
+        m_state = AppState::BUILD_CUBE;
+    }
+}
+
 void ofApp::clearButtons() {
 	isClearingButtonsShapes = true;
 	bSelect.set(false);
@@ -155,6 +171,7 @@ void ofApp::clearButtons() {
 	bTriangle.set(false);
 	bRectangle.set(false);
 	bCircle.set(false);
+    bCube.set(false);
 }
 
 //--------------------------------------------------------------
@@ -181,6 +198,7 @@ void ofApp::draw(){
 		menuPanel.draw();
 		shapesPanel.draw();
 		shapesParamsPanel.draw();
+        shapes3DPanel.draw();
 	}
 
 	drawCursor();
@@ -517,6 +535,18 @@ void ofApp::mousePressed(int x, int y, int button) {
 	}
 	else if (m_mode == MODE_3D && !isMouseOnPanels) {
 		//3D
+        if (button == OF_MOUSE_BUTTON_LEFT) {
+            switch (m_state) {
+            case AppState::BUILD_CUBE:
+                m_buffer3D.push_back(Coord3D(x, y, m_obj3DVector.size() + 30));
+                if (m_buffer3D.size() == 1) {
+                    buildCube();
+                    m_buffer3D.clear();
+                }
+                break;
+
+            }
+        }
 	}
 }
 
@@ -603,6 +633,11 @@ void ofApp::buildCircle() {
 void ofApp::buildLine() {
 	m_obj2DVector.push_back(new app::Line2D(m_buffer, 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorStroke.get()));
 }
+
+void ofApp::buildCube() {
+    m_obj3DVector.push_back(new app::Cube3D(m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
+} //Cube3D(std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor,
+//ofColor p_lineColorSelected, ofColor p_colorFill)
 
 double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {
 	double x2 = pow((p_coord1.getX() - p_coord2.getX()), 2);

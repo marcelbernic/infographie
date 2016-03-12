@@ -10,23 +10,27 @@
 #include "Coord.h"
 #include "state.h"
 #include "Obj2D.h"
+#include "Obj3D.h"
 #include "Rectangle.h"
 #include "Triangle.h"
 #include "Circle.h"
 #include "Line2D.h"
 #include "Image2D.h"
+#include "Cube3D.h"
 #include "Obj2DCollection.h"
 #include <vector>
 
 class Renderer2D;
+class Renderer3D;
+class Obj3D;
 
 class ofApp : public ofBaseApp{
 	public:
 
 		std::vector<Coord> m_buffer;
 		std::vector<Obj2D*> m_obj2DVector;
-        std::vector<Coord> m_buffer3;
-        std::vector<Obj2D*> m_obj3DVector;
+        std::vector<Coord3D> m_buffer3D;
+        std::vector<Obj3D*> m_obj3DVector;
 		AppState m_state;
 		AppMode m_mode;
 		int m_clickRadius;
@@ -64,12 +68,14 @@ class ofApp : public ofBaseApp{
 		void bRectangleChanged(bool & p_Rectangle);
 		void bCircleChanged(bool & p_Circle);
 		void bSelectChanged(bool & p_Select);
+        void bCubeChanged(bool & p_Cube);
 		void clearButtons();
 
 		void buildRectangle();
 		void buildTriangle();
 		void buildCircle();
 		void buildLine();
+        void buildCube();
 		double calculateDistance(Coord p_coord1, Coord p_coord2);
 		void clearSelected();
 		void updateGroupSelection();
@@ -82,11 +88,12 @@ class ofApp : public ofBaseApp{
 
 		std::vector<Obj2D*> getCollectionObjects(app::Obj2DCollection* p_coll);
 
-		ofxPanel shapesPanel, shapesParamsPanel, menuPanel;
+        ofxPanel shapesPanel, shapesParamsPanel, menuPanel, shapes3DPanel, shapes3DParamsPanel;
 		ofParameter<bool> vSync;
 		ofParameter<bool> b2D, b3D;
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect;
-        ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams;
+        ofParameter<bool> bCube;
+        ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams;
 		ofXml settings;
         ofTrueTypeFont font;
 		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton;
