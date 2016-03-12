@@ -210,7 +210,7 @@ double Obj2D::calculateAngle(double vector1[], double vector2[]) {
 	double norm1 = sqrt(pow(vector1[0], 2) + pow(vector1[1], 2));
 	double norm2 = sqrt(pow(vector2[0], 2) + pow(vector2[1], 2));
 	double angle = acos((i + j) / (norm1*norm2))*(180 / PI);
-    if(isnan(angle) == 0) {
+    if(std::isnan(angle) == 0) {
 		return angle;
 	}
 	else {
