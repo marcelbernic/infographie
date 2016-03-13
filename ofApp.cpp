@@ -10,7 +10,7 @@ ofApp::ofApp()
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofSetFrameRate(60);
-	ofSetWindowTitle("TP2");
+	ofSetWindowTitle("Paint3D+");
 
     m_firstTimeSelection = 1;
 	renderer2d = new Renderer2D();
@@ -318,6 +318,16 @@ bool ofApp::mouseIsOverPanel() {
 
 	else if ((shapesParamsPanel.getPosition().x <= mouseX) && (mouseX <= (shapesParamsPanel.getPosition().x + shapesParamsPanel.getWidth()))
 		&& (shapesParamsPanel.getPosition().y <= mouseY) && (mouseY <= (shapesParamsPanel.getPosition().y + shapesParamsPanel.getHeight()))) {
+		return true;
+	}
+
+	else if ((shapes3DPanel.getPosition().x <= mouseX) && (mouseX <= (shapes3DPanel.getPosition().x + shapes3DPanel.getWidth()))
+		&& (shapes3DPanel.getPosition().y <= mouseY) && (mouseY <= (shapes3DPanel.getPosition().y + shapes3DPanel.getHeight()))) {
+		return true;
+	}
+
+	else if ((shapes3DParamsPanel.getPosition().x <= mouseX) && (mouseX <= (shapes3DParamsPanel.getPosition().x + shapes3DParamsPanel.getWidth()))
+		&& (shapes3DParamsPanel.getPosition().y <= mouseY) && (mouseY <= (shapes3DParamsPanel.getPosition().y + shapes3DParamsPanel.getHeight()))) {
 		return true;
 	}
 
