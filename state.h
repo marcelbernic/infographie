@@ -19,5 +19,6 @@ typedef enum
 typedef enum
 {
 	MODE_2D,
-	MODE_3D
+	MODE_3D,
+	MODE_MODEL
 }   AppMode;

@@ -4,6 +4,7 @@
 ofApp::ofApp()
 {
 	renderer2d = nullptr;
+	rendererModel = nullptr;
     renderer3d = nullptr;
 }
 
@@ -19,10 +20,13 @@ void ofApp::setup(){
     renderer3d = new Renderer3D();
     renderer3d->setup("3D", this);
 
+	rendererModel = new RendererModel(); //*
+
 	//Panels params
 	menuBarParams.setName("Menu");
 	menuBarParams.add(b2D.set("2D", true));
 	menuBarParams.add(b3D.set("3D", false));
+	menuBarParams.add(bModelMode.set("Model Mode", false)); //*
 	importButton = new ofxButton();
 	exportButton = new ofxButton();
 	mergeButton = new ofxButton();
@@ -72,6 +76,7 @@ void ofApp::setup(){
 	//Listeners
 	b2D.addListener(this, &ofApp::b2DChanged);
 	b3D.addListener(this, &ofApp::b3DChanged);
+	bModelMode.addListener(this, &ofApp::bModelModeChanged); //*
 	importButton->addListener(this, &ofApp::buttonPressed);
 	exportButton->addListener(this, &ofApp::buttonPressed);
 	mergeButton->addListener(this, &ofApp::buttonPressed);
@@ -100,15 +105,19 @@ void ofApp::setup(){
 	isClearingButtonsModes = false;
     m_selectionIndex = 0;
 
+	showGui = true;
+	ofSetLogLevel(OF_LOG_VERBOSE);
 }
 
 void ofApp::b2DChanged(bool & p_2D) {
 	if (!isClearingButtonsModes) {
 		isClearingButtonsModes = true;
         b3D.set(false);
+		bModelMode.set(false); //*
         b2D.set(p_2D);
 		isClearingButtonsModes = false;
 		m_mode = MODE_2D;
+		showGui = true; //*
 	}
 }
 
@@ -116,9 +125,23 @@ void ofApp::b3DChanged(bool & p_3D) {
 	if (!isClearingButtonsModes) {
 		isClearingButtonsModes = true;
         b2D.set(false);
+		bModelMode.set(false); //*
         b3D.set(p_3D);
 		isClearingButtonsModes = false;
 		m_mode = MODE_3D;
+		showGui = true; //*
+	}
+}
+
+void ofApp::bModelModeChanged(bool & p_modelMode) { //*
+	if (!isClearingButtonsModes) {
+		isClearingButtonsModes = true;
+		b2D.set(false);
+		b3D.set(false);
+		bModelMode.set(true);
+		isClearingButtonsModes = false;
+		m_mode = MODE_MODEL;
+		showGui = false;
 	}
 }
 
@@ -231,15 +254,18 @@ void ofApp::draw(){
 	if (m_mode == MODE_2D) {
 		renderer2d->draw();
 	}
+	else if (m_mode == MODE_MODEL) {
+		rendererModel->draw();
+	}
 	else {
         renderer3d->draw();	}
 
 	ofSetColor(255);
 	if (!isTakingScreenshot) {
 		menuPanel.draw();
-		shapesPanel.draw();
-		shapesParamsPanel.draw();
-        shapes3DPanel.draw();
+		if (showGui) shapesPanel.draw();
+		if (showGui) shapesParamsPanel.draw();
+		if (showGui)  shapes3DPanel.draw();
 	}
 
 	drawCursor();
@@ -320,7 +346,6 @@ bool ofApp::mouseIsOverPanel() {
 		&& (shapesParamsPanel.getPosition().y <= mouseY) && (mouseY <= (shapesParamsPanel.getPosition().y + shapesParamsPanel.getHeight()))) {
 		return true;
 	}
-
 	else if ((shapes3DPanel.getPosition().x <= mouseX) && (mouseX <= (shapes3DPanel.getPosition().x + shapes3DPanel.getWidth()))
 		&& (shapes3DPanel.getPosition().y <= mouseY) && (mouseY <= (shapes3DPanel.getPosition().y + shapes3DPanel.getHeight()))) {
 		return true;
@@ -353,6 +378,21 @@ void ofApp::keyPressed(int key){
 				o->resize(0.5);
 			}
 			m_buffer.clear();
+		}
+	}
+	else if (m_mode == MODE_MODEL) { //*
+		if (ofGetKeyPressed('l')) {
+			rendererModel->switchLight = !rendererModel->switchLight;
+		}
+		if (ofGetKeyPressed('m')) {
+			rendererModel->switchMaterials = !rendererModel->switchMaterials;
+			if (rendererModel->switchMaterials) rendererModel->model.disableMaterials();
+			if (!rendererModel->switchMaterials) rendererModel->model.enableMaterials();
+		}
+		if (ofGetKeyPressed('t')) {
+			rendererModel->switchTextures = !rendererModel->switchTextures;
+			if (rendererModel->switchTextures) rendererModel->model.disableTextures();
+			if (!rendererModel->switchTextures) rendererModel->model.enableTextures();
 		}
 	}
 	else {
@@ -434,6 +474,14 @@ void ofApp::buttonPressed(const void * sender){
 				m_obj2DVector.push_back(o);
 			}
 			m_buffer.clear();
+		}
+	}
+	else if (m_mode == MODE_MODEL) { //*
+		if (btnName == "Import") {
+			ofFileDialogResult file = ofSystemLoadDialog("Select a model file to load");
+			if (file.bSuccess) {
+				rendererModel->processOpenFileSelection(file);
+			}
 		}
 	}
 	else {
@@ -811,4 +859,7 @@ ofApp::~ofApp()
 {
 	if (nullptr != renderer2d)
 		delete renderer2d;
+	if (nullptr != rendererModel) //*
+		delete rendererModel; //*
+	
 }
