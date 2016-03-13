@@ -20,10 +20,14 @@
 #include "Cube3D.h"
 #include "Obj2DCollection.h"
 #include <vector>
+#include "RendererModel.h"
+#include "ofxAssimpModelLoader.h"
+#include "ofVboMesh.h" 
 
 class Renderer2D;
 class Obj3D;
 class Renderer3D;
+class RendererModel;
 
 class ofApp : public ofBaseApp{
 	public:
@@ -66,6 +70,7 @@ class ofApp : public ofBaseApp{
 		void vSyncChanged(bool & vSync);
 		void b2DChanged(bool & p_2D);
 		void b3DChanged(bool & p_3D);
+		void bModelModeChanged(bool & p_modelMode); //*
 		void bLineChanged(bool & p_Line);
 		void bTriangleChanged(bool & p_Triangle);
 		void bRectangleChanged(bool & p_Rectangle);
@@ -99,7 +104,7 @@ class ofApp : public ofBaseApp{
 
         ofxPanel shapesPanel, shapesParamsPanel, menuPanel, shapes3DPanel, shapes3DParamsPanel;
 		ofParameter<bool> vSync;
-		ofParameter<bool> b2D, b3D;
+		ofParameter<bool> b2D, b3D, bModelMode; //*
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect;
         ofParameter<bool> bCube, bSphere;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
@@ -107,4 +112,8 @@ class ofApp : public ofBaseApp{
         ofTrueTypeFont font;
         ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect;
 		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
+
+		// *
+		RendererModel *rendererModel;
+		bool showGui; // boolean variable utilized for show/hide interface
 };
