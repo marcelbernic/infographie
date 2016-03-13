@@ -464,6 +464,18 @@ void ofApp::buttonPressed(const void * sender){
             }
         }
 
+		else if (btnName == "Export") {
+			isTakingScreenshot = true;
+			draw();
+			isTakingScreenshot = false;
+
+			ofFileDialogResult file = ofSystemSaveDialog("Save", "Export");
+
+			if (file.getPath() != "") {
+				renderer3d->imageExport(file.getPath(), "png");
+			}
+		}
+
 	}	
 }
 //--------------------------------------------------------------

@@ -17,7 +17,7 @@ void Renderer2D::setup(const string p_name, ofApp *p_app) {
 	m_app = p_app;
 
 	//Default values:
-	strokeWidth.set("Stroke Width", 5, 0, 10);
+	strokeWidth.set("Stroke Width", 5, 1, 10);
 	colorStroke.set("Stroke Color", ofColor(0), ofColor(0,0), ofColor(255));
 	colorFill.set("Fill Color", ofColor(255, 0, 0), ofColor(0, 0), ofColor(255));
 	colorSelected.set("Selection Color", ofColor(255), ofColor(0, 0), ofColor(255));
