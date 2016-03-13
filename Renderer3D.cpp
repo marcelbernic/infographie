@@ -262,10 +262,10 @@ void Renderer3D::drawCube3D(app::Cube3D *p_cube) {
 
 void Renderer3D::drawSphere3D(app::Sphere3D *p_sphere) {
     if (p_sphere->isSelected()) {
-        p_sphere->setColorSphere(m_app->renderer2d->colorSelected.get());
+        p_sphere->setColorSphere(m_app->renderer2d->colorSelected);
     }
     else{
-        p_sphere->setColorSphere(p_sphere->getColorSphere());
+        p_sphere->setColorSphere(p_sphere->getColorFill());
     }
     p_sphere->draw();
 }

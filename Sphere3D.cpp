@@ -81,9 +81,9 @@ void Sphere3D::setRotateZ(int p_rotz){
 void Sphere3D::draw() {
     ofPushMatrix();
     ofColor color;
-    color.r = m_colorFill.r;
-    color.g = m_colorFill.g;
-    color.b = m_colorFill.b;
+    color.r = m_colorSphere.r;
+    color.g = m_colorSphere.g;
+    color.b = m_colorSphere.b;
     ofSetColor(color.r, color.g, color.b);
     ofFill();
     if(isCloud()){
