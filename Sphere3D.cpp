@@ -1,32 +1,26 @@
-#include "Cube3D.h"
+#include "Sphere3D.h"
 using namespace app;
 
-Cube3D::Cube3D(std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill)
+Sphere3D::Sphere3D(std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill)
     : Shape3D(p_lineStroke, p_lineColor, p_lineColorSelected, p_colorFill) {
     m_coordVector = p_coord;
-    m_type = EnumVectorDrawMode::PRIMITIVE_CUBE;
-    m_primitive.set(40, 40, 40);
+    m_type = EnumVectorDrawMode::PRIMITIVE_SPHERE;
+    m_primitive.set(40, 50);
     m_primitive.setPosition(p_coord[0].getX(), p_coord[0].getY(), p_coord[0].getZ());
-    m_primitive.setSideColor(0, p_colorFill);
-    m_primitive.setSideColor(1, p_colorFill);
-    m_primitive.setSideColor(2, p_colorFill);
-    m_primitive.setSideColor(3, p_colorFill);
-    m_primitive.setSideColor(4, p_colorFill);
-    m_primitive.setSideColor(5, p_colorFill);
 
 }
 
 
-Cube3D::~Cube3D()
+Sphere3D::~Sphere3D()
 {
 }
 
 //TODO
-bool Cube3D::checkCollision(Coord3D p_clickPoint, double p_radius) {
+bool Sphere3D::checkCollision(Coord3D p_clickPoint, double p_radius) {
     return checkCollisionLineCircle(m_vector3D[0], m_vector3D[1], p_clickPoint, p_radius);
 }
 
-bool Cube3D::containedInRect(Coord3D p_topLeft, double p_width, double p_height) {
+bool Sphere3D::containedInRect(Coord3D p_topLeft, double p_width, double p_height) {
     double distanceX = 0;
     double distanceY = 0;
     for (Coord3D c : m_coordVector) {
@@ -37,62 +31,66 @@ bool Cube3D::containedInRect(Coord3D p_topLeft, double p_width, double p_height)
     return false;
 }
 
-ofColor Cube3D::getColorCube(){
-    return m_colorCube;
+ofColor Sphere3D::getColorSphere(){
+    return m_colorSphere;
 }
 
-void Cube3D::setColorCube(ofColor p_color){
-    m_primitive.setSideColor(0, p_color);
-    m_primitive.setSideColor(1, p_color);
-    m_primitive.setSideColor(2, p_color);
-    m_primitive.setSideColor(3, p_color);
-    m_primitive.setSideColor(4, p_color);
-    m_primitive.setSideColor(5, p_color);
+void Sphere3D::setColorSphere(ofColor p_color){
+    m_colorSphere = p_color;
+
 }
 
-ofVec3f Cube3D::getPosition(){
+ofVec3f Sphere3D::getPosition(){
     return m_primitive.getPosition();
 
 }
 
-void Cube3D::setPositionX(int p_x){
+void Sphere3D::setPositionX(int p_x){
     ofVec3f vect = getPosition();
     m_primitive.setPosition(p_x, vect.y, vect.z);
 }
 
-void Cube3D::setPositionY(int p_y){
+void Sphere3D::setPositionY(int p_y){
     ofVec3f vect = getPosition();
     m_primitive.setPosition(vect.x, p_y, vect.z);
 }
 
-void Cube3D::setPositionZ(int p_z){
+void Sphere3D::setPositionZ(int p_z){
     ofVec3f vect = getPosition();
     m_primitive.setPosition(vect.x, vect.y, p_z);
 }
 
-void Cube3D::setRotateX(int p_rotx){
+void Sphere3D::setRotateX(int p_rotx){
     ofVec3f vect(1, 0, 0);
     ofQuaternion quat(p_rotx, vect);
     m_primitive.setOrientation(quat);
 }
 
-void Cube3D::setRotateY(int p_roty){
+void Sphere3D::setRotateY(int p_roty){
     ofVec3f vect(0, 1, 0);
     ofQuaternion quat(p_roty, vect);
     m_primitive.setOrientation(quat);
 }
 
-void Cube3D::setRotateZ(int p_rotz){
+void Sphere3D::setRotateZ(int p_rotz){
     ofVec3f vect(0, 0, 1);
     ofQuaternion quat(p_rotz, vect);
     m_primitive.setOrientation(quat);
 }
 
-void Cube3D::draw() {
+void Sphere3D::draw() {
+    ofPushMatrix();
+    ofColor color;
+    color.r = m_colorFill.r;
+    color.g = m_colorFill.g;
+    color.b = m_colorFill.b;
+    ofSetColor(color.r, color.g, color.b);
+    ofFill();
     if(isCloud()){
         m_primitive.drawVertices();
     }
     else{
         m_primitive.draw();
     }
+    ofPopMatrix();
 }

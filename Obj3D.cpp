@@ -8,6 +8,7 @@ Obj3D::Obj3D(int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected,
     m_lineColorSelected = p_lineColorSelected;
     m_colorFill = p_colorFill;
     m_isSelected = false;
+    m_cloud = false;
 }
 
 Obj3D::~Obj3D()
@@ -49,6 +50,14 @@ void Obj3D::setColorFill(ofColor p_colorFill) {
 bool Obj3D::isSelected() {
     return m_isSelected;
 }
+
+bool Obj3D::isCloud(){
+    return m_cloud;
+    }
+
+void Obj3D::setCloud(bool p_cloud){
+    m_cloud = p_cloud;
+    }
 
 void Obj3D::setSelected(bool p_selected) {
     m_isSelected = p_selected;

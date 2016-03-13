@@ -37,6 +37,7 @@ class ofApp : public ofBaseApp{
 		int m_clickRadius;
 		bool isTakingScreenshot;
 		bool isClearingButtonsShapes, isClearingButtonsModes;
+        bool m_firstTimeSelection;
         int m_selectionIndex;
 
 		ofApp();
@@ -70,7 +71,9 @@ class ofApp : public ofBaseApp{
 		void bRectangleChanged(bool & p_Rectangle);
 		void bCircleChanged(bool & p_Circle);
 		void bSelectChanged(bool & p_Select);
-        void bCubeChanged(bool & p_Cube);
+        void bCubeChanged(bool & p_cube);
+        void bSphereChanged(bool & p_sphere);
+        void bCloud(bool & p_Cloud);
 		void clearButtons();
 
 		void buildRectangle();
@@ -78,6 +81,7 @@ class ofApp : public ofBaseApp{
 		void buildCircle();
 		void buildLine();
         void buildCube();
+        void buildSphere();
 		double calculateDistance(Coord p_coord1, Coord p_coord2);
 		void clearSelected();
 		void updateGroupSelection();
@@ -85,6 +89,8 @@ class ofApp : public ofBaseApp{
 		void resizeSelection();
 		void rotateSelection();
 		void deleteSelection();
+        void clear2DButtons();
+        void clear3DButtons();
 		
 		Renderer2D *renderer2d;
         Renderer3D *renderer3d;
@@ -95,10 +101,10 @@ class ofApp : public ofBaseApp{
 		ofParameter<bool> vSync;
 		ofParameter<bool> b2D, b3D;
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect;
-        ofParameter<bool> bCube;
+        ofParameter<bool> bCube, bSphere;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
         ofTrueTypeFont font;
-        ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next;
+        ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect;
 		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 };

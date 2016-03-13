@@ -11,6 +11,8 @@ ofApp::ofApp()
 void ofApp::setup(){
 	ofSetFrameRate(60);
 	ofSetWindowTitle("TP2");
+
+    m_firstTimeSelection = 1;
 	renderer2d = new Renderer2D();
 	renderer2d->setup("2D", this);
 
@@ -26,6 +28,7 @@ void ofApp::setup(){
 	mergeButton = new ofxButton();
 	unmergeButton = new ofxButton();
     next = new ofxButton();
+    unselect = new ofxButton();
 
     shapesParams.setName("2D Shapes");
 	shapesParams.add(bLine.set("Line", false));
@@ -35,6 +38,7 @@ void ofApp::setup(){
 
     shapes3DParams.setName("3D Shapes");
     shapes3DParams.add(bCube.set("Cube", false));
+    shapes3DParams.add(bSphere.set("Sphere", false));
 
 	shapesSettingsParams.setName("2D Settings");
 	shapesSettingsParams.add(vSync.set("vSync",true));
@@ -45,6 +49,7 @@ void ofApp::setup(){
 	mergeButton->setup("Merge Shapes");
 	unmergeButton->setup("Unmerge Shapes");
     next->setup("Select next 3D shape");
+    unselect->setup("Unselect");
 
 	//Setup panels
 	menuPanel.setup(menuBarParams);
@@ -57,6 +62,7 @@ void ofApp::setup(){
     shapesParamsPanel.setup(shapesSettingsParams);
     shapes3DPanel.setup(shapes3DParams);
     shapes3DPanel.add(next);
+    shapes3DPanel.add(unselect);
     shapes3DPanel.add(renderer3d->parameters3D);
 	menuPanel.setPosition(0, 0);
 	shapesPanel.setPosition(0, 5 + menuPanel.getHeight());
@@ -71,12 +77,14 @@ void ofApp::setup(){
 	mergeButton->addListener(this, &ofApp::buttonPressed);
 	unmergeButton->addListener(this, &ofApp::buttonPressed);
     next->addListener(this, &ofApp::buttonPressed);
+    unselect->addListener(this, &ofApp::buttonPressed);
 	bLine.addListener(this, &ofApp::bLineChanged);
 	bTriangle.addListener(this, &ofApp::bTriangleChanged);
 	bRectangle.addListener(this, &ofApp::bRectangleChanged);
 	bCircle.addListener(this, &ofApp::bCircleChanged);
 	bSelect.addListener(this, &ofApp::bSelectChanged);
     bCube.addListener(this, &ofApp::bCubeChanged);
+    bSphere.addListener(this, &ofApp::bSphereChanged);
 
     //gui.loadFromFile("settings.xml");
 
@@ -97,8 +105,8 @@ void ofApp::setup(){
 void ofApp::b2DChanged(bool & p_2D) {
 	if (!isClearingButtonsModes) {
 		isClearingButtonsModes = true;
-		b3D.set(false);
-		b2D.set(true);
+        b3D.set(false);
+        b2D.set(p_2D);
 		isClearingButtonsModes = false;
 		m_mode = MODE_2D;
 	}
@@ -107,8 +115,8 @@ void ofApp::b2DChanged(bool & p_2D) {
 void ofApp::b3DChanged(bool & p_3D) {
 	if (!isClearingButtonsModes) {
 		isClearingButtonsModes = true;
-		b2D.set(false);
-		b3D.set(true);
+        b2D.set(false);
+        b3D.set(p_3D);
 		isClearingButtonsModes = false;
 		m_mode = MODE_3D;
 	}
@@ -120,6 +128,8 @@ void ofApp::vSyncChanged(bool & vSync){
 
 void ofApp::bLineChanged(bool & pLine) {
 	if (!isClearingButtonsShapes) {
+        b3D.set(false);
+        b2D.set(true);
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bLine.set(true);
@@ -132,6 +142,8 @@ void ofApp::bTriangleChanged(bool & pTriangle) {
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bTriangle.set(true);
+        b3D.set(false);
+        b2D.set(true);
 		m_buffer.clear();
 		m_state = AppState::BUILD_TRIANGLE;
 	}
@@ -141,6 +153,8 @@ void ofApp::bRectangleChanged(bool & pRectangle) {
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bRectangle.set(true);
+        b3D.set(false);
+        b2D.set(true);
 		m_buffer.clear();
 		m_state = AppState::BUILD_RECTANGLE;
 	}
@@ -150,6 +164,8 @@ void ofApp::bCircleChanged(bool & pCircle) {
 		clearButtons();
 		isClearingButtonsShapes = false;
 		bCircle.set(true);
+        b3D.set(false);
+        b2D.set(true);
 		m_buffer.clear();
 		m_state = AppState::BUILD_CIRCLE;
 	}
@@ -164,17 +180,30 @@ void ofApp::bSelectChanged(bool & pSelect) {
 	}
 }
 
-void ofApp::bCubeChanged(bool & pCube) {
-            cout << "button cube changed" << endl;
+void ofApp::bCubeChanged(bool & p_cube) {
     if (!isClearingButtonsShapes) {
-        cout << "button cube changed" << endl;
         clearButtons();
         isClearingButtonsShapes = false;
         bCube.set(true);
+        b2D.set(false);
+        b3D.set(true);
         m_buffer.clear();
         m_state = AppState::BUILD_CUBE;
     }
 }
+
+void ofApp::bSphereChanged(bool & p_sphere) {
+    if (!isClearingButtonsShapes) {
+        clearButtons();
+        isClearingButtonsShapes = false;
+        bSphere.set(true);
+        b2D.set(false);
+        b3D.set(true);
+        m_buffer.clear();
+        m_state = AppState::BUILD_SPHERE;
+    }
+}
+
 
 void ofApp::clearButtons() {
 	isClearingButtonsShapes = true;
@@ -184,6 +213,7 @@ void ofApp::clearButtons() {
 	bRectangle.set(false);
 	bCircle.set(false);
     bCube.set(false);
+    bSphere.set(false);
 }
 
 //--------------------------------------------------------------
@@ -400,10 +430,27 @@ void ofApp::buttonPressed(const void * sender){
 		//3D
         if (btnName == "Select next 3D shape") {
             if(m_obj3DVector.size() > 0){
+
+                if (m_firstTimeSelection == 1){
+                    m_firstTimeSelection = 0;
+                    m_selectionIndex = 0;
+                    m_obj3DVector[m_selectionIndex]->setSelected(false);
+                    m_selectionIndex = m_selectionIndex % m_obj3DVector.size();
+                    m_obj3DVector[m_selectionIndex]->setSelected(true);
+                    renderer3d->bCloud.set(m_obj3DVector[m_selectionIndex]->isCloud());
+                }
+                else{
+                    m_obj3DVector[m_selectionIndex]->setSelected(false);
+                    m_selectionIndex = (m_selectionIndex + 1) % m_obj3DVector.size();
+                    m_obj3DVector[m_selectionIndex]->setSelected(true);
+                    renderer3d->bCloud.set(m_obj3DVector[m_selectionIndex]->isCloud());
+                }
+            }
+        }
+        else if (btnName == "Unselect") {
+            if(m_firstTimeSelection == 0){
                 m_obj3DVector[m_selectionIndex]->setSelected(false);
-                m_selectionIndex = (m_selectionIndex + 1) % m_obj3DVector.size();
-                m_obj3DVector[m_selectionIndex]->setSelected(true);
-                cout << "next  button pressed" << endl;
+
             }
         }
 
@@ -562,6 +609,13 @@ void ofApp::mousePressed(int x, int y, int button) {
                     m_buffer3D.clear();
                 }
                 break;
+            case AppState::BUILD_SPHERE:
+                m_buffer3D.push_back(Coord3D(x, y, m_obj3DVector.size() + 30));
+                if (m_buffer3D.size() == 1) {
+                    buildSphere();
+                    m_buffer3D.clear();
+                }
+                break;
 
             }
         }
@@ -656,6 +710,10 @@ void ofApp::buildCube() {
     m_obj3DVector.push_back(new app::Cube3D(m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 }
 
+void ofApp::buildSphere() {
+    m_obj3DVector.push_back(new app::Sphere3D(m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
+}
+
 double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {
 	double x2 = pow((p_coord1.getX() - p_coord2.getX()), 2);
 	double y2 = pow((p_coord1.getY() - p_coord2.getY()), 2);
@@ -725,6 +783,18 @@ std::vector<Obj2D*> ofApp::getCollectionObjects(app::Obj2DCollection* p_coll) {
 void ofApp::exit()
 {
 	ofLog() << "<ofApp::exit>";
+}
+
+void ofApp::clear2DButtons(){
+    bLine.set(false);
+    bTriangle.set(false);
+    bRectangle.set(false);
+    bCircle.set(false);
+}
+
+void ofApp::clear3DButtons(){
+    bCube.set(false);
+    renderer3d->bCloud.set(false);
 }
 
 ofApp::~ofApp()
