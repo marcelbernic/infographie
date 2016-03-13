@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "ofMain.h"
 #include "ofParameterGroup.h"
 #include "ofParameter.h"
 #include "ofApp.h"
@@ -40,10 +39,10 @@ public:
 
 	void imageExport(const string path, const string extension) const;
 
-	void bStrokeWidthChanged(int & p_strokeWidth);
-	void bColorStrokeChanged(ofColor & p_colorStroke);
-	void bColorFillChanged(ofColor & p_colorFill);
-	void bColorSelectedChanged(ofColor & p_colorSelected);
+    void bStrokeWidthChanged(int & p_strokeWidth);
+    void bColorStrokeChanged(ofColor & p_colorStroke);
+    void bColorFillChanged(ofColor & p_colorFill);
+    void bColorSelectedChanged(ofColor & p_colorSelected);
 
 	ofParameterGroup parameters;
 	//ofParameter<float> size;

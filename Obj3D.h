@@ -27,7 +27,6 @@ protected:
     bool m_isSelected;
     std::vector<Coord3D> m_coordVector;
     EnumVectorDrawMode m_type;
-    ofMesh mesh;
 
 public:
     Obj3D(int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFills);
@@ -46,6 +45,8 @@ public:
     bool isSelected();
     void setSelected(bool p_selected);
     EnumVectorDrawMode getType();
+
+    virtual void draw();
 
     double calculateDistance(Coord3D p_coord1, Coord3D p_coord2);
     bool checkCollisionLineCircle(Coord3D p_coordA, Coord3D p_coordB, Coord3D p_clickPoint, double p_radius);

@@ -18,7 +18,7 @@ namespace app {
     public:
         CloudPoints(int p_lineStroke, int p_lineColor,
                     int p_lineColorSelected, int p_colorFill,Coord3D p_pos, double width, double height, double depth);
-        void draw();
+        void draw() override;
         ~CloudPoints();
 
     };

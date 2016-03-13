@@ -122,3 +122,7 @@ bool Obj3D::checkCollisionLineCircle(Coord3D p_coordA, Coord3D p_coordB, Coord3D
     }
     return true;
 }
+
+void Obj3D::draw(){
+
+}

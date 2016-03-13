@@ -7,6 +7,7 @@
 #include "of3dPrimitives.h"
 #include "of3dUtils.h"
 #include "Renderer2D.h"
+#include "Renderer3D.h"
 #include "Coord.h"
 #include "state.h"
 #include "Obj2D.h"
@@ -21,8 +22,8 @@
 #include <vector>
 
 class Renderer2D;
-class Renderer3D;
 class Obj3D;
+class Renderer3D;
 
 class ofApp : public ofBaseApp{
 	public:
@@ -36,6 +37,7 @@ class ofApp : public ofBaseApp{
 		int m_clickRadius;
 		bool isTakingScreenshot;
 		bool isClearingButtonsShapes, isClearingButtonsModes;
+        int m_selectionIndex;
 
 		ofApp();
 		~ofApp();
@@ -85,6 +87,7 @@ class ofApp : public ofBaseApp{
 		void deleteSelection();
 		
 		Renderer2D *renderer2d;
+        Renderer3D *renderer3d;
 
 		std::vector<Obj2D*> getCollectionObjects(app::Obj2DCollection* p_coll);
 
@@ -93,9 +96,9 @@ class ofApp : public ofBaseApp{
 		ofParameter<bool> b2D, b3D;
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect;
         ofParameter<bool> bCube;
-        ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams;
+        ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
         ofTrueTypeFont font;
-		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton;
+        ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next;
 		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 };

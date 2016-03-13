@@ -4,6 +4,7 @@
 ofApp::ofApp()
 {
 	renderer2d = nullptr;
+    renderer3d = nullptr;
 }
 
 //--------------------------------------------------------------
@@ -13,6 +14,9 @@ void ofApp::setup(){
 	renderer2d = new Renderer2D();
 	renderer2d->setup("2D", this);
 
+    renderer3d = new Renderer3D();
+    renderer3d->setup("3D", this);
+
 	//Panels params
 	menuBarParams.setName("Menu");
 	menuBarParams.add(b2D.set("2D", true));
@@ -21,6 +25,7 @@ void ofApp::setup(){
 	exportButton = new ofxButton();
 	mergeButton = new ofxButton();
 	unmergeButton = new ofxButton();
+    next = new ofxButton();
 
     shapesParams.setName("2D Shapes");
 	shapesParams.add(bLine.set("Line", false));
@@ -39,6 +44,7 @@ void ofApp::setup(){
 	exportButton->setup("Export");
 	mergeButton->setup("Merge Shapes");
 	unmergeButton->setup("Unmerge Shapes");
+    next->setup("Select next 3D shape");
 
 	//Setup panels
 	menuPanel.setup(menuBarParams);
@@ -50,6 +56,8 @@ void ofApp::setup(){
 	shapesPanel.add(unmergeButton);
     shapesParamsPanel.setup(shapesSettingsParams);
     shapes3DPanel.setup(shapes3DParams);
+    shapes3DPanel.add(next);
+    shapes3DPanel.add(renderer3d->parameters3D);
 	menuPanel.setPosition(0, 0);
 	shapesPanel.setPosition(0, 5 + menuPanel.getHeight());
 	shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
@@ -62,12 +70,13 @@ void ofApp::setup(){
 	exportButton->addListener(this, &ofApp::buttonPressed);
 	mergeButton->addListener(this, &ofApp::buttonPressed);
 	unmergeButton->addListener(this, &ofApp::buttonPressed);
+    next->addListener(this, &ofApp::buttonPressed);
 	bLine.addListener(this, &ofApp::bLineChanged);
 	bTriangle.addListener(this, &ofApp::bTriangleChanged);
 	bRectangle.addListener(this, &ofApp::bRectangleChanged);
 	bCircle.addListener(this, &ofApp::bCircleChanged);
 	bSelect.addListener(this, &ofApp::bSelectChanged);
-    bCube.addListener(this, &ofApp::bSelectChanged);
+    bCube.addListener(this, &ofApp::bCubeChanged);
 
     //gui.loadFromFile("settings.xml");
 
@@ -81,6 +90,7 @@ void ofApp::setup(){
 	isTakingScreenshot = false;
 	isClearingButtonsShapes = false;
 	isClearingButtonsModes = false;
+    m_selectionIndex = 0;
 
 }
 
@@ -155,7 +165,9 @@ void ofApp::bSelectChanged(bool & pSelect) {
 }
 
 void ofApp::bCubeChanged(bool & pCube) {
+            cout << "button cube changed" << endl;
     if (!isClearingButtonsShapes) {
+        cout << "button cube changed" << endl;
         clearButtons();
         isClearingButtonsShapes = false;
         bCube.set(true);
@@ -190,8 +202,7 @@ void ofApp::draw(){
 		renderer2d->draw();
 	}
 	else {
-		//renderer3d->draw();
-	}
+        renderer3d->draw();	}
 
 	ofSetColor(255);
 	if (!isTakingScreenshot) {
@@ -387,9 +398,16 @@ void ofApp::buttonPressed(const void * sender){
 	}
 	else {
 		//3D
+        if (btnName == "Select next 3D shape") {
+            if(m_obj3DVector.size() > 0){
+                m_obj3DVector[m_selectionIndex]->setSelected(false);
+                m_selectionIndex = (m_selectionIndex + 1) % m_obj3DVector.size();
+                m_obj3DVector[m_selectionIndex]->setSelected(true);
+                cout << "next  button pressed" << endl;
+            }
+        }
 
-	}
-	
+	}	
 }
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
@@ -636,8 +654,7 @@ void ofApp::buildLine() {
 
 void ofApp::buildCube() {
     m_obj3DVector.push_back(new app::Cube3D(m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
-} //Cube3D(std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor,
-//ofColor p_lineColorSelected, ofColor p_colorFill)
+}
 
 double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {
 	double x2 = pow((p_coord1.getX() - p_coord2.getX()), 2);

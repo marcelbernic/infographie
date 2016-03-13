@@ -285,13 +285,24 @@ void Renderer2D::bColorFillChanged(ofColor & p_colorFill) {
 			o->setColorFill(p_colorFill);
 		}
 	}
+    for (Obj3D* o : m_app->m_obj3DVector) {
+        if (o->isSelected()) {
+            o->setColorFill(p_colorFill);
+        }
+    }
 }
 void Renderer2D::bColorSelectedChanged(ofColor & p_colorSelected) {
 	for (Obj2D* o : m_app->m_obj2DVector) {
 		if (o->isSelected()) {
 			o->setLineColorSelected(p_colorSelected);
 		}
-	}
+    }
+
+    for (Obj3D* o : m_app->m_obj3DVector) {
+        if (o->isSelected()) {
+            o->setLineColorSelected(p_colorSelected);
+        }
+    }
 }
 
 void Renderer2D::imageExport(const string path, const string extension) const
