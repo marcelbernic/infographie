@@ -94,6 +94,7 @@ class ofApp : public ofBaseApp{
 		void resizeSelection();
 		void rotateSelection();
 		void deleteSelection();
+        void deleteSelection3D();
         void clear2DButtons();
         void clear3DButtons();
 		

@@ -397,6 +397,10 @@ void ofApp::keyPressed(int key){
 	}
 	else {
 		//3D
+        if (ofGetKeyPressed(OF_KEY_DEL)) {
+            deleteSelection3D();
+            m_buffer.clear();
+        }
 	}
 }
 
@@ -410,6 +414,21 @@ void ofApp::deleteSelection() {
 			size--;
 		}
 	}
+}
+
+void ofApp::deleteSelection3D() {
+    int size = m_obj3DVector.size();
+    for (int i = 0; i < m_obj3DVector.size(); i++) {
+        if (m_obj3DVector[i]->isSelected()) {
+            //DELETE OBJ
+            Obj3D *ptr_obj3d;
+            ptr_obj3d = m_obj3DVector[i];
+            m_obj3DVector.erase(m_obj3DVector.begin() + i);
+            delete ptr_obj3d;
+            i--;
+            size--;
+        }
+    }
 }
 
 void ofApp::buttonPressed(const void * sender){
@@ -673,7 +692,7 @@ void ofApp::mousePressed(int x, int y, int button) {
         if (button == OF_MOUSE_BUTTON_LEFT) {
             switch (m_state) {
             case AppState::BUILD_CUBE:
-                m_buffer3D.push_back(Coord3D(x, y, m_obj3DVector.size() + 30));
+                m_buffer3D.push_back(Coord3D(x, y, 30));
                 if (m_buffer3D.size() == 1) {
                     buildCube();
                     m_buffer3D.clear();
