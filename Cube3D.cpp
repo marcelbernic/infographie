@@ -88,6 +88,12 @@ void Cube3D::setRotateZ(int p_rotz){
     m_primitive.setOrientation(quat);
 }
 
+void Cube3D::setDimension(double p_dimension){
+    m_primitive.setWidth(p_dimension);
+    m_primitive.setHeight(p_dimension);
+    m_primitive.setDepth(p_dimension);
+}
+
 void Cube3D::draw() {
     if(isCloud()){
         m_primitive.drawVertices();

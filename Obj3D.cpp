@@ -135,3 +135,7 @@ bool Obj3D::checkCollisionLineCircle(Coord3D p_coordA, Coord3D p_coordB, Coord3D
 void Obj3D::draw(){
 
 }
+
+void Obj3D::setDimension(double p_dimension){
+
+}

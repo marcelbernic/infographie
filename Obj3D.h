@@ -51,6 +51,8 @@ public:
 
     virtual void draw();
 
+    virtual void setDimension(double p_dimension);
+
     double calculateDistance(Coord3D p_coord1, Coord3D p_coord2);
     bool checkCollisionLineCircle(Coord3D p_coordA, Coord3D p_coordB, Coord3D p_clickPoint, double p_radius);
 };

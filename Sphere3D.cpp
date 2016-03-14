@@ -78,6 +78,10 @@ void Sphere3D::setRotateZ(int p_rotz){
     m_primitive.setOrientation(quat);
 }
 
+void Sphere3D::setDimension(double p_dimension){
+    m_primitive.setRadius(p_dimension);
+}
+
 void Sphere3D::draw() {
     ofPushMatrix();
     ofColor color;
