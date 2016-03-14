@@ -439,7 +439,7 @@ void ofApp::buttonPressed(const void * sender){
 		if (btnName == "Import") {
 			ofFileDialogResult file = ofSystemLoadDialog("Load Image", false);
 			if (file.getPath() != "") {
-				app::Image2D *newImage = new app::Image2D(file.getPath(), 64, 64, Coord(ofGetWidth() / 2, ofGetHeight() / 2), 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get());
+				app::Image2D *newImage = new app::Image2D(file.getPath(), 0, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get());
 				if (newImage->getImage().getTextureReference().isAllocated()) {
 					m_obj2DVector.push_back(newImage);
 				}
