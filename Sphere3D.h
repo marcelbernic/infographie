@@ -19,7 +19,7 @@ namespace app {
         void setRotateX(int p_x);
         void setRotateY(int p_y);
         void setRotateZ(int p_z);
-        void setDimension(double p_dimension);
+        void setDimension(double p_dimension) override;
         double getDimension();
         ofVec3f getPosition();
         ofColor getColorSphere();

@@ -26,7 +26,7 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
 
     bCloud.set("Cloud Points", false);
 
-    parameters3D.setName(p_name);
+    parameters3D.setName(p_name + " settings");
     parameters3D.add(bCloud);
     parameters3D.add(x);
     parameters3D.add(y);
