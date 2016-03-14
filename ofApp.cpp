@@ -796,11 +796,11 @@ void ofApp::buildLine() {
 }
 
 void ofApp::buildCube() {
-    m_obj3DVector.push_back(new app::Cube3D(m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
+    m_obj3DVector.push_back(new app::Cube3D(renderer3d->dimension, m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 }
 
 void ofApp::buildSphere() {
-    m_obj3DVector.push_back(new app::Sphere3D(m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
+    m_obj3DVector.push_back(new app::Sphere3D(renderer3d->dimension, m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 }
 
 double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {

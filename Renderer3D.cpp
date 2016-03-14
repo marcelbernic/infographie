@@ -24,6 +24,8 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
     roty.set("Rotate axe y", 0, 0.0, 360);
     rotz.set("Rotate axe z", 0, 0.0, 360);
 
+    dimension.set("Dimension", 40, 0, 300);
+
     bCloud.set("Cloud Points", false);
 
     parameters3D.setName(p_name + " settings");
@@ -35,6 +37,7 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
     parameters3D.add(rotx);
     parameters3D.add(roty);
     parameters3D.add(rotz);
+    parameters3D.add(dimension);
 
     x.addListener(this, &Renderer3D::xChanged);
     y.addListener(this, &Renderer3D::yChanged);
@@ -43,6 +46,7 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
     rotx.addListener(this, &Renderer3D::rotxChanged);
     roty.addListener(this, &Renderer3D::rotyChanged);
     rotz.addListener(this, &Renderer3D::rotzChanged);
+    dimension.addListener(this, &Renderer3D::dimensionChanged);
 
     bCloud.addListener(this, &Renderer3D::bCloudChanged);
 }
@@ -236,6 +240,28 @@ void Renderer3D::bCloudChanged(bool &p_cloud){
         }
     }
   }
+
+void Renderer3D::dimensionChanged(double & p_dimension){
+    for (Obj3D* o : m_app->m_obj3DVector) {
+        if (o->isSelected()) {
+            switch (o->getType()) {
+            case PRIMITIVE_CUBE:{
+                app::Cube3D *ptr_cube;
+                ptr_cube = dynamic_cast<app::Cube3D*>(o);
+                ptr_cube->setDimension(p_dimension);
+                }
+                break;
+            case PRIMITIVE_SPHERE:{
+                app::Sphere3D *ptr_sphere;
+                ptr_sphere = dynamic_cast<app::Sphere3D*>(o);
+                ptr_sphere->setDimension(p_dimension);
+                }
+                break;
+
+            }
+        }
+    }
+}
 
 void Renderer3D::imageExport(const string path, const string extension) const
 {

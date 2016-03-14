@@ -10,7 +10,7 @@ namespace app {
         ofColor m_colorCube;
         double m_dimension;
     public:
-        Cube3D(std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill);
+        Cube3D(double p_dim, std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill);
         ~Cube3D();
         void setColorCube(ofColor p_color);
         void setPositionX(int p_x);

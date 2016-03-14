@@ -35,6 +35,7 @@ public:
     void rotxChanged(double & p_rotx);
     void rotyChanged(double & p_roty);
     void rotzChanged(double & p_rotz);
+    void dimensionChanged(double & p_dimension);
 
     void bCloudChanged(bool &p_cloud);
 
@@ -50,6 +51,8 @@ public:
     ofParameter<double> rotx;
     ofParameter<double> roty;
     ofParameter<double> rotz;
+
+    ofParameter<double> dimension;
 
     ofParameter<bool> bCloud;
 };

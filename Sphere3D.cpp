@@ -1,11 +1,11 @@
 #include "Sphere3D.h"
 using namespace app;
 
-Sphere3D::Sphere3D(std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill)
+Sphere3D::Sphere3D(double p_dim, std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill)
     : Shape3D(p_lineStroke, p_lineColor, p_lineColorSelected, p_colorFill) {
     m_coordVector = p_coord;
     m_type = EnumVectorDrawMode::PRIMITIVE_SPHERE;
-    m_primitive.set(40, 50);
+    m_primitive.set(p_dim, 50);
     m_primitive.setPosition(p_coord[0].getX(), p_coord[0].getY(), p_coord[0].getZ());
 
 }
