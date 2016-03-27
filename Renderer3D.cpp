@@ -49,12 +49,23 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
     dimension.addListener(this, &Renderer3D::dimensionChanged);
 
     bCloud.addListener(this, &Renderer3D::bCloudChanged);
+
+    m_lights.push_back(new ofLight());
+
+
+    for (ofLight* o : m_lights){
+        o->setPointLight();
+        o->setPosition(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, 0));
+        o->enable();
+    }
 }
 
 void Renderer3D::draw() {
     ofBackgroundGradient(ofColor::white, ofColor::gray);
+    ofEnableDepthTest();
 
-    ofSetColor(255);
+    ofEnableLighting();
+
     if (!m_app->isTakingScreenshot) {
         switch (m_app->m_state) {
         case AppState::BUILD_CUBE:
@@ -83,6 +94,10 @@ void Renderer3D::draw() {
             break;
         }
     }
+
+    ofDisableLighting();
+    ofDisableDepthTest();
+
 }
 
 
@@ -279,9 +294,11 @@ void Renderer3D::imageExport(const string path, const string extension) const
 void Renderer3D::drawCube3D(app::Cube3D *p_cube) {
     if (p_cube->isSelected()) {
         p_cube->setColorCube(m_app->renderer2d->colorSelected);
+        ofSetColor(m_app->renderer2d->colorSelected);
     }
     else{
         p_cube->setColorCube(p_cube->getColorFill());
+        ofSetColor(p_cube->getColorFill());
     }
     p_cube->draw();
 }

@@ -14,6 +14,8 @@ Cube3D::Cube3D(double p_dim, std::vector<Coord3D> p_coord, int p_lineStroke, ofC
     m_primitive.setSideColor(4, p_colorFill);
     m_primitive.setSideColor(5, p_colorFill);
 
+
+
 }
 
 

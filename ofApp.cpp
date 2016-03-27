@@ -15,7 +15,7 @@ void ofApp::setup(){
 
     m_firstTimeSelection = 1;
 	renderer2d = new Renderer2D();
-	renderer2d->setup("2D", this);
+    renderer2d->setup("2D", this);
 
     renderer3d = new Renderer3D();
     renderer3d->setup("3D", this);
@@ -252,15 +252,18 @@ void ofApp::draw(){
 	font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 150, 0);
 
 	if (m_mode == MODE_2D) {
-		renderer2d->draw();
+        renderer2d->draw();
 	}
 	else if (m_mode == MODE_MODEL) {
 		rendererModel->draw();
 	}
-	else {
-        renderer3d->draw();	}
+    else if (m_mode == MODE_3D){
+        //ofPushMatrix();
+        renderer3d->draw();
+        //ofPopMatrix();
+    }
 
-	ofSetColor(255);
+    ofSetColor(255);
 	if (!isTakingScreenshot) {
 		menuPanel.draw();
 		if (showGui) shapesPanel.draw();
@@ -692,14 +695,14 @@ void ofApp::mousePressed(int x, int y, int button) {
         if (button == OF_MOUSE_BUTTON_LEFT) {
             switch (m_state) {
             case AppState::BUILD_CUBE:
-                m_buffer3D.push_back(Coord3D(x, y, 30));
+                m_buffer3D.push_back(Coord3D(x, y, 0));
                 if (m_buffer3D.size() == 1) {
                     buildCube();
                     m_buffer3D.clear();
                 }
                 break;
             case AppState::BUILD_SPHERE:
-                m_buffer3D.push_back(Coord3D(x, y, m_obj3DVector.size() + 30));
+                m_buffer3D.push_back(Coord3D(x, y, 0));
                 if (m_buffer3D.size() == 1) {
                     buildSphere();
                     m_buffer3D.clear();

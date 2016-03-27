@@ -55,4 +55,7 @@ public:
     ofParameter<double> dimension;
 
     ofParameter<bool> bCloud;
+
+    std::vector<ofLight*> m_lights;
+
 };

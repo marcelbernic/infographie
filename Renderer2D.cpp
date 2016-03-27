@@ -37,7 +37,8 @@ void Renderer2D::setup(const string p_name, ofApp *p_app) {
 void Renderer2D::draw() {
 	ofBackgroundGradient(ofColor::white, ofColor::gray);
 
-	ofSetColor(255);
+    ofSetColor(255);
+    ofDisableLighting();
 
 	if (!m_app->isTakingScreenshot) {
 		switch (m_app->m_state) {
