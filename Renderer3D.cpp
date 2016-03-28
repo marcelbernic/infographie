@@ -58,6 +58,13 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
         o->setPosition(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, 0));
         o->enable();
     }
+
+    cam1.resetTransform();
+    cam1.setFov(60);
+    cam1.clearParent();
+
+    cam1.setPosition(ofGetWidth()/2, ofGetHeight()/2, 1000);
+    cam1.lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, -1));
 }
 
 void Renderer3D::draw() {
@@ -65,6 +72,13 @@ void Renderer3D::draw() {
     ofEnableDepthTest();
 
     ofEnableLighting();
+
+    if(AppState::CAMERA == m_app->m_state){
+        cam1.begin();
+        ofPushMatrix();
+        ofScale(1, -1, 1);
+        ofTranslate(0, -ofGetHeight(), 0);
+    }
 
     if (!m_app->isTakingScreenshot) {
         switch (m_app->m_state) {
@@ -93,6 +107,11 @@ void Renderer3D::draw() {
         }
             break;
         }
+    }
+
+    if(AppState::CAMERA == m_app->m_state){
+    ofPopMatrix();
+    cam1.end();
     }
 
     ofDisableLighting();

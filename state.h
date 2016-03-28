@@ -13,7 +13,8 @@ typedef enum
 	ACTION_GROUPSELECT,
 	ACTION_TRANSLATE,
 	ACTION_ROTATE,
-    ACTION_RESIZE
+    ACTION_RESIZE,
+    CAMERA
 }   AppState;
 
 typedef enum

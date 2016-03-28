@@ -78,6 +78,7 @@ class ofApp : public ofBaseApp{
 		void bSelectChanged(bool & p_Select);
         void bCubeChanged(bool & p_cube);
         void bSphereChanged(bool & p_sphere);
+        void bCameraChanged(bool & p_sphere);
         void bCloud(bool & p_Cloud);
 		void clearButtons();
 
@@ -107,7 +108,7 @@ class ofApp : public ofBaseApp{
 		ofParameter<bool> vSync;
 		ofParameter<bool> b2D, b3D, bModelMode; //*
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect;
-        ofParameter<bool> bCube, bSphere;
+        ofParameter<bool> bCube, bSphere, bCamera;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
         ofTrueTypeFont font;
@@ -117,4 +118,6 @@ class ofApp : public ofBaseApp{
 		// *
 		RendererModel *rendererModel;
 		bool showGui; // boolean variable utilized for show/hide interface
+        bool hideCamera; // boolean used to hide all panels not usefull for the camera mode.
+        string s; // string to explain how camera works.
 };

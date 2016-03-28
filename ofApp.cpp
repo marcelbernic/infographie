@@ -1,6 +1,9 @@
 #include "ofApp.h"
 #include <ostream>
 
+#define kMoveInc 10
+#define kRotInc 5
+
 ofApp::ofApp()
 {
 	renderer2d = nullptr;
@@ -43,6 +46,7 @@ void ofApp::setup(){
     shapes3DParams.setName("3D Shapes");
     shapes3DParams.add(bCube.set("Cube", false));
     shapes3DParams.add(bSphere.set("Sphere", false));
+    shapes3DParams.add(bCamera.set("Camera", false));
 
 	shapesSettingsParams.setName("2D Settings");
 	shapesSettingsParams.add(vSync.set("vSync",true));
@@ -90,6 +94,7 @@ void ofApp::setup(){
 	bSelect.addListener(this, &ofApp::bSelectChanged);
     bCube.addListener(this, &ofApp::bCubeChanged);
     bSphere.addListener(this, &ofApp::bSphereChanged);
+    bCamera.addListener(this, &ofApp::bCameraChanged);
 
     //gui.loadFromFile("settings.xml");
 
@@ -107,6 +112,22 @@ void ofApp::setup(){
 
 	showGui = true;
 	ofSetLogLevel(OF_LOG_VERBOSE);
+
+    s = string("") +
+            "\n" +
+            "Camera Mode, Keys:\n" +
+            "LEFT pan left\n" +
+            "RIGHT pan right\n" +
+            "UP tilt up\n" +
+            "DOWN tilt down\n" +
+            ", roll left\n" +
+            ". roll right\n" +
+            "a truck left\n" +
+            "d truck right\n" +
+            "w dolly forward\n" +
+            "s dolly backward\n" +
+            "r boom up\n" +
+            "f boom down\n";
 }
 
 void ofApp::b2DChanged(bool & p_2D) {
@@ -130,6 +151,7 @@ void ofApp::b3DChanged(bool & p_3D) {
 		isClearingButtonsModes = false;
 		m_mode = MODE_3D;
 		showGui = true; //*
+        hideCamera = false;
 	}
 }
 
@@ -227,6 +249,19 @@ void ofApp::bSphereChanged(bool & p_sphere) {
     }
 }
 
+void ofApp::bCameraChanged(bool & p_sphere) {
+    if (!isClearingButtonsShapes) {
+        clearButtons();
+        isClearingButtonsShapes = false;
+        bCamera.set(true);
+        b2D.set(false);
+        b3D.set(true);
+        m_buffer.clear();
+        m_state = AppState::CAMERA;
+        hideCamera = true;
+    }
+}
+
 
 void ofApp::clearButtons() {
 	isClearingButtonsShapes = true;
@@ -237,6 +272,7 @@ void ofApp::clearButtons() {
 	bCircle.set(false);
     bCube.set(false);
     bSphere.set(false);
+    bCamera.set(false);
 }
 
 //--------------------------------------------------------------
@@ -244,7 +280,8 @@ void ofApp::update(){
 	// frameNum is a readonly parameter so this will fail to compile
 	// unless we are inside the CirclesRenderer class
 	// renderer.frameNum = 5;
-}
+
+  }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -265,10 +302,11 @@ void ofApp::draw(){
 
     ofSetColor(255);
 	if (!isTakingScreenshot) {
-		menuPanel.draw();
-		if (showGui) shapesPanel.draw();
+        if (!hideCamera) menuPanel.draw();
+        if (showGui && !hideCamera) shapesPanel.draw();
 		if (showGui) shapesParamsPanel.draw();
-		if (showGui)  shapes3DPanel.draw();
+        if (showGui)  shapes3DPanel.draw();
+        if (hideCamera) 	ofDrawBitmapString(s, ofPoint(0, 0));
 	}
 
 	drawCursor();
@@ -398,11 +436,50 @@ void ofApp::keyPressed(int key){
 			if (!rendererModel->switchTextures) rendererModel->model.enableTextures();
 		}
 	}
-	else {
+    else if (m_mode == MODE_3D){
 		//3D
         if (ofGetKeyPressed(OF_KEY_DEL)) {
             deleteSelection3D();
             m_buffer.clear();
+        }
+
+        else{
+            if(key == OF_KEY_LEFT){
+                renderer3d->cam1.pan(kRotInc);
+            }
+            if(key == OF_KEY_RIGHT){
+                renderer3d->cam1.pan(-kRotInc);
+            }
+            if(key == OF_KEY_UP){
+                renderer3d->cam1.tilt(kRotInc);
+            }
+            if(key == OF_KEY_DOWN){
+                renderer3d->cam1.tilt(-kRotInc);
+            }
+            if(key == ','){
+                renderer3d->cam1.roll(kRotInc);
+            }
+            if(key == '.'){
+                renderer3d->cam1.roll(-kRotInc);
+            }
+            if(key == 'a'){
+                renderer3d->cam1.truck(-kMoveInc);
+            }
+            if(key == 'd'){
+                renderer3d->cam1.truck(kMoveInc);
+            }
+            if(key == 'w'){
+                renderer3d->cam1.dolly(-kMoveInc);
+            }
+            if(key == 's'){
+                renderer3d->cam1.dolly(kMoveInc);
+            }
+            if(key == 'r'){
+                renderer3d->cam1.boom(kMoveInc);
+            }
+            if(key == 'f'){
+                renderer3d->cam1.boom(-kMoveInc);
+            }
         }
 	}
 }

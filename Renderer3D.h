@@ -58,4 +58,6 @@ public:
 
     std::vector<ofLight*> m_lights;
 
+    ofCamera cam1;
+
 };
