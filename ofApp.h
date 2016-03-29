@@ -42,7 +42,14 @@ class ofApp : public ofBaseApp{
 		bool isTakingScreenshot;
 		bool isClearingButtonsShapes, isClearingButtonsModes;
         bool m_firstTimeSelection;
+        bool m_changeCameraOrientation;
         int m_selectionIndex;
+        int m_currentPositionX;
+        int m_currentPositionY;
+        int m_currentPosition2X;
+        int m_currentPosition2Y;
+        float m_addPan;
+        float m_addTilt;
 
 		ofApp();
 		~ofApp();

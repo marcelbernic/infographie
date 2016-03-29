@@ -109,6 +109,10 @@ void ofApp::setup(){
 	isClearingButtonsShapes = false;
 	isClearingButtonsModes = false;
     m_selectionIndex = 0;
+    m_addPan = 0;
+    m_addTilt = 0;
+    m_changeCameraOrientation = 0;
+    hideCamera = 0;
 
 	showGui = true;
 	ofSetLogLevel(OF_LOG_VERBOSE);
@@ -281,7 +285,21 @@ void ofApp::update(){
 	// unless we are inside the CirclesRenderer class
 	// renderer.frameNum = 5;
 
-  }
+    if (m_mode == MODE_3D && !mouseIsOverPanel() && m_state == CAMERA
+            && m_changeCameraOrientation){
+
+        m_currentPosition2X = ofGetMouseX();
+        m_currentPosition2Y = ofGetMouseY();
+        m_addPan = m_currentPosition2X - m_currentPositionX;
+        m_addTilt = m_currentPosition2Y - m_currentPositionY;
+
+        renderer3d->cam1.pan(-m_addPan);
+        renderer3d->cam1.tilt(m_addTilt);
+
+        m_currentPositionX = m_currentPosition2X;
+        m_currentPositionY = m_currentPosition2Y;
+    }
+}
 
 //--------------------------------------------------------------
 void ofApp::draw(){
@@ -787,7 +805,16 @@ void ofApp::mousePressed(int x, int y, int button) {
                 break;
 
             }
+
+            if (m_state == CAMERA ){
+                m_currentPositionX = x;
+                m_currentPositionY = y;
+                m_currentPosition2X = x;
+                m_currentPosition2Y = y;
+                m_changeCameraOrientation = true;
+            }
         }
+
 	}
 }
 
@@ -814,8 +841,12 @@ void ofApp::mouseReleased(int x, int y, int button){
 			}
 		}
 	}
-	else {
+    else if (m_mode == MODE_3D
+             && m_state == CAMERA && button == OF_MOUSE_BUTTON_LEFT) {
 		//3D
+        m_changeCameraOrientation = false;
+        m_addPan = 0;
+        m_addTilt = 0;
 	}
 	
 }

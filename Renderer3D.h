@@ -10,10 +10,6 @@
 //class Renderer3D;
 class ofApp;
 
-/*template<typename ParameterType>
-class ofRenderer3DParam : public ofReadOnlyParameter<ParameterType, Renderer3D> {
-    friend class Renderer3D;
-};*/
 class Renderer3D
 {
 private:
@@ -57,6 +53,7 @@ public:
     ofParameter<bool> bCloud;
 
     std::vector<ofLight*> m_lights;
+
 
     ofCamera cam1;
 
