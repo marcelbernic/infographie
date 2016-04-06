@@ -114,7 +114,7 @@ class ofApp : public ofBaseApp{
         ofxPanel shapesPanel, shapesParamsPanel, menuPanel, shapes3DPanel, shapes3DParamsPanel;
 		ofParameter<bool> vSync;
 		ofParameter<bool> b2D, b3D, bModelMode; //*
-        ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect;
+        ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect, bAntialiasing;
         ofParameter<bool> bCube, bSphere, bCamera;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
@@ -124,7 +124,9 @@ class ofApp : public ofBaseApp{
 
 		// *
 		RendererModel *rendererModel;
-		bool showGui; // boolean variable utilized for show/hide interface
-        bool hideCamera; // boolean used to hide all panels not usefull for the camera mode.
+		bool showGui2D; // boolean variable utilized for show/hide 2D interface
+		bool showGui3D; // boolean variable utilized for show/hide 3D interface
+
+        bool showCamera; // boolean used to hide all panels not usefull for the camera mode.
         string s; // string to explain how camera works.
 };

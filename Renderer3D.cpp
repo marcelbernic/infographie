@@ -11,7 +11,6 @@ Renderer3D::~Renderer3D()
 
 void Renderer3D::setup(const string p_name, ofApp *p_app) {
     ofSetFrameRate(60);
-    ofSetWindowShape(1024, 768);
 
     m_app = p_app;
 

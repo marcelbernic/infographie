@@ -12,7 +12,6 @@ Renderer2D::~Renderer2D()
 
 void Renderer2D::setup(const string p_name, ofApp *p_app) {
 	ofSetFrameRate(60);
-	ofSetWindowShape(1024, 768);
 
 	m_app = p_app;
 

@@ -18,7 +18,7 @@ void ofApp::setup(){
 
     m_firstTimeSelection = 1;
 	renderer2d = new Renderer2D();
-    renderer2d->setup("2D", this);
+    renderer2d->setup("Parameters", this);
 
     renderer3d = new Renderer3D();
     renderer3d->setup("3D", this);
@@ -54,6 +54,7 @@ void ofApp::setup(){
 
 	importButton->setup("Import");
 	exportButton->setup("Export");
+
 	mergeButton->setup("Merge Shapes");
 	unmergeButton->setup("Unmerge Shapes");
     next->setup("Select next 3D shape");
@@ -64,6 +65,7 @@ void ofApp::setup(){
 	menuPanel.add(importButton);
 	menuPanel.add(exportButton);
 	menuPanel.add(bSelect.set("Selection", false));
+	menuPanel.add(bAntialiasing.set("Antialiasing", false));
 	shapesPanel.setup(shapesParams);
 	shapesPanel.add(mergeButton);
 	shapesPanel.add(unmergeButton);
@@ -75,7 +77,7 @@ void ofApp::setup(){
 	menuPanel.setPosition(0, 0);
 	shapesPanel.setPosition(0, 5 + menuPanel.getHeight());
 	shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
-    shapes3DPanel.setPosition(205, 0);
+    shapes3DPanel.setPosition(0, 5 + menuPanel.getHeight());
 
 	//Listeners
 	b2D.addListener(this, &ofApp::b2DChanged);
@@ -112,9 +114,10 @@ void ofApp::setup(){
     m_addPan = 0;
     m_addTilt = 0;
     m_changeCameraOrientation = 0;
-    hideCamera = 0;
+    showCamera = 0;
 
-	showGui = true;
+	showGui2D = true;
+	showGui3D = false;
 	ofSetLogLevel(OF_LOG_VERBOSE);
 
     s = string("") +
@@ -142,7 +145,9 @@ void ofApp::b2DChanged(bool & p_2D) {
         b2D.set(p_2D);
 		isClearingButtonsModes = false;
 		m_mode = MODE_2D;
-		showGui = true; //*
+		showGui2D = true; //*
+		showGui3D = false; //*
+		showCamera = false;
 	}
 }
 
@@ -154,8 +159,8 @@ void ofApp::b3DChanged(bool & p_3D) {
         b3D.set(p_3D);
 		isClearingButtonsModes = false;
 		m_mode = MODE_3D;
-		showGui = true; //*
-        hideCamera = false;
+		showGui3D = true; //*
+		showGui2D = false;
 	}
 }
 
@@ -167,7 +172,8 @@ void ofApp::bModelModeChanged(bool & p_modelMode) { //*
 		bModelMode.set(true);
 		isClearingButtonsModes = false;
 		m_mode = MODE_MODEL;
-		showGui = false;
+		showGui2D = false;
+		showGui3D = false;
 	}
 }
 
@@ -253,19 +259,17 @@ void ofApp::bSphereChanged(bool & p_sphere) {
     }
 }
 
-void ofApp::bCameraChanged(bool & p_sphere) {
+void ofApp::bCameraChanged(bool & p_camera) {
     if (!isClearingButtonsShapes) {
         clearButtons();
+		bCamera.set(false);
         isClearingButtonsShapes = false;
         bCamera.set(true);
-        b2D.set(false);
-        b3D.set(true);
         m_buffer.clear();
         m_state = AppState::CAMERA;
-        hideCamera = true;
+        showCamera = true;
     }
 }
-
 
 void ofApp::clearButtons() {
 	isClearingButtonsShapes = true;
@@ -306,6 +310,13 @@ void ofApp::draw(){
     ofBackgroundGradient(ofColor::white, ofColor::gray);
 	font.drawString("fps: " + ofToString((int)ofGetFrameRate()), ofGetWidth() - 150, 0);
 
+	if (bAntialiasing) {
+		ofEnableAntiAliasing();
+	}
+	else {
+		ofDisableAntiAliasing();
+	}
+
 	if (m_mode == MODE_2D) {
         renderer2d->draw();
 	}
@@ -320,11 +331,19 @@ void ofApp::draw(){
 
     ofSetColor(255);
 	if (!isTakingScreenshot) {
-        if (!hideCamera) menuPanel.draw();
-        if (showGui && !hideCamera) shapesPanel.draw();
-		if (showGui) shapesParamsPanel.draw();
-        if (showGui)  shapes3DPanel.draw();
-        if (hideCamera) 	ofDrawBitmapString(s, ofPoint(0, 0));
+		menuPanel.draw();
+        if (showGui2D) shapesPanel.draw();
+		if (showGui2D) {
+			shapesParamsPanel.setName("Shapes parameters");
+			shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
+			shapesParamsPanel.draw();
+		}
+		if (showGui3D) {
+			shapesParamsPanel.setPosition(0, 5 + shapes3DPanel.getHeight() + menuPanel.getHeight());
+			shapesParamsPanel.draw();
+			shapes3DPanel.draw();
+		}
+        if (showCamera) ofDrawBitmapString(s, ofPoint(ofGetWidth()-150, ofGetHeight()-200));
 	}
 
 	drawCursor();
