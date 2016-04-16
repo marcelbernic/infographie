@@ -32,6 +32,9 @@ void ofApp::setup(){
 	menuBarParams.add(bModelMode.set("Model Mode", false)); //*
 	importButton = new ofxButton();
 	exportButton = new ofxButton();
+	heightMapButton = new ofxButton();
+	displacementMapButton = new ofxButton();
+	cubeMapButton = new ofxButton();
 	mergeButton = new ofxButton();
 	unmergeButton = new ofxButton();
     next = new ofxButton();
@@ -54,6 +57,9 @@ void ofApp::setup(){
 
 	importButton->setup("Import");
 	exportButton->setup("Export");
+	heightMapButton->setup("Apply Height Map");
+	displacementMapButton->setup("Apply Displacemen Map");
+	cubeMapButton->setup("Apply Cube Map");
 
 	mergeButton->setup("Merge Shapes");
 	unmergeButton->setup("Unmerge Shapes");
@@ -73,6 +79,9 @@ void ofApp::setup(){
     shapes3DPanel.setup(shapes3DParams);
     shapes3DPanel.add(next);
     shapes3DPanel.add(unselect);
+	shapes3DPanel.add(heightMapButton);
+	shapes3DPanel.add(displacementMapButton);
+	shapes3DPanel.add(cubeMapButton);
     shapes3DPanel.add(renderer3d->parameters3D);
 	menuPanel.setPosition(0, 0);
 	shapesPanel.setPosition(0, 5 + menuPanel.getHeight());
@@ -89,6 +98,9 @@ void ofApp::setup(){
 	unmergeButton->addListener(this, &ofApp::buttonPressed);
     next->addListener(this, &ofApp::buttonPressed);
     unselect->addListener(this, &ofApp::buttonPressed);
+	heightMapButton->addListener(this, &ofApp::buttonPressed);
+	displacementMapButton->addListener(this, &ofApp::buttonPressed);
+	cubeMapButton->addListener(this, &ofApp::buttonPressed);
 	bLine.addListener(this, &ofApp::bLineChanged);
 	bTriangle.addListener(this, &ofApp::bTriangleChanged);
 	bRectangle.addListener(this, &ofApp::bRectangleChanged);
@@ -660,6 +672,15 @@ void ofApp::buttonPressed(const void * sender){
 			}
 		}
 
+		else if (btnName == "Apply Height Map") {
+			//TODO
+		}
+		else if (btnName == "Apply Displacemen Map") {
+			//TODO
+		}
+		else if (btnName == "Apply Cube Map") {
+			//TODO
+		}
 	}	
 }
 //--------------------------------------------------------------

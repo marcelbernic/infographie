@@ -119,7 +119,7 @@ class ofApp : public ofBaseApp{
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
         ofTrueTypeFont font;
-        ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect;
+		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect, *heightMapButton, *displacementMapButton, *cubeMapButton;
 		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 
 		// *
