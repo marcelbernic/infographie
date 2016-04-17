@@ -33,7 +33,6 @@ void ofApp::setup(){
 	menuBarParams.add(bModelMode.set("Model Mode", false)); //*
 	importButton = new ofxButton();
 	exportButton = new ofxButton();
-	heightMapButton = new ofxButton();
 	displacementMapButton = new ofxButton();
 	cubeMapButton = new ofxButton();
 	mergeButton = new ofxButton();
@@ -59,8 +58,7 @@ void ofApp::setup(){
 
 	importButton->setup("Import");
 	exportButton->setup("Export");
-	heightMapButton->setup("Apply Height Map");
-	displacementMapButton->setup("Apply Displacemen Map");
+	displacementMapButton->setup("Apply Displacement Map");
 	cubeMapButton->setup("Apply Cube Map");
 
 	mergeButton->setup("Merge Shapes");
@@ -81,7 +79,7 @@ void ofApp::setup(){
     shapes3DPanel.setup(shapes3DParams);
     shapes3DPanel.add(next);
     shapes3DPanel.add(unselect);
-	shapes3DPanel.add(heightMapButton);
+	shapes3DPanel.add(bHeightMap.set("Apply Height Map", false));
 	shapes3DPanel.add(displacementMapButton);
 	shapes3DPanel.add(cubeMapButton);
     shapes3DPanel.add(renderer3d->parameters3D);
@@ -100,7 +98,7 @@ void ofApp::setup(){
 	unmergeButton->addListener(this, &ofApp::buttonPressed);
     next->addListener(this, &ofApp::buttonPressed);
     unselect->addListener(this, &ofApp::buttonPressed);
-	heightMapButton->addListener(this, &ofApp::buttonPressed);
+	bHeightMap.addListener(this, &ofApp::bHeightMapChanged);
 	displacementMapButton->addListener(this, &ofApp::buttonPressed);
 	cubeMapButton->addListener(this, &ofApp::buttonPressed);
 	bLine.addListener(this, &ofApp::bLineChanged);
@@ -253,6 +251,16 @@ void ofApp::bSelectChanged(bool & pSelect) {
 void ofApp::bGridChanged(bool & pGrid) {
 	bgrid.set(pGrid);
 	m_grid = pGrid;
+}
+
+void ofApp::bHeightMapChanged(bool & pHeightMap) {
+	clearButtons();
+	bHeightMap.set(pHeightMap);
+	isClearingButtonsShapes = false;
+	b2D.set(false);
+	b3D.set(true);
+	m_buffer.clear();
+	m_state = AppState::BUILD_TERRAIN;
 }
 
 void ofApp::bCubeChanged(bool & p_cube) {
@@ -683,14 +691,6 @@ void ofApp::buttonPressed(const void * sender){
 			}
 		}
 
-		else if (btnName == "Apply Height Map") {
-			clearButtons();
-			isClearingButtonsShapes = false;
-			b2D.set(false);
-			b3D.set(true);
-			m_buffer.clear();
-			m_state = AppState::BUILD_TERRAIN;
-		}
 		else if (btnName == "Apply Displacemen Map") {
 			for (Obj3D* o : m_obj3DVector) {
 				if (o->isSelected()) {

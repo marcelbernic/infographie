@@ -90,6 +90,7 @@ class ofApp : public ofBaseApp{
         void bCameraChanged(bool & p_sphere);
         void bCloud(bool & p_Cloud);
 		void bGridChanged(bool & pGrid);
+		void bHeightMapChanged(bool & pHeightMap);
 		void clearButtons();
 
 		void buildRectangle();
@@ -119,12 +120,12 @@ class ofApp : public ofBaseApp{
         ofxPanel shapesPanel, shapesParamsPanel, menuPanel, shapes3DPanel, shapes3DParamsPanel;
 		ofParameter<bool> vSync, bgrid;
 		ofParameter<bool> b2D, b3D, bModelMode; //*
-        ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect, bAntialiasing;
+        ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect, bAntialiasing, bHeightMap;
         ofParameter<bool> bCube, bSphere, bCamera;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
         ofTrueTypeFont font;
-		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect, *heightMapButton, *displacementMapButton, *cubeMapButton;
+		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect, *displacementMapButton, *cubeMapButton;
 		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 
 		// *
