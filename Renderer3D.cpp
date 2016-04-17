@@ -1,6 +1,6 @@
 #include "Renderer3D.h"
 #include "ofxCubeMap.h"
-
+static float minBrightness = 1;
 
 Renderer3D::Renderer3D()
 {
@@ -67,6 +67,13 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
     cam1.setPosition(ofGetWidth()/2, ofGetHeight()/2, 1000);
     cam1.lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, -1));
 
+	ofImage heightmap;
+	heightmap.loadImage("image.jpg");
+	for (int y = 0; y < heightmap.getHeight(); y++) {
+		for (int x = 0; x < heightmap.getWidth(); x++) {
+			minBrightness = std::min(minBrightness, float((heightmap.getColor(x, y).r / 255.0) * 0.3 + (heightmap.getColor(x, y).g / 255.0) * 0.59 + (heightmap.getColor(x, y).b / 255.0) * 0.11));
+		}
+	}
 }
 
 void Renderer3D::draw() {
@@ -363,23 +370,73 @@ void Renderer3D::imageExport(const string path, const string extension) const
 }
 
 void Renderer3D::drawCube3D(app::Cube3D *p_cube) {
+	ofShader shader;
+	ofImage colormap, heightmap;
+	ofxCubeMap myCubeMap = ofxCubeMap();
+	int selected = 0;
     if (p_cube->isSelected()) {
         p_cube->setColorCube(m_app->renderer2d->colorSelected);
         ofSetColor(m_app->renderer2d->colorSelected);
+		selected = 1;
     }
     else{
         p_cube->setColorCube(p_cube->getColorFill());
         ofSetColor(p_cube->getColorFill());
     }
-    p_cube->draw();
+	switch (p_cube->m_shaderMode) {
+	case DISPLACEMENT:
+		ofDisableArbTex();
+
+
+		colormap.loadImage("image.jpg");
+		heightmap.loadImage("image.jpg");
+		shader.load("shaders/heightmap");
+
+		shader.begin();
+		shader.setUniformTexture("colormap", colormap, 0);
+		shader.setUniformTexture("bumpmap", heightmap, 1);
+		shader.setUniform1i("selected", selected);
+		shader.setUniform1i("maxHeight", 20);
+		shader.setUniform1f("min", minBrightness);
+		p_cube->draw();
+		shader.end();
+		ofEnableArbTex();
+
+		break;
+	case CUBE:
+		shader.load("shaders/CubeMap");
+		myCubeMap.loadImages("right.jpeg",
+			"left.jpeg",
+			"base.jpeg",
+			"top.jpeg",
+			"front.jpeg",
+			"back.jpeg");
+
+		myCubeMap.bind();
+		shader.begin();
+
+		shader.setUniform1i("EnvMap", 0);
+		shader.setUniform1f("reflectivity", 0.8);
+		shader.setUniform1i("selected", selected);
+
+		p_cube->draw();
+
+		shader.end();
+		myCubeMap.unbind();
+	case NONE:
+		p_cube->draw();
+		break;
+	}
 }
 
 void Renderer3D::drawSphere3D(app::Sphere3D *p_sphere) {
 	ofShader shader;
 	ofImage colormap, heightmap;
 	ofxCubeMap myCubeMap = ofxCubeMap();
+	int selected = 0;
     if (p_sphere->isSelected()) {
         p_sphere->setColorSphere(m_app->renderer2d->colorSelected);
+		selected = 1;
     }
     else{
         p_sphere->setColorSphere(p_sphere->getColorFill());
@@ -396,31 +453,30 @@ void Renderer3D::drawSphere3D(app::Sphere3D *p_sphere) {
 		shader.begin();
 		shader.setUniformTexture("colormap", colormap, 0);
 		shader.setUniformTexture("bumpmap", heightmap, 1);
-		shader.setUniform4f("col", ofFloatColor::red);
+		shader.setUniform1i("selected", selected);
 		shader.setUniform1i("maxHeight", 20);
-		shader.setUniform1f("min", 0);
+		shader.setUniform1f("min", minBrightness);
 		p_sphere->draw();
 		shader.end();
 		ofEnableArbTex();
 
 		break;
 	case CUBE:
-		shader.load("E:\\of_root\\apps\\myApps\\mySketch\\shaders\\CubeMap");
-		myCubeMap.loadImages("e:\\of_root\\apps\\myApps\\mySketch\\data\\right.jpeg",
-			"e:\\of_root\\apps\\myApps\\mySketch\\data\\left.jpeg",
-			"e:\\of_root\\apps\\myApps\\mySketch\\data\\top.jpeg",
-			"e:\\of_root\\apps\\myApps\\mySketch\\data\\base.jpeg",
-			"e:\\of_root\\apps\\myApps\\mySketch\\data\\front.jpeg",
-			"e:\\of_root\\apps\\myApps\\mySketch\\data\\back.jpeg");
+		shader.load("shaders/CubeMap");
+		myCubeMap.loadImages("right.jpeg",
+			"left.jpeg",
+			"base.jpeg",
+			"top.jpeg",
+			"front.jpeg",
+			"back.jpeg");
 
 		myCubeMap.bind();
 		shader.begin();
-		
 		shader.setUniform1i("EnvMap", 0);
 		shader.setUniform1f("reflectivity", 0.8);
-
+		shader.setUniform1i("selected", selected);
+		
 		p_sphere->draw();
-
 		shader.end();
 		myCubeMap.unbind();
 	case NONE:

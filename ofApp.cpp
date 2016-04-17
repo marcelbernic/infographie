@@ -255,13 +255,15 @@ void ofApp::bGridChanged(bool & pGrid) {
 }
 
 void ofApp::bHeightMapChanged(bool & pHeightMap) {
-	clearButtons();
-	bHeightMap.set(pHeightMap);
-	isClearingButtonsShapes = false;
-	b2D.set(false);
-	b3D.set(true);
-	m_buffer.clear();
-	m_state = AppState::BUILD_TERRAIN;
+	if (!isClearingButtonsShapes) {
+		clearButtons();
+		bHeightMap.set(true);
+		isClearingButtonsShapes = false;
+		b2D.set(false);
+		b3D.set(true);
+		m_buffer.clear();
+		m_state = AppState::BUILD_TERRAIN;
+	}
 }
 
 void ofApp::bCubeChanged(bool & p_cube) {
@@ -310,6 +312,7 @@ void ofApp::clearButtons() {
     bCube.set(false);
     bSphere.set(false);
     bCamera.set(false);
+	bHeightMap.set(false);
 }
 
 //--------------------------------------------------------------
@@ -692,7 +695,7 @@ void ofApp::buttonPressed(const void * sender){
 			}
 		}
 
-		else if (btnName == "Apply Displacemen Map") {
+		else if (btnName == "Apply Displacement Map") {
 			for (Obj3D* o : m_obj3DVector) {
 				if (o->isSelected()) {
 					o->m_shaderMode = ShaderMode::DISPLACEMENT;
