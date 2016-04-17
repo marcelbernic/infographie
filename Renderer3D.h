@@ -6,6 +6,7 @@
 #include "Obj3D.h"
 #include "Cube3D.h"
 #include "Sphere3D.h"
+#include "Terrain3D.h"
 
 //class Renderer3D;
 class ofApp;
@@ -39,6 +40,8 @@ public:
 
     void drawSphere3D(app::Sphere3D *p_sphere);
 
+	void drawTerrain3D(app::Terrain3D *p_terrain);
+
     ofParameterGroup parameters3D;
     ofParameter<int> x;
     ofParameter<int> y;
@@ -53,7 +56,6 @@ public:
     ofParameter<bool> bCloud;
 
     std::vector<ofLight*> m_lights;
-
 
     ofCamera cam1;
 

@@ -9,6 +9,7 @@ typedef enum
 	BUILD_COLLECTION,
     BUILD_CUBE,
     BUILD_SPHERE,
+	BUILD_TERRAIN,
 	ACTION_SELECT,
 	ACTION_GROUPSELECT,
 	ACTION_TRANSLATE,
@@ -23,3 +24,10 @@ typedef enum
 	MODE_3D,
 	MODE_MODEL
 }   AppMode;
+
+typedef enum
+{
+	DISPLACEMENT,
+	CUBE,
+	NONE
+}   ShaderMode;

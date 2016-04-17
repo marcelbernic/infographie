@@ -14,6 +14,7 @@
 #include "of3dGraphics.h"
 #include "of3dPrimitives.h"
 #include "of3dUtils.h"
+#include "state.h"
 
 #define PI (3.141592653589793)
 
@@ -30,6 +31,7 @@ protected:
     EnumVectorDrawMode m_type;
 
 public:
+	ShaderMode m_shaderMode;
     Obj3D(int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFills);
     ~Obj3D();
 

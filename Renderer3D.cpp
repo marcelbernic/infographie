@@ -1,4 +1,5 @@
 #include "Renderer3D.h"
+#include "ofxCubeMap.h"
 
 Renderer3D::Renderer3D()
 {
@@ -105,6 +106,12 @@ void Renderer3D::draw() {
             drawSphere3D(c);
         }
             break;
+
+		case EnumVectorDrawMode::PRIMITIVE_TERRAIN: {
+			app::Terrain3D* c = dynamic_cast<app::Terrain3D*>(o);
+			drawTerrain3D(c);
+		}
+			break;
         }
     }
 
@@ -201,7 +208,12 @@ void Renderer3D::rotxChanged(double & p_rotx) {
                 ptr_sphere->setRotateX(p_rotx);
                 }
                 break;
-
+			case PRIMITIVE_TERRAIN: {
+				app::Terrain3D *ptr_terrain;
+				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
+				ptr_terrain->setDimension(p_rotx);
+				}
+				break;
             }
         }
     }
@@ -223,7 +235,12 @@ void Renderer3D::rotyChanged(double & p_roty) {
                 ptr_sphere->setRotateY(p_roty);
                 }
                 break;
-
+			case PRIMITIVE_TERRAIN: {
+				app::Terrain3D *ptr_terrain;
+				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
+				ptr_terrain->setDimension(p_roty);
+				}
+				break;
             }
         }
     }
@@ -245,7 +262,12 @@ void Renderer3D::rotzChanged(double & p_rotz) {
                 ptr_sphere->setRotateZ(p_rotz);
                 }
                 break;
-
+			case PRIMITIVE_TERRAIN: {
+				app::Terrain3D *ptr_terrain;
+				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
+				ptr_terrain->setDimension(p_rotz);
+				}
+				break;
             }
         }
     }
@@ -268,7 +290,12 @@ void Renderer3D::bCloudChanged(bool &p_cloud){
                 ptr_sphere->setCloud(p_cloud);
                 }
                 break;
-
+			case PRIMITIVE_TERRAIN: {
+				app::Terrain3D *ptr_terrain;
+				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
+				ptr_terrain->setDimension(p_cloud);
+				}
+				break;
             }
         }
     }
@@ -290,7 +317,12 @@ void Renderer3D::dimensionChanged(double & p_dimension){
                 ptr_sphere->setDimension(p_dimension);
                 }
                 break;
-
+			case PRIMITIVE_TERRAIN: {
+				app::Terrain3D *ptr_terrain;
+				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
+				ptr_terrain->setDimension(p_dimension);
+				}
+				break;
             }
         }
     }
@@ -322,11 +354,74 @@ void Renderer3D::drawCube3D(app::Cube3D *p_cube) {
 }
 
 void Renderer3D::drawSphere3D(app::Sphere3D *p_sphere) {
+	ofShader shader;
+	ofImage colormap, heightmap;
+	ofxCubeMap myCubeMap = ofxCubeMap();
     if (p_sphere->isSelected()) {
         p_sphere->setColorSphere(m_app->renderer2d->colorSelected);
     }
     else{
         p_sphere->setColorSphere(p_sphere->getColorFill());
     }
-    p_sphere->draw();
+	switch (p_sphere->m_shaderMode) {
+	case DISPLACEMENT:
+		ofDisableArbTex();
+		
+
+		colormap.loadImage("image.jpg");
+		heightmap.loadImage("image.jpg");
+		shader.load("shaders/heightmap");
+
+		shader.begin();
+		shader.setUniformTexture("colormap", colormap, 0);
+		shader.setUniformTexture("bumpmap", heightmap, 1);
+		shader.setUniform4f("col", ofFloatColor::red);
+		shader.setUniform1i("maxHeight", 20);
+		shader.setUniform1f("min", 0);
+		p_sphere->draw();
+		shader.end();
+		ofEnableArbTex();
+
+		break;
+	case CUBE:
+		shader.load("E:\\of_root\\apps\\myApps\\mySketch\\shaders\\CubeMap");
+		myCubeMap.loadImages("e:\\of_root\\apps\\myApps\\mySketch\\data\\right.jpeg",
+			"e:\\of_root\\apps\\myApps\\mySketch\\data\\left.jpeg",
+			"e:\\of_root\\apps\\myApps\\mySketch\\data\\top.jpeg",
+			"e:\\of_root\\apps\\myApps\\mySketch\\data\\base.jpeg",
+			"e:\\of_root\\apps\\myApps\\mySketch\\data\\front.jpeg",
+			"e:\\of_root\\apps\\myApps\\mySketch\\data\\back.jpeg");
+
+		myCubeMap.bind();
+		shader.begin();
+		
+		shader.setUniform1i("EnvMap", 0);
+		shader.setUniform1f("reflectivity", 0.8);
+
+		p_sphere->draw();
+
+		shader.end();
+		myCubeMap.unbind();
+	case NONE:
+		p_sphere->draw();
+		break;
+	}	
 }
+
+void Renderer3D::drawTerrain3D(app::Terrain3D *p_terrain) {
+	
+
+	//ofEasyCam easyCam;
+	if (p_terrain->isSelected()) {
+		ofSetColor(255, 255, 255);
+	}
+	else {
+		ofSetColor(128, 128, 128);
+	}
+	
+	p_terrain->m_mesh.drawWireframe();
+
+	//easyCam.end();
+}
+
+
