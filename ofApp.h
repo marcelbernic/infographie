@@ -25,6 +25,7 @@
 #include "ofxAssimpModelLoader.h"
 #include "ofVboMesh.h" 
 
+
 class Renderer2D;
 class Obj3D;
 class Renderer3D;
@@ -135,4 +136,6 @@ class ofApp : public ofBaseApp{
 
         bool showCamera; // boolean used to hide all panels not usefull for the camera mode.
         string s; // string to explain how camera works.
+
+		
 };

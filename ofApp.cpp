@@ -25,6 +25,7 @@ void ofApp::setup(){
     renderer3d->setup("3D", this);
 
 	rendererModel = new RendererModel(); //*
+	rendererModel->setup();
 
 	//Panels params
 	menuBarParams.setName("Menu");
