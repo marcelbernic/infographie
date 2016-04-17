@@ -143,7 +143,12 @@ void Renderer3D::xChanged(int & p_x) {
                 ptr_sphere->setPositionX(p_x);
                 }
                 break;
-
+			case PRIMITIVE_TERRAIN: {
+				app::Terrain3D *ptr_terrain;
+				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
+				ptr_terrain->setPositionX(p_x);
+				}
+			break;
             }
         }
     }
@@ -164,7 +169,12 @@ void Renderer3D::yChanged(int & p_y) {
                 ptr_sphere->setPositionY(p_y);
                 }
                 break;
-
+			case PRIMITIVE_TERRAIN: {
+				app::Terrain3D *ptr_terrain;
+				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
+				ptr_terrain->setPositionY(p_y);
+				}
+				break;
             }
         }
     }
@@ -186,6 +196,12 @@ void Renderer3D::zChanged(int & p_z) {
                 ptr_sphere->setPositionZ(p_z);
                 }
                 break;
+			case PRIMITIVE_TERRAIN: {
+				app::Terrain3D *ptr_terrain;
+				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
+				ptr_terrain->setPositionZ(p_z);
+				}
+				break;
 
             }
         }
@@ -211,7 +227,7 @@ void Renderer3D::rotxChanged(double & p_rotx) {
 			case PRIMITIVE_TERRAIN: {
 				app::Terrain3D *ptr_terrain;
 				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
-				ptr_terrain->setDimension(p_rotx);
+				ptr_terrain->setRotateX(p_rotx);
 				}
 				break;
             }
@@ -238,7 +254,7 @@ void Renderer3D::rotyChanged(double & p_roty) {
 			case PRIMITIVE_TERRAIN: {
 				app::Terrain3D *ptr_terrain;
 				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
-				ptr_terrain->setDimension(p_roty);
+				ptr_terrain->setRotateY(p_roty);
 				}
 				break;
             }
@@ -265,7 +281,7 @@ void Renderer3D::rotzChanged(double & p_rotz) {
 			case PRIMITIVE_TERRAIN: {
 				app::Terrain3D *ptr_terrain;
 				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
-				ptr_terrain->setDimension(p_rotz);
+				ptr_terrain->setRotateZ(p_rotz);
 				}
 				break;
             }
@@ -293,7 +309,7 @@ void Renderer3D::bCloudChanged(bool &p_cloud){
 			case PRIMITIVE_TERRAIN: {
 				app::Terrain3D *ptr_terrain;
 				ptr_terrain = dynamic_cast<app::Terrain3D*>(o);
-				ptr_terrain->setDimension(p_cloud);
+				ptr_terrain->setCloud(p_cloud);
 				}
 				break;
             }
@@ -418,8 +434,14 @@ void Renderer3D::drawTerrain3D(app::Terrain3D *p_terrain) {
 	else {
 		ofSetColor(128, 128, 128);
 	}
+	//ofRotateX(p_terrain->m_primitive.getOrientationQuat().x()*360);
+	ofTranslate(p_terrain->getPosition().x, p_terrain->getPosition().y, p_terrain->getPosition().z);
 	
 	p_terrain->m_mesh.drawWireframe();
+	
+	//cout << p_terrain->m_primitive.getOrientationQuat().x()*360 << endl;
+	ofTranslate(-p_terrain->getPosition().x, -p_terrain->getPosition().y, -p_terrain->getPosition().z);
+	//ofRotateX(-p_terrain->m_primitive.getOrientationQuat().x());
 
 	//easyCam.end();
 }

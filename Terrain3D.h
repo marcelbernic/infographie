@@ -6,13 +6,17 @@ namespace app {
 	{
 	private:
 		
-		ofPlanePrimitive m_primitive;
+		
 
 	public:
+		ofPlanePrimitive m_primitive;
 		ofMesh m_mesh;
 		ofFloatImage m_img;
 		double m_width;
 		double m_height;
+		int rotationX;
+		int rotationY;
+		int rotationZ;
 		Terrain3D(std::vector<Coord3D> p_coord, string p_url, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill);
 		~Terrain3D();
 
@@ -29,6 +33,7 @@ namespace app {
 		void addFace(ofMesh& mesh, ofVec3f a, ofVec3f b, ofVec3f c);
 		void addFace(ofMesh& mesh, ofVec3f a, ofVec3f b, ofVec3f c, ofVec3f d);
 		ofVec3f getVertexFromImg(ofFloatImage& img, int x, int y);
+		Coord3D getOtherPosition();
 	};	
 }
 

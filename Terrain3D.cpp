@@ -23,6 +23,10 @@ Terrain3D::Terrain3D(std::vector<Coord3D> p_coord, string p_url, int p_lineStrok
 	m_colorFill;
 	m_isSelected = false;
 	m_cloud = false;
+	rotationX = 0;
+	rotationY = 0;
+	rotationZ = 0;
+
 	prepareToDraw();
 }
 
@@ -38,34 +42,40 @@ ofVec3f Terrain3D::getPosition() {
 void Terrain3D::setPositionX(int p_x) {
 	ofVec3f vect = getPosition();
 	m_primitive.setPosition(p_x, vect.y, vect.z);
+	m_coordVector[0].setX(p_x);
 }
 
 void Terrain3D::setPositionY(int p_y) {
 	ofVec3f vect = getPosition();
 	m_primitive.setPosition(vect.x, p_y, vect.z);
+	m_coordVector[0].setY(p_y);
 }
 
 void Terrain3D::setPositionZ(int p_z) {
 	ofVec3f vect = getPosition();
 	m_primitive.setPosition(vect.x, vect.y, p_z);
+	m_coordVector[0].setZ(p_z);
 }
 
 void Terrain3D::setRotateX(int p_rotx) {
 	ofVec3f vect(1, 0, 0);
 	ofQuaternion quat(p_rotx, vect);
 	m_primitive.setOrientation(quat);
+	rotationX = p_rotx;
 }
 
 void Terrain3D::setRotateY(int p_roty) {
 	ofVec3f vect(0, 1, 0);
 	ofQuaternion quat(p_roty, vect);
 	m_primitive.setOrientation(quat);
+	rotationY = p_roty;
 }
 
 void Terrain3D::setRotateZ(int p_rotz) {
 	ofVec3f vect(0, 0, 1);
 	ofQuaternion quat(p_rotz, vect);
 	m_primitive.setOrientation(quat);
+	rotationZ = p_rotz;
 }
 
 void Terrain3D::setDimension(double p_dimension) {
@@ -118,4 +128,8 @@ void Terrain3D::addFace(ofMesh& mesh, ofVec3f a, ofVec3f b, ofVec3f c, ofVec3f d
 //--------------------------------------------------------------
 ofVec3f Terrain3D::getVertexFromImg(ofFloatImage& img, int x, int y) {
 	return ofVec3f(x, y, 64 * img.getColor(x, y).getBrightness());
+}
+
+Coord3D Terrain3D::getOtherPosition() {
+	return m_coordVector[0];
 }
