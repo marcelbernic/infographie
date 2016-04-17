@@ -17,6 +17,7 @@ void ofApp::setup(){
 	ofSetWindowTitle("Paint3D+");
 
     m_firstTimeSelection = 1;
+	m_grid = false;
 	renderer2d = new Renderer2D();
     renderer2d->setup("Parameters", this);
 
@@ -53,6 +54,7 @@ void ofApp::setup(){
 
 	shapesSettingsParams.setName("2D Settings");
 	shapesSettingsParams.add(vSync.set("vSync",true));
+	shapesSettingsParams.add(bgrid.set("Grid", false));
 	shapesSettingsParams.add(renderer2d->parameters);
 
 	importButton->setup("Import");
@@ -109,6 +111,7 @@ void ofApp::setup(){
     bCube.addListener(this, &ofApp::bCubeChanged);
     bSphere.addListener(this, &ofApp::bSphereChanged);
     bCamera.addListener(this, &ofApp::bCameraChanged);
+	bgrid.addListener(this, &ofApp::bGridChanged);
 
     //gui.loadFromFile("settings.xml");
 
@@ -247,6 +250,11 @@ void ofApp::bSelectChanged(bool & pSelect) {
 	}
 }
 
+void ofApp::bGridChanged(bool & pGrid) {
+	bgrid.set(pGrid);
+	m_grid = pGrid;
+}
+
 void ofApp::bCubeChanged(bool & p_cube) {
     if (!isClearingButtonsShapes) {
         clearButtons();
@@ -330,6 +338,9 @@ void ofApp::draw(){
 	}
 
 	if (m_mode == MODE_2D) {
+		if (m_grid) {
+			drawGrid();
+		}
         renderer2d->draw();
 	}
 	else if (m_mode == MODE_MODEL) {
@@ -1035,6 +1046,28 @@ void ofApp::clear2DButtons(){
 void ofApp::clear3DButtons(){
     bCube.set(false);
     renderer3d->bCloud.set(false);
+}
+
+void ofApp::drawGrid() {
+	int x_smallDiv = 10;
+	int y_smallDiv = 10;
+	int x_bigDiv = 5;
+	int y_bigDiv = 5;
+	ofSetColor(0, 0, 0);
+	ofSetLineWidth(1);
+	for (int i = 0; i <= x_smallDiv*x_bigDiv; i++) {
+		ofDrawLine(i*ofGetWidth() / (x_smallDiv*x_bigDiv), 0, i*ofGetWidth() / (x_smallDiv*x_bigDiv), ofGetHeight());
+	}
+	for (int i = 0; i <= y_smallDiv*y_bigDiv; i++) {
+		ofDrawLine(0, i*ofGetHeight() / (y_smallDiv*y_bigDiv), ofGetWidth(), i*ofGetHeight() / (y_smallDiv*y_bigDiv));
+	}
+	ofSetLineWidth(2);
+	for (int i = 0; i <= x_bigDiv; i++) {
+		ofDrawLine(i*ofGetWidth() / (x_bigDiv), 0, i*ofGetWidth() / (x_bigDiv), ofGetHeight());
+	}
+	for (int i = 0; i <= y_bigDiv; i++) {
+		ofDrawLine(0, i*ofGetHeight() / (y_bigDiv), ofGetWidth(), i*ofGetHeight() / (y_bigDiv));
+	}
 }
 
 ofApp::~ofApp()
