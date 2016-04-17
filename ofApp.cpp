@@ -673,13 +673,26 @@ void ofApp::buttonPressed(const void * sender){
 		}
 
 		else if (btnName == "Apply Height Map") {
-			//TODO
+			clearButtons();
+			isClearingButtonsShapes = false;
+			b2D.set(false);
+			b3D.set(true);
+			m_buffer.clear();
+			m_state = AppState::BUILD_TERRAIN;
 		}
 		else if (btnName == "Apply Displacemen Map") {
-			//TODO
+			for (Obj3D* o : m_obj3DVector) {
+				if (o->isSelected()) {
+					o->m_shaderMode = ShaderMode::DISPLACEMENT;
+				}
+			}
 		}
 		else if (btnName == "Apply Cube Map") {
-			//TODO
+			for (Obj3D* o : m_obj3DVector) {
+				if (o->isSelected()) {
+					o->m_shaderMode = ShaderMode::CUBE;
+				}
+			}
 		}
 	}	
 }
@@ -843,7 +856,13 @@ void ofApp::mousePressed(int x, int y, int button) {
                     m_buffer3D.clear();
                 }
                 break;
-
+			case AppState::BUILD_TERRAIN:
+				m_buffer3D.push_back(Coord3D(x, y, 0));
+				if (m_buffer3D.size() == 1) {
+					buildTerrain();
+					m_buffer3D.clear();
+				}
+				break;
             }
 
             if (m_state == CAMERA ){
@@ -952,6 +971,10 @@ void ofApp::buildCube() {
 
 void ofApp::buildSphere() {
     m_obj3DVector.push_back(new app::Sphere3D(renderer3d->dimension, m_buffer3D, renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
+}
+
+void ofApp::buildTerrain() {
+	m_obj3DVector.push_back(new app::Terrain3D(m_buffer3D, "image.jpg", renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer2d->colorFill.get()));
 }
 
 double ofApp::calculateDistance(Coord p_coord1, Coord p_coord2) {

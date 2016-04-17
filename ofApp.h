@@ -18,6 +18,7 @@
 #include "Line2D.h"
 #include "Image2D.h"
 #include "Cube3D.h"
+#include "Terrain3D.h"
 #include "Obj2DCollection.h"
 #include <vector>
 #include "RendererModel.h"
@@ -95,6 +96,7 @@ class ofApp : public ofBaseApp{
 		void buildLine();
         void buildCube();
         void buildSphere();
+		void buildTerrain();
 		double calculateDistance(Coord p_coord1, Coord p_coord2);
 		void clearSelected();
 		void updateGroupSelection();

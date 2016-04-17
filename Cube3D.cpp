@@ -3,6 +3,7 @@ using namespace app;
 
 Cube3D::Cube3D(double p_dim, std::vector<Coord3D> p_coord, int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill)
     : Shape3D(p_lineStroke, p_lineColor, p_lineColorSelected, p_colorFill) {
+	m_shaderMode = ShaderMode::NONE;
     m_coordVector = p_coord;
     m_type = EnumVectorDrawMode::PRIMITIVE_CUBE;
     m_primitive.set(p_dim, p_dim, p_dim);

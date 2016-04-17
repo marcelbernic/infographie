@@ -3,6 +3,7 @@
 #include <iostream>
 
 Obj3D::Obj3D(int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected, ofColor p_colorFill) {
+	m_shaderMode = ShaderMode::NONE;
     m_lineStroke = p_lineStroke;
     m_lineColor = p_lineColor;
     m_lineColorSelected = p_lineColorSelected;
