@@ -25,6 +25,7 @@
 #include "ofxAssimpModelLoader.h"
 #include "ofVboMesh.h" 
 
+
 class Renderer2D;
 class Obj3D;
 class Renderer3D;
@@ -39,6 +40,7 @@ class ofApp : public ofBaseApp{
         std::vector<Obj3D*> m_obj3DVector;
 		AppState m_state;
 		AppMode m_mode;
+		bool m_grid;
 		int m_clickRadius;
 		bool isTakingScreenshot;
 		bool isClearingButtonsShapes, isClearingButtonsModes;
@@ -88,6 +90,8 @@ class ofApp : public ofBaseApp{
         void bSphereChanged(bool & p_sphere);
         void bCameraChanged(bool & p_sphere);
         void bCloud(bool & p_Cloud);
+		void bGridChanged(bool & pGrid);
+		void bHeightMapChanged(bool & pHeightMap);
 		void clearButtons();
 
 		void buildRectangle();
@@ -107,6 +111,7 @@ class ofApp : public ofBaseApp{
         void deleteSelection3D();
         void clear2DButtons();
         void clear3DButtons();
+		void drawGrid();
 		
 		Renderer2D *renderer2d;
         Renderer3D *renderer3d;
@@ -114,14 +119,14 @@ class ofApp : public ofBaseApp{
 		std::vector<Obj2D*> getCollectionObjects(app::Obj2DCollection* p_coll);
 
         ofxPanel shapesPanel, shapesParamsPanel, menuPanel, shapes3DPanel, shapes3DParamsPanel;
-		ofParameter<bool> vSync;
+		ofParameter<bool> vSync, bgrid;
 		ofParameter<bool> b2D, b3D, bModelMode; //*
-        ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect, bAntialiasing;
+        ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect, bAntialiasing, bHeightMap;
         ofParameter<bool> bCube, bSphere, bCamera;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
         ofTrueTypeFont font;
-		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect, *heightMapButton, *displacementMapButton, *cubeMapButton;
+		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect, *displacementMapButton, *cubeMapButton;
 		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 
 		// *
@@ -131,4 +136,6 @@ class ofApp : public ofBaseApp{
 
         bool showCamera; // boolean used to hide all panels not usefull for the camera mode.
         string s; // string to explain how camera works.
+
+		
 };

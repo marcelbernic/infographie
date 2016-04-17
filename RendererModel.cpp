@@ -4,48 +4,116 @@ RendererModel::RendererModel() {
 
 }
 
-
 RendererModel::~RendererModel() {
 
 }
 
+
+void RendererModel::setup() {
+	ofSetBoxResolution(30, 30, 30);
+
+	cam.disableMouseInput();
+	cam.setDistance(10);
+	cam.setPosition(0, 0, -50);
+	cam.lookAt(ofVec3f(0, 0, 0), ofVec3f(0, -1, 0));
+	cam.setNearClip(1);
+	cam.setFarClip(150);
+
+	cam.enableMouseInput();
+
+	// range of the shadow camera //
+	shadow.setRange(10, 150);
+	shadow.setBias(0.01);
+
+}
+
+void RendererModel::update() {
+
+	shadow.setLightPosition(ofVec3f(cos(ofGetElapsedTimef()*0.6) * 10, -3, -25));
+	shadow.setLightLookAt(ofVec3f(0, 0, 0), ofVec3f(0, -1, 0));
+
+	// Control model position
+	if (ofGetKeyPressed(OF_KEY_LEFT) && ofGetKeyPressed(OF_KEY_CONTROL)) {
+		model.setRotation(1, model.getPosition().x - 2, 0, 1, 0);
+	}
+	if (ofGetKeyPressed(OF_KEY_RIGHT) && ofGetKeyPressed(OF_KEY_CONTROL)) {
+		model.setRotation(1, model.getPosition().x + 2, 0, 1, 0);
+	}
+	if (ofGetKeyPressed(OF_KEY_DOWN) && ofGetKeyPressed(OF_KEY_CONTROL)) {
+		model.setRotation(1, model.getPosition().y - 2, 1, 0, 0);
+	}
+	if (ofGetKeyPressed(OF_KEY_UP) && ofGetKeyPressed(OF_KEY_CONTROL)) {
+		model.setRotation(1, model.getPosition().y + 2, 1, 0, 0);
+	}
+	if (ofGetKeyPressed(OF_KEY_RIGHT)) {
+		model.setPosition(model.getPosition().x + 5, model.getPosition().y, model.getPosition().z);
+	}
+	if (ofGetKeyPressed(OF_KEY_LEFT)) {
+		model.setPosition(model.getPosition().x - 5, model.getPosition().y, model.getPosition().z);
+	}
+	if (ofGetKeyPressed(OF_KEY_UP)) {
+		model.setPosition(model.getPosition().x, model.getPosition().y + 5, model.getPosition().z);
+	}
+	if (ofGetKeyPressed(OF_KEY_DOWN)) {
+		model.setPosition(model.getPosition().x, model.getPosition().y - 5, model.getPosition().z);
+	}
+	if (ofGetKeyPressed(OF_KEY_UP) && ofGetKeyPressed(OF_KEY_LEFT_ALT)) {
+		model.setPosition(model.getPosition().x, model.getPosition().y, model.getPosition().z + 5);
+	}
+	if (ofGetKeyPressed(OF_KEY_DOWN) && ofGetKeyPressed(OF_KEY_LEFT_ALT)) {
+		model.setPosition(model.getPosition().x, model.getPosition().y, model.getPosition().z - 5);
+	}
+	// end control model position
+}
+
 void RendererModel::draw() {
+	
+	shadow.beginDepthPass();
+	glEnable(GL_DEPTH_TEST);
+	rendererScene();
+	glDisable(GL_DEPTH_TEST);
+	shadow.endDepthPass();
+
+
+	shadow.beginRenderPass(cam);
+	cam.begin();
+	glEnable(GL_DEPTH_TEST);
+	rendererScene();
+	glDisable(GL_DEPTH_TEST);
+	cam.end();
+	shadow.endRenderPass();
+	RendererModel::update();
+
+}
+
+void RendererModel::rendererScene() {
 	ofSetColor(255);
-	
-	ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+	ofPushMatrix(); {
+		ofTranslate(0, 0, 0);
+		ofRotate(180, 1, 0, 0);
+		ofScale(0.015, 0.015, 0.015);
+		model.drawFaces();
+	} ofPopMatrix();
 
-	ofEnableDepthTest();
-    #ifndef TARGET_PROGRAMMABLE_GL    
-	glShadeModel(GL_SMOOTH); 
-    #endif
-	if(switchLight) light.enable();
-	ofEnableSeparateSpecularLight();
-	
-	ofPushMatrix();
-	ofTranslate(model.getPosition().x + 100, model.getPosition().y, 0);
-	if (ofGetMousePressed(OF_MOUSE_BUTTON_LEFT)) ofRotate(ofGetMouseX(), 0, 1, 0);
-	if (ofGetMousePressed(OF_MOUSE_BUTTON_LEFT)) ofRotate(ofGetMouseY(), 1, 0, 0);
-	ofTranslate(-model.getPosition().x, -model.getPosition().y, 0);
-	model.drawFaces();
-	ofPopMatrix();
+	/*ofSetColor(241, 238, 162);
+	ofPushMatrix(); {
+		ofRotateX(cos(ofGetElapsedTimef() * 2.3) * sin(ofGetElapsedTimef()) * RAD_TO_DEG);
+		ofRotateY(sin(ofGetElapsedTimef()) * RAD_TO_DEG);
+		ofDrawBox(2, 2, 2);
+	} ofPopMatrix();*/
 
-	ofDisableDepthTest();	
-	light.disable();
-	ofDisableLighting();
-	ofDisableSeparateSpecularLight();
+	ofSetColor(128, 158, 108);
+	ofDrawSphere(-8, sin(ofGetElapsedTimef()) * 5, 2);
 
-	ofSetColor(0, 0, 0);	
-	ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate(), 2), 10, 150);
-	ofDrawBitmapString("You are in Model Mode", 10, 165);
-	ofDrawBitmapString("Files supported: '.obj', '.dae'", 10, 180);
-	ofDrawBitmapString("To load a file click 'Import' ", 10, 195);
+	/*
+	ofSetColor(183, 241, 195);
+	ofDrawSphere(24, sin(ofGetElapsedTimef() * 0.3) * 3, 5, 2);*/
 
-	ofDrawBitmapString("keys:", 10, 225);
-	ofDrawBitmapString("Press l to turn on/off lightning", 10, 240);
-	ofDrawBitmapString("Press m to turn on/off materials", 10, 255);
-	ofDrawBitmapString("Press t to turn on/off textures", 10, 270);
-	ofDrawBitmapString("Press left click to rotate", 10, 285);
+	// draw 2 boxes to visualize l'effect of shadows
+	ofSetColor(95, 144, 151);
+	ofDrawBox(0, 5, 0, 250, 2, 250);
 
+	ofDrawBox(0, -8, 10, 140, 50, 2);
 }
 
 
@@ -66,13 +134,15 @@ void RendererModel::processOpenFileSelection(ofFileDialogResult p_file) {
 			switchTextures = true;
 			switchLight = true;
 			switchMaterials = false;
-			ofDisableArbTex(); // for models coords
+			//ofDisableArbTex(); // for models coords
 
-			//Load model
+			//Load model and initialize
 			model.loadModel(p_file.getName());
-			model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.75, 0);
-			mesh = model.getMesh(0);			
+			model.setPosition(ofGetWidth() * 0.5, (float)ofGetHeight() * 0.5, 0);
+			mesh = model.getMesh(0);
+
 			
 		}
 	}
 }
+

@@ -1,6 +1,7 @@
 #include "Renderer3D.h"
 #include "ofxCubeMap.h"
 
+
 Renderer3D::Renderer3D()
 {
 }
@@ -65,9 +66,12 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
 
     cam1.setPosition(ofGetWidth()/2, ofGetHeight()/2, 1000);
     cam1.lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, -1));
+
 }
 
 void Renderer3D::draw() {
+
+
     ofBackgroundGradient(ofColor::white, ofColor::gray);
     ofEnableDepthTest();
 
@@ -113,6 +117,7 @@ void Renderer3D::draw() {
 		}
 			break;
         }
+
     }
 
     if(AppState::CAMERA == m_app->m_state){
