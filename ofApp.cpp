@@ -18,6 +18,7 @@ void ofApp::setup(){
 
     m_firstTimeSelection = 1;
 	m_grid = false;
+	m_canSetPanelPos = false;
 	renderer2d = new Renderer2D();
     renderer2d->setup("Parameters", this);
 
@@ -77,6 +78,7 @@ void ofApp::setup(){
 	shapesPanel.add(mergeButton);
 	shapesPanel.add(unmergeButton);
     shapesParamsPanel.setup(shapesSettingsParams);
+	shapesParamsPanel.setName("Shapes parameters");
     shapes3DPanel.setup(shapes3DParams);
     shapes3DPanel.add(next);
     shapes3DPanel.add(unselect);
@@ -153,6 +155,7 @@ void ofApp::setup(){
 
 void ofApp::b2DChanged(bool & p_2D) {
 	if (!isClearingButtonsModes) {
+		m_canSetPanelPos = true;
 		isClearingButtonsModes = true;
         b3D.set(false);
 		bModelMode.set(false); //*
@@ -167,6 +170,7 @@ void ofApp::b2DChanged(bool & p_2D) {
 
 void ofApp::b3DChanged(bool & p_3D) {
 	if (!isClearingButtonsModes) {
+		m_canSetPanelPos = true;
 		isClearingButtonsModes = true;
         b2D.set(false);
 		bModelMode.set(false); //*
@@ -369,12 +373,17 @@ void ofApp::draw(){
 		menuPanel.draw();
         if (showGui2D) shapesPanel.draw();
 		if (showGui2D) {
-			shapesParamsPanel.setName("Shapes parameters");
-			shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
+			if (m_canSetPanelPos) {
+				shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
+				m_canSetPanelPos = false;
+			}
 			shapesParamsPanel.draw();
 		}
 		if (showGui3D) {
-			shapesParamsPanel.setPosition(0, 5 + shapes3DPanel.getHeight() + menuPanel.getHeight());
+			if (m_canSetPanelPos) {
+				shapesParamsPanel.setPosition(0, 5 + shapes3DPanel.getHeight() + menuPanel.getHeight());
+				m_canSetPanelPos = false;
+			}
 			shapesParamsPanel.draw();
 			shapes3DPanel.draw();
 		}
@@ -450,7 +459,7 @@ bool ofApp::mouseIsOverPanel() {
 		return true;
 	}
 
-	else if ((shapesPanel.getPosition().x <= mouseX) && (mouseX <= (shapesPanel.getPosition().x + shapesPanel.getWidth()))
+	 if ((shapesPanel.getPosition().x <= mouseX) && (mouseX <= (shapesPanel.getPosition().x + shapesPanel.getWidth()))
 		&& (shapesPanel.getPosition().y <= mouseY) && (mouseY <= (shapesPanel.getPosition().y + shapesPanel.getHeight()))) {
 		return true;
 	}

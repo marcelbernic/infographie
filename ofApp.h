@@ -41,6 +41,7 @@ class ofApp : public ofBaseApp{
 		AppState m_state;
 		AppMode m_mode;
 		bool m_grid;
+		bool m_canSetPanelPos;
 		int m_clickRadius;
 		bool isTakingScreenshot;
 		bool isClearingButtonsShapes, isClearingButtonsModes;
