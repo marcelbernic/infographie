@@ -29,7 +29,7 @@ namespace app {
 		void setDimension(double p_dimension) override;
 		ofVec3f getPosition();
 		void draw() override;
-		void Terrain3D::prepareToDraw();
+        void prepareToDraw();
 		void addFace(ofMesh& mesh, ofVec3f a, ofVec3f b, ofVec3f c);
 		void addFace(ofMesh& mesh, ofVec3f a, ofVec3f b, ofVec3f c, ofVec3f d);
 		ofVec3f getVertexFromImg(ofFloatImage& img, int x, int y);
