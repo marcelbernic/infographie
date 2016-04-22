@@ -24,6 +24,10 @@
 #include "RendererModel.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofVboMesh.h" 
+#include "CourbeCatmullRom.h"
+#include "CourbeNurbs.h"
+#include "CourbeBezierCubique.h"
+#include "SurfaceBezierCubique.h"
 
 
 class Renderer2D;
@@ -90,10 +94,14 @@ class ofApp : public ofBaseApp{
         void bCubeChanged(bool & p_cube);
         void bSphereChanged(bool & p_sphere);
         void bCameraChanged(bool & p_sphere);
+        void bControlChanged(bool & p_toggle);
+        void bCatmullRomCurveChanged(bool & p_toggle);
         void bCloud(bool & p_Cloud);
 		void bGridChanged(bool & pGrid);
 		void bHeightMapChanged(bool & pHeightMap);
 		void clearButtons();
+        void bCatmullRomCurveChanged(bool & p_toggle);
+
 
 		void buildRectangle();
 		void buildTriangle();
@@ -102,6 +110,10 @@ class ofApp : public ofBaseApp{
         void buildCube();
         void buildSphere();
 		void buildTerrain();
+        void buildCatmullRomCurve();
+        void buildNurbsCurve();
+        void buildBezierCurve();
+        void buildBezierSurface();
 		double calculateDistance(Coord p_coord1, Coord p_coord2);
 		void clearSelected();
 		void updateGroupSelection();
@@ -123,12 +135,13 @@ class ofApp : public ofBaseApp{
 		ofParameter<bool> vSync, bgrid;
 		ofParameter<bool> b2D, b3D, bModelMode; //*
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect, bAntialiasing, bHeightMap;
-        ofParameter<bool> bCube, bSphere, bCamera;
+        ofParameter<bool> bCube, bSphere, bCamera, bControlPoint;;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
         ofTrueTypeFont font;
 		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect, *displacementMapButton, *cubeMapButton;
-		//ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
+        ofxButton *catmullRomCurveButton, *nurbsButton, *bezierCurveButton, *bezierSurfaceButton;
+        //ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 
 		// *
 		RendererModel *rendererModel;

@@ -41,6 +41,10 @@ void ofApp::setup(){
 	unmergeButton = new ofxButton();
     next = new ofxButton();
     unselect = new ofxButton();
+    catmullRomCurveButton = new ofxButton();
+    nurbsButton = new ofxButton();
+    bezierCurveButton = new ofxButton();
+    bezierSurfaceButton = new ofxButton();
 
     shapesParams.setName("2D Shapes");
 	shapesParams.add(bLine.set("Line", false));
@@ -52,6 +56,7 @@ void ofApp::setup(){
     shapes3DParams.add(bCube.set("Cube", false));
     shapes3DParams.add(bSphere.set("Sphere", false));
     shapes3DParams.add(bCamera.set("Camera", false));
+    shapes3DParams.add(bControlPoint.set("Control Points", false));
 
 	shapesSettingsParams.setName("2D Settings");
 	shapesSettingsParams.add(vSync.set("vSync",true));
@@ -67,6 +72,10 @@ void ofApp::setup(){
 	unmergeButton->setup("Unmerge Shapes");
     next->setup("Select next 3D shape");
     unselect->setup("Unselect");
+    catmullRomCurveButton->setup("CatmullRom Curve");
+    nurbsButton->setup("Nurbs Curve");
+    bezierCurveButton->setup("Bezier Cubique Curve");
+    bezierSurfaceButton->setup("Bezier Cubique Surface");
 
 	//Setup panels
 	menuPanel.setup(menuBarParams);
@@ -80,6 +89,10 @@ void ofApp::setup(){
     shapesParamsPanel.setup(shapesSettingsParams);
 	shapesParamsPanel.setName("Shapes parameters");
     shapes3DPanel.setup(shapes3DParams);
+    shapes3DPanel.add(catmullRomCurveButton);
+    shapes3DPanel.add(nurbsButton);
+    shapes3DPanel.add(bezierCurveButton);
+    shapes3DPanel.add(bezierSurfaceButton);
     shapes3DPanel.add(next);
     shapes3DPanel.add(unselect);
 	shapes3DPanel.add(bHeightMap.set("Apply Height Map", false));
@@ -99,6 +112,10 @@ void ofApp::setup(){
 	exportButton->addListener(this, &ofApp::buttonPressed);
 	mergeButton->addListener(this, &ofApp::buttonPressed);
 	unmergeButton->addListener(this, &ofApp::buttonPressed);
+    catmullRomCurveButton->addListener(this, &ofApp::buttonPressed);
+    nurbsButton->addListener(this, &ofApp::buttonPressed);
+    bezierCurveButton->addListener(this, &ofApp::buttonPressed);
+    bezierSurfaceButton->addListener(this, &ofApp::buttonPressed);
     next->addListener(this, &ofApp::buttonPressed);
     unselect->addListener(this, &ofApp::buttonPressed);
 	bHeightMap.addListener(this, &ofApp::bHeightMapChanged);
@@ -112,6 +129,7 @@ void ofApp::setup(){
     bCube.addListener(this, &ofApp::bCubeChanged);
     bSphere.addListener(this, &ofApp::bSphereChanged);
     bCamera.addListener(this, &ofApp::bCameraChanged);
+    bControlPoint.addListener(this, &ofApp::bControlChanged);
 	bgrid.addListener(this, &ofApp::bGridChanged);
 
     //gui.loadFromFile("settings.xml");
@@ -1104,6 +1122,42 @@ void ofApp::drawGrid() {
 	for (int i = 0; i <= y_bigDiv; i++) {
 		ofDrawLine(0, i*ofGetHeight() / (y_bigDiv), ofGetWidth(), i*ofGetHeight() / (y_bigDiv));
 	}
+}
+
+void ofApp::bControlChanged(bool & p_toggle) {
+    bControlPoint.set(p_toggle);
+    if(m_obj3DVector.size() > 0 && m_obj3DVector[m_selectionIndex]->isSelected()){
+        m_obj3DVector[m_selectionIndex]->setControl(p_toggle);
+        if(p_toggle && renderer3d->notIncluded(m_obj3DVector[m_selectionIndex])){
+
+            if(m_obj3DVector[m_selectionIndex]->getType() == EnumVectorDrawMode::PRIMITIVE_CUBE){
+                app::Cube3D* c = dynamic_cast<app::Cube3D*>(m_obj3DVector[m_selectionIndex]);
+                renderer3d->m_controls.push_back(ofVec4f(c->getPosition().x, c->getPosition().y, c->getPosition().z, 1));
+
+            }
+            if(m_obj3DVector[m_selectionIndex]->getType() == EnumVectorDrawMode::PRIMITIVE_SPHERE){
+                app::Sphere3D* c = dynamic_cast<app::Sphere3D*>(m_obj3DVector[m_selectionIndex]);
+                renderer3d->m_controls.push_back(ofVec4f(c->getPosition().x, c->getPosition().y, c->getPosition().z, 1));
+
+            }
+        }
+    }
+}
+
+void ofApp::buildCatmullRomCurve() {
+    m_obj3DVector.push_back(new app::CourbeCatmullRom(renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer3d->tesselation, renderer3d->m_controls, renderer2d->colorFill.get()));
+}
+
+void ofApp::buildNurbsCurve() {
+    m_obj3DVector.push_back(new app::CourbeNurbs(renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer3d->tesselation, renderer3d->m_controls, renderer2d->colorFill.get()));
+}
+
+void ofApp::buildBezierCurve() {
+    m_obj3DVector.push_back(new app::CourbeBezierCubique(renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer3d->tesselation, renderer3d->m_controls, renderer2d->colorFill.get()));
+}
+
+void ofApp::buildBezierSurface() {
+    m_obj3DVector.push_back(new app::SurfaceBezierCubique(renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer3d->tesselation, renderer3d->m_controls, renderer2d->colorFill.get()));
 }
 
 ofApp::~ofApp()
