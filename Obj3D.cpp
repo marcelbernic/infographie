@@ -10,6 +10,7 @@ Obj3D::Obj3D(int p_lineStroke, ofColor p_lineColor, ofColor p_lineColorSelected,
     m_colorFill = p_colorFill;
     m_isSelected = false;
     m_cloud = false;
+    m_isControl = false;
 }
 
 Obj3D::~Obj3D()
@@ -66,6 +67,10 @@ void Obj3D::setSelected(bool p_selected) {
 
 EnumVectorDrawMode Obj3D::getType() {
     return m_type;
+}
+
+void Obj3D::setType(EnumVectorDrawMode p_type) {
+    m_type = p_type;
 }
 
 
@@ -139,4 +144,16 @@ void Obj3D::draw(){
 
 void Obj3D::setDimension(double p_dimension){
 
+}
+
+bool Obj3D::isControl(){
+
+    return m_isControl;
+}
+
+void Obj3D::setControl(bool p_isControl){
+    m_isControl= p_isControl;
+    }
+double Obj3D::getTesselation(){
+    return m_tesselation;
 }

@@ -9,6 +9,7 @@ Sphere3D::Sphere3D(double p_dim, std::vector<Coord3D> p_coord, int p_lineStroke,
     m_type = EnumVectorDrawMode::PRIMITIVE_SPHERE;
     m_primitive.set(p_dim, 50);
     m_primitive.setPosition(p_coord[0].getX(), p_coord[0].getY(), p_coord[0].getZ());
+    m_tesselation = 5;
 
 }
 

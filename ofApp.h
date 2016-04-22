@@ -95,7 +95,6 @@ class ofApp : public ofBaseApp{
         void bSphereChanged(bool & p_sphere);
         void bCameraChanged(bool & p_sphere);
         void bControlChanged(bool & p_toggle);
-        void bCatmullRomCurveChanged(bool & p_toggle);
         void bCloud(bool & p_Cloud);
 		void bGridChanged(bool & pGrid);
 		void bHeightMapChanged(bool & pHeightMap);

@@ -27,6 +27,8 @@ protected:
     ofColor m_colorFill;
     bool m_isSelected;
     bool m_cloud;
+    bool m_isControl;
+    double m_tesselation;
     std::vector<Coord3D> m_coordVector;
     EnumVectorDrawMode m_type;
 
@@ -47,8 +49,12 @@ public:
     void setColorFill(ofColor p_colorFill);
     bool isSelected();
     bool isCloud();
+    bool isControl();
     void setCloud(bool p_cloud);
     void setSelected(bool p_selected);
+    void setControl(bool p_isControl);
+    void setType(EnumVectorDrawMode p_type);
+    double getTesselation();
     EnumVectorDrawMode getType();
 
     virtual void draw();
