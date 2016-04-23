@@ -146,6 +146,11 @@ void Renderer3D::draw() {
             drawSurfaceBezierCubique(c);
         }
             break;
+        case EnumVectorDrawMode::PRIMITIVE_SURFACE_COONS: {
+            app::SurfaceCoons* c = dynamic_cast<app::SurfaceCoons*>(o);
+            drawSurfaceCoons(c);
+        }
+            break;
         }
 
     }
@@ -407,6 +412,12 @@ void Renderer3D::tesselationChanged(double & p_tesselation){
                 ptr_courbe->setTesselation(p_tesselation);
                 }
                 break;
+            case PRIMITIVE_SURFACE_COONS:{
+                app::SurfaceCoons *ptr_courbe;
+                ptr_courbe = dynamic_cast<app::SurfaceCoons*>(o);
+                ptr_courbe->setTesselation(p_tesselation);
+                }
+                break;
 
             }
         }
@@ -596,10 +607,12 @@ void Renderer3D::drawCourbeCatmullRom(app::CourbeCatmullRom *p_courbeCatmullRom)
     int selected = 0;
     if (p_courbeCatmullRom->isSelected()) {
         p_courbeCatmullRom->setColorCurve(m_app->renderer2d->colorSelected);
+        ofSetColor(m_app->renderer2d->colorSelected);
         selected = 1;
     }
     else{
         p_courbeCatmullRom->setColorCurve(p_courbeCatmullRom->getColorFill());
+        ofSetColor(p_courbeCatmullRom->getColorFill());
     }
     p_courbeCatmullRom->draw();
 }
@@ -608,10 +621,12 @@ void Renderer3D::drawCourbeNurbs(app::CourbeNurbs *p_courbeNurbs) {
     int selected = 0;
     if (p_courbeNurbs->isSelected()) {
         p_courbeNurbs->setColorCurve(m_app->renderer2d->colorSelected);
+        ofSetColor(m_app->renderer2d->colorSelected);
         selected = 1;
     }
     else{
         p_courbeNurbs->setColorCurve(p_courbeNurbs->getColorFill());
+        ofSetColor(p_courbeNurbs->getColorFill());
     }
     p_courbeNurbs->draw();
 }
@@ -620,24 +635,38 @@ void Renderer3D::drawCourbeBezierCubique(app::CourbeBezierCubique *p_courbeBezie
     int selected = 0;
     if (p_courbeBezier->isSelected()) {
         p_courbeBezier->setColorCurve(m_app->renderer2d->colorSelected);
+        ofSetColor(m_app->renderer2d->colorSelected);
         selected = 1;
     }
     else{
         p_courbeBezier->setColorCurve(p_courbeBezier->getColorFill());
+        ofSetColor(p_courbeBezier->getColorFill());
     }
     p_courbeBezier->draw();
 }
 
 void Renderer3D::drawSurfaceBezierCubique(app::SurfaceBezierCubique *p_surfaceBezier) {
-    int selected = 0;
     if (p_surfaceBezier->isSelected()) {
         p_surfaceBezier->setColorCurve(m_app->renderer2d->colorSelected);
-        selected = 1;
+        ofSetColor(m_app->renderer2d->colorSelected);
     }
     else{
         p_surfaceBezier->setColorCurve(p_surfaceBezier->getColorFill());
+        ofSetColor(p_surfaceBezier->getColorFill());
     }
     p_surfaceBezier->draw();
+}
+
+void Renderer3D::drawSurfaceCoons(app::SurfaceCoons *p_surfaceCoons) {
+    if (p_surfaceCoons->isSelected()) {
+        p_surfaceCoons->setColorCurve(m_app->renderer2d->colorSelected);
+        ofSetColor(m_app->renderer2d->colorSelected);
+    }
+    else{
+        p_surfaceCoons->setColorCurve(p_surfaceCoons->getColorFill());
+        ofSetColor(p_surfaceCoons->getColorFill());
+    }
+    p_surfaceCoons->draw();
 }
 
 

@@ -11,6 +11,7 @@
 #include "CourbeNurbs.h"
 #include "CourbeBezierCubique.h"
 #include "SurfaceBezierCubique.h"
+#include "SurfaceCoons.h"
 
 
 //class Renderer3D;
@@ -52,6 +53,7 @@ public:
     void drawCourbeNurbs(app::CourbeNurbs *p_courbeNurbs);
     void drawCourbeBezierCubique(app::CourbeBezierCubique *p_courbeBezier);
     void drawSurfaceBezierCubique(app::SurfaceBezierCubique *p_surfaceBezier);
+    void drawSurfaceCoons(app::SurfaceCoons *p_surfaceCoons);
     bool notIncluded(Obj3D* p_obj3d);
 
     ofParameterGroup parameters3D;

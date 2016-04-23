@@ -45,6 +45,7 @@ void ofApp::setup(){
     nurbsButton = new ofxButton();
     bezierCurveButton = new ofxButton();
     bezierSurfaceButton = new ofxButton();
+    surfaceCoonsButton = new ofxButton();
 
     shapesParams.setName("2D Shapes");
 	shapesParams.add(bLine.set("Line", false));
@@ -76,6 +77,7 @@ void ofApp::setup(){
     nurbsButton->setup("Nurbs Curve");
     bezierCurveButton->setup("Bezier Cubique Curve");
     bezierSurfaceButton->setup("Bezier Cubique Surface");
+    surfaceCoonsButton->setup("Coons Surface");
 
 	//Setup panels
 	menuPanel.setup(menuBarParams);
@@ -93,6 +95,7 @@ void ofApp::setup(){
     shapes3DPanel.add(nurbsButton);
     shapes3DPanel.add(bezierCurveButton);
     shapes3DPanel.add(bezierSurfaceButton);
+    shapes3DPanel.add(surfaceCoonsButton);
     shapes3DPanel.add(next);
     shapes3DPanel.add(unselect);
 	shapes3DPanel.add(bHeightMap.set("Apply Height Map", false));
@@ -116,6 +119,7 @@ void ofApp::setup(){
     nurbsButton->addListener(this, &ofApp::buttonPressed);
     bezierCurveButton->addListener(this, &ofApp::buttonPressed);
     bezierSurfaceButton->addListener(this, &ofApp::buttonPressed);
+    surfaceCoonsButton->addListener(this, &ofApp::buttonPressed);
     next->addListener(this, &ofApp::buttonPressed);
     unselect->addListener(this, &ofApp::buttonPressed);
 	bHeightMap.addListener(this, &ofApp::bHeightMapChanged);
@@ -169,6 +173,7 @@ void ofApp::setup(){
             "s dolly backward\n" +
             "r boom up\n" +
             "f boom down\n";
+
 }
 
 void ofApp::b2DChanged(bool & p_2D) {
@@ -694,12 +699,15 @@ void ofApp::buttonPressed(const void * sender){
                     m_selectionIndex = m_selectionIndex % m_obj3DVector.size();
                     m_obj3DVector[m_selectionIndex]->setSelected(true);
                     renderer3d->bCloud.set(m_obj3DVector[m_selectionIndex]->isCloud());
+                    bControlPoint.set(m_obj3DVector[m_selectionIndex]->isControl());
                 }
                 else{
                     m_obj3DVector[m_selectionIndex]->setSelected(false);
                     m_selectionIndex = (m_selectionIndex + 1) % m_obj3DVector.size();
                     m_obj3DVector[m_selectionIndex]->setSelected(true);
                     renderer3d->bCloud.set(m_obj3DVector[m_selectionIndex]->isCloud());
+                    bControlPoint.set(m_obj3DVector[m_selectionIndex]->isControl());
+                    renderer3d->tesselation.set(m_obj3DVector[m_selectionIndex]->getTesselation());
                 }
             }
         }
@@ -729,13 +737,54 @@ void ofApp::buttonPressed(const void * sender){
 				}
 			}
 		}
-		else if (btnName == "Apply Cube Map") {
-			for (Obj3D* o : m_obj3DVector) {
-				if (o->isSelected()) {
-					o->m_shaderMode = ShaderMode::CUBE;
-				}
-			}
-		}
+        else if (btnName == "Apply Cube Map") {
+            for (Obj3D* o : m_obj3DVector) {
+                if (o->isSelected()) {
+                    o->m_shaderMode = ShaderMode::CUBE;
+                }
+            }
+        }
+
+        else if(btnName == "CatmullRom Curve"){
+            if(renderer3d->m_controls.size() == 4){
+                buildCatmullRomCurve();
+                clearControlPoints();
+                renderer3d->m_controls.clear();
+            }
+
+        }
+        else if(btnName == "Nurbs Curve"){
+            if(renderer3d->m_controls.size() >= 4){
+                buildNurbsCurve();
+                clearControlPoints();
+                renderer3d->m_controls.clear();
+            }
+
+        }
+        else if(btnName == "Bezier Cubique Curve"){
+            if(renderer3d->m_controls.size() >= 4){
+                buildBezierCurve();
+                clearControlPoints();
+                renderer3d->m_controls.clear();
+            }
+
+        }
+        else if(btnName == "Bezier Cubique Surface"){
+            if(sqrt(renderer3d->m_controls.size()) - floor(sqrt(renderer3d->m_controls.size())) == 0){
+                buildBezierSurface();
+                clearControlPoints();
+                renderer3d->m_controls.clear();
+            }
+
+        }
+        else if(btnName == "Coons Surface"){
+            if(renderer3d->m_controls.size() == 12){
+                buildCoonsSurface();
+                clearControlPoints();
+                renderer3d->m_controls.clear();
+            }
+
+        }
 	}	
 }
 //--------------------------------------------------------------
@@ -1158,6 +1207,16 @@ void ofApp::buildBezierCurve() {
 
 void ofApp::buildBezierSurface() {
     m_obj3DVector.push_back(new app::SurfaceBezierCubique(renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer3d->tesselation, renderer3d->m_controls, renderer2d->colorFill.get()));
+}
+
+void ofApp::buildCoonsSurface() {
+    m_obj3DVector.push_back(new app::SurfaceCoons(renderer2d->strokeWidth.get(), renderer2d->colorStroke.get(), renderer2d->colorSelected.get(), renderer3d->tesselation, renderer3d->m_controls, renderer2d->colorFill.get()));
+}
+
+void ofApp::clearControlPoints(){
+    for(Obj3D *o: m_obj3DVector){
+        o->setControl(false);
+    }
 }
 
 ofApp::~ofApp()

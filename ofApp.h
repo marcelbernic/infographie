@@ -28,6 +28,7 @@
 #include "CourbeNurbs.h"
 #include "CourbeBezierCubique.h"
 #include "SurfaceBezierCubique.h"
+#include "SurfaceCoons.h"
 
 
 class Renderer2D;
@@ -113,6 +114,7 @@ class ofApp : public ofBaseApp{
         void buildNurbsCurve();
         void buildBezierCurve();
         void buildBezierSurface();
+        void buildCoonsSurface();
 		double calculateDistance(Coord p_coord1, Coord p_coord2);
 		void clearSelected();
 		void updateGroupSelection();
@@ -123,6 +125,7 @@ class ofApp : public ofBaseApp{
         void deleteSelection3D();
         void clear2DButtons();
         void clear3DButtons();
+        void clearControlPoints();
 		void drawGrid();
 		
 		Renderer2D *renderer2d;
@@ -134,12 +137,12 @@ class ofApp : public ofBaseApp{
 		ofParameter<bool> vSync, bgrid;
 		ofParameter<bool> b2D, b3D, bModelMode; //*
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect, bAntialiasing, bHeightMap;
-        ofParameter<bool> bCube, bSphere, bCamera, bControlPoint;;
+        ofParameter<bool> bCube, bSphere, bCamera, bControlPoint;
         ofParameterGroup shapesSettingsParams, shapesParams, menuBarParams, shapes3DParams, settings3D;
 		ofXml settings;
         ofTrueTypeFont font;
 		ofxButton *importButton, *exportButton, *mergeButton, *unmergeButton, *next, *unselect, *displacementMapButton, *cubeMapButton;
-        ofxButton *catmullRomCurveButton, *nurbsButton, *bezierCurveButton, *bezierSurfaceButton;
+        ofxButton *catmullRomCurveButton, *nurbsButton, *bezierCurveButton, *bezierSurfaceButton, *surfaceCoonsButton;
         //ofxButton *lineButton, *triangleButton, *rectangleButton, *circleButton;
 
 		// *
