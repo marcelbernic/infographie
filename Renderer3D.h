@@ -40,6 +40,10 @@ public:
     void rotzChanged(double & p_rotz);
     void dimensionChanged(double & p_dimension);
     void tesselationChanged(double & p_tesselation);
+    void fovChanged(double & p_fov);
+    void aspectRatioChanged(double & p_aspectRatio);
+    void nearClipChanged(double & p_nearClip);
+    void farClipChanged(double & p_farClip);
 
     void bCloudChanged(bool &p_cloud);
 
@@ -57,6 +61,7 @@ public:
     bool notIncluded(Obj3D* p_obj3d);
 
     ofParameterGroup parameters3D;
+    ofParameterGroup cameraSettings;
     ofParameter<int> x;
     ofParameter<int> y;
     ofParameter<int> z;
@@ -69,6 +74,11 @@ public:
     ofParameter<double> tesselation;
 
     ofParameter<bool> bCloud;
+
+    ofParameter<double> fov;
+    ofParameter<double> aspectRatio;
+    ofParameter<double> nearClip;
+    ofParameter<double> farClip;
 
     std::vector<ofLight*> m_lights;
     std::vector<ofVec4f> m_controls;

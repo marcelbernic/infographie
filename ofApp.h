@@ -133,7 +133,7 @@ class ofApp : public ofBaseApp{
 
 		std::vector<Obj2D*> getCollectionObjects(app::Obj2DCollection* p_coll);
 
-        ofxPanel shapesPanel, shapesParamsPanel, menuPanel, shapes3DPanel, shapes3DParamsPanel;
+        ofxPanel shapesPanel, shapesParamsPanel, menuPanel, shapes3DPanel, shapes3DParamsPanel, cameraPanel;
 		ofParameter<bool> vSync, bgrid;
 		ofParameter<bool> b2D, b3D, bModelMode; //*
         ofParameter<bool> bLine, bTriangle, bRectangle, bCircle, bSelect, bAntialiasing, bHeightMap;

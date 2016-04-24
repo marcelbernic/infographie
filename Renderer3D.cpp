@@ -42,6 +42,8 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
     parameters3D.add(dimension);
     parameters3D.add(tesselation);
 
+    cameraSettings.setName("Camera Settings");
+
     x.addListener(this, &Renderer3D::xChanged);
     y.addListener(this, &Renderer3D::yChanged);
     z.addListener(this, &Renderer3D::zChanged);
@@ -51,6 +53,10 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
     rotz.addListener(this, &Renderer3D::rotzChanged);
     dimension.addListener(this, &Renderer3D::dimensionChanged);
     tesselation.addListener(this, &Renderer3D::tesselationChanged);
+    fov.addListener(this, &Renderer3D::fovChanged);
+    aspectRatio.addListener(this, &Renderer3D::aspectRatioChanged);
+    nearClip.addListener(this, &Renderer3D::nearClipChanged);
+    farClip.addListener(this, &Renderer3D::farClipChanged);
 
     bCloud.addListener(this, &Renderer3D::bCloudChanged);
 
@@ -77,6 +83,16 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
 			minBrightness = std::min(minBrightness, float((heightmap.getColor(x, y).r / 255.0) * 0.3 + (heightmap.getColor(x, y).g / 255.0) * 0.59 + (heightmap.getColor(x, y).b / 255.0) * 0.11));
 		}
 	}
+
+
+    fov.set("Camera Fov", cam1.getFov(), 0, 180);
+    aspectRatio.set("Aspect Ratio", cam1.getAspectRatio(), 0, 5);
+    nearClip.set("Near Clip Distance", cam1.getNearClip(), 0, 100);
+    farClip.set("Far Clip Distance", cam1.getFarClip(),  0, 100);
+    cameraSettings.add(fov);
+    cameraSettings.add(aspectRatio);
+    cameraSettings.add(nearClip);
+    cameraSettings.add(farClip);
 }
 
 void Renderer3D::draw() {
@@ -424,7 +440,25 @@ void Renderer3D::tesselationChanged(double & p_tesselation){
     }
 }
 
+void Renderer3D::fovChanged(double & p_fov){
 
+    cam1.setFov(p_fov);
+}
+
+void Renderer3D::aspectRatioChanged(double & p_aspectRatio){
+
+    cam1.setAspectRatio(p_aspectRatio);
+}
+
+void Renderer3D::nearClipChanged(double & p_nearClip){
+
+    cam1.setNearClip(p_nearClip);
+}
+
+void Renderer3D::farClipChanged(double & p_farClip){
+
+    cam1.setFarClip(p_farClip);
+}
 
 void Renderer3D::imageExport(const string path, const string extension) const
 {

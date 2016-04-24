@@ -64,6 +64,8 @@ void ofApp::setup(){
 	shapesSettingsParams.add(bgrid.set("Grid", false));
 	shapesSettingsParams.add(renderer2d->parameters);
 
+    //cameraParams.add();
+
 	importButton->setup("Import");
 	exportButton->setup("Export");
 	displacementMapButton->setup("Apply Displacement Map");
@@ -102,6 +104,8 @@ void ofApp::setup(){
 	shapes3DPanel.add(displacementMapButton);
 	shapes3DPanel.add(cubeMapButton);
     shapes3DPanel.add(renderer3d->parameters3D);
+    cameraPanel.setup(renderer3d->cameraSettings);
+    cameraPanel.setPosition(shapes3DPanel.getWidth(), 0);
 	menuPanel.setPosition(0, 0);
 	shapesPanel.setPosition(0, 5 + menuPanel.getHeight());
 	shapesParamsPanel.setPosition(0, 5 + shapesPanel.getHeight() + menuPanel.getHeight());
@@ -161,6 +165,7 @@ void ofApp::setup(){
     s = string("") +
             "\n" +
             "Camera Mode, Keys:\n" +
+            "Mouse and click to look\n"
             "LEFT pan left\n" +
             "RIGHT pan right\n" +
             "UP tilt up\n" +
@@ -172,7 +177,9 @@ void ofApp::setup(){
             "w dolly forward\n" +
             "s dolly backward\n" +
             "r boom up\n" +
-            "f boom down\n";
+            "f boom down\n" +
+            "o: Orthogonal Mode\n" +
+            "p: Projection Mode";
 
 }
 
@@ -410,7 +417,10 @@ void ofApp::draw(){
 			shapesParamsPanel.draw();
 			shapes3DPanel.draw();
 		}
-        if (showCamera) ofDrawBitmapString(s, ofPoint(ofGetWidth()-150, ofGetHeight()-200));
+        if (showCamera){
+            ofDrawBitmapString(s, ofPoint(ofGetWidth()-185, ofGetHeight()-230));
+            cameraPanel.draw();
+        }
 	}
 
 	drawCursor();
@@ -583,6 +593,12 @@ void ofApp::keyPressed(int key){
             }
             if(key == 'f'){
                 renderer3d->cam1.boom(-kMoveInc);
+            }
+            if(key == 'o'){
+                renderer3d->cam1.enableOrtho();
+            }
+            if(key == 'p'){
+                renderer3d->cam1.disableOrtho();
             }
         }
 	}
