@@ -422,7 +422,7 @@ void ofApp::draw(){
 		}
         if (showCamera){
             ofDrawBitmapString(s, ofPoint(ofGetWidth()-202, ofGetHeight()-270));
-			cameraPanel.setPosition(ofGetWindowWidth() - cameraPanel.getWidth() - 5, shapesParamsPanel.getHeight() + 5);
+            cameraPanel.setPosition(shapes3DPanel.getWidth()+5, 0);
             cameraPanel.draw();
         }
 	}
