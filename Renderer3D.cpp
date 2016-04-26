@@ -68,13 +68,15 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
         o->setPosition(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, 0));
         o->enable();
     }
+    m_camSelection = 0;
 
-    cam1.resetTransform();
-    cam1.setFov(60);
-    cam1.clearParent();
+    cam.push_back(ofCamera());
+    cam[m_camSelection].resetTransform();
+    cam[m_camSelection].setFov(60);
+    cam[m_camSelection].clearParent();
 
-    cam1.setPosition(ofGetWidth()/2, ofGetHeight()/2, 1000);
-    cam1.lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, -1));
+    cam[m_camSelection].setPosition(ofGetWidth()/2, ofGetHeight()/2, 1000);
+    cam[m_camSelection].lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, -1));
 
 	ofImage heightmap;
 	heightmap.loadImage("image.jpg");
@@ -85,10 +87,10 @@ void Renderer3D::setup(const string p_name, ofApp *p_app) {
 	}
 
 
-    fov.set("Camera Fov", cam1.getFov(), 0, 180);
-    aspectRatio.set("Aspect Ratio", cam1.getAspectRatio(), 0, 5);
-    nearClip.set("Near Clip Distance", cam1.getNearClip(), 0, 100);
-    farClip.set("Far Clip Distance", cam1.getFarClip(),  0, 100);
+    fov.set("Camera Fov", cam[m_camSelection].getFov(), 0, 180);
+    aspectRatio.set("Aspect Ratio", cam[m_camSelection].getAspectRatio(), 0, 5);
+    nearClip.set("Near Clip Distance", cam[m_camSelection].getNearClip(), 0, 100);
+    farClip.set("Far Clip Distance", cam[m_camSelection].getFarClip(),  0, 100);
     cameraSettings.add(fov);
     cameraSettings.add(aspectRatio);
     cameraSettings.add(nearClip);
@@ -104,7 +106,11 @@ void Renderer3D::draw() {
     ofEnableLighting();
 
     if(AppState::CAMERA == m_app->m_state){
-        cam1.begin();
+        for(int i = 0; i < cam.size(); i++){
+            if(i == m_camSelection){
+                cam[i].begin();
+            }
+        }
         ofPushMatrix();
         ofScale(1, -1, 1);
         ofTranslate(0, -ofGetHeight(), 0);
@@ -173,7 +179,11 @@ void Renderer3D::draw() {
 
     if(AppState::CAMERA == m_app->m_state){
     ofPopMatrix();
-    cam1.end();
+    for(int i = 0; i < cam.size(); i++){
+        if(m_camSelection == i){
+            cam[i].end();
+        }
+    }
     }
 
     ofDisableLighting();
@@ -442,22 +452,22 @@ void Renderer3D::tesselationChanged(double & p_tesselation){
 
 void Renderer3D::fovChanged(double & p_fov){
 
-    cam1.setFov(p_fov);
+    cam[m_camSelection].setFov(p_fov);
 }
 
 void Renderer3D::aspectRatioChanged(double & p_aspectRatio){
 
-    cam1.setAspectRatio(p_aspectRatio);
+    cam[m_camSelection].setAspectRatio(p_aspectRatio);
 }
 
 void Renderer3D::nearClipChanged(double & p_nearClip){
 
-    cam1.setNearClip(p_nearClip);
+    cam[m_camSelection].setNearClip(p_nearClip);
 }
 
 void Renderer3D::farClipChanged(double & p_farClip){
 
-    cam1.setFarClip(p_farClip);
+    cam[m_camSelection].setFarClip(p_farClip);
 }
 
 void Renderer3D::imageExport(const string path, const string extension) const

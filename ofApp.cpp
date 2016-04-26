@@ -179,7 +179,10 @@ void ofApp::setup(){
             "r boom up\n" +
             "f boom down\n" +
             "o: Orthogonal Mode\n" +
-            "p: Projection Mode";
+            "p: Projection Mode\n"+
+            "c: Add a new camera\n"+
+            "v: Switch between cameras\n"+
+            "b: Delete current camera";
 
 }
 
@@ -363,8 +366,8 @@ void ofApp::update(){
         m_addPan = m_currentPosition2X - m_currentPositionX;
         m_addTilt = m_currentPosition2Y - m_currentPositionY;
 
-        renderer3d->cam1.pan(-m_addPan);
-        renderer3d->cam1.tilt(m_addTilt);
+        renderer3d->cam[renderer3d->m_camSelection].pan(-m_addPan);
+        renderer3d->cam[renderer3d->m_camSelection].tilt(m_addTilt);
 
         m_currentPositionX = m_currentPosition2X;
         m_currentPositionY = m_currentPosition2Y;
@@ -418,7 +421,7 @@ void ofApp::draw(){
 			shapes3DPanel.draw();
 		}
         if (showCamera){
-            ofDrawBitmapString(s, ofPoint(ofGetWidth()-185, ofGetHeight()-230));
+            ofDrawBitmapString(s, ofPoint(ofGetWidth()-202, ofGetHeight()-270));
             cameraPanel.draw();
         }
 	}
@@ -559,46 +562,73 @@ void ofApp::keyPressed(int key){
 
         else{
             if(key == OF_KEY_LEFT){
-                renderer3d->cam1.pan(kRotInc);
+                renderer3d->cam[renderer3d->m_camSelection].pan(kRotInc);
             }
             if(key == OF_KEY_RIGHT){
-                renderer3d->cam1.pan(-kRotInc);
+                renderer3d->cam[renderer3d->m_camSelection].pan(-kRotInc);
             }
             if(key == OF_KEY_UP){
-                renderer3d->cam1.tilt(kRotInc);
+                renderer3d->cam[renderer3d->m_camSelection].tilt(kRotInc);
             }
             if(key == OF_KEY_DOWN){
-                renderer3d->cam1.tilt(-kRotInc);
+                renderer3d->cam[renderer3d->m_camSelection].tilt(-kRotInc);
             }
             if(key == ','){
-                renderer3d->cam1.roll(kRotInc);
+                renderer3d->cam[renderer3d->m_camSelection].roll(kRotInc);
             }
             if(key == '.'){
-                renderer3d->cam1.roll(-kRotInc);
+                renderer3d->cam[renderer3d->m_camSelection].roll(-kRotInc);
             }
             if(key == 'a'){
-                renderer3d->cam1.truck(-kMoveInc);
+                renderer3d->cam[renderer3d->m_camSelection].truck(-kMoveInc);
             }
             if(key == 'd'){
-                renderer3d->cam1.truck(kMoveInc);
+                renderer3d->cam[renderer3d->m_camSelection].truck(kMoveInc);
             }
             if(key == 'w'){
-                renderer3d->cam1.dolly(-kMoveInc);
+                renderer3d->cam[renderer3d->m_camSelection].dolly(-kMoveInc);
             }
             if(key == 's'){
-                renderer3d->cam1.dolly(kMoveInc);
+                renderer3d->cam[renderer3d->m_camSelection].dolly(kMoveInc);
             }
             if(key == 'r'){
-                renderer3d->cam1.boom(kMoveInc);
+                renderer3d->cam[renderer3d->m_camSelection].boom(kMoveInc);
             }
             if(key == 'f'){
-                renderer3d->cam1.boom(-kMoveInc);
+                renderer3d->cam[renderer3d->m_camSelection].boom(-kMoveInc);
             }
             if(key == 'o'){
-                renderer3d->cam1.enableOrtho();
+                renderer3d->cam[renderer3d->m_camSelection].enableOrtho();
             }
             if(key == 'p'){
-                renderer3d->cam1.disableOrtho();
+                renderer3d->cam[renderer3d->m_camSelection].disableOrtho();
+            }
+            if(key == 'c'){
+                renderer3d->cam.push_back(ofCamera());
+                renderer3d->m_camSelection = renderer3d->cam.size() - 1;
+                renderer3d->cam[renderer3d->m_camSelection].resetTransform();
+                renderer3d->cam[renderer3d->m_camSelection].setFov(60);
+                renderer3d->cam[renderer3d->m_camSelection].clearParent();
+
+                renderer3d->cam[renderer3d->m_camSelection].setPosition(ofGetWidth()/2, ofGetHeight()/2, 1000);
+                renderer3d->cam[renderer3d->m_camSelection].lookAt(ofVec3f(ofGetWidth()/2, ofGetHeight()/2, -1));
+
+            }
+            if(key == 'v'){
+                renderer3d->m_camSelection = renderer3d->m_camSelection + 1;
+                if(renderer3d->m_camSelection == renderer3d->cam.size()){
+                    renderer3d->m_camSelection = 0;
+                }
+            }
+            if(key == 'b'){
+                if(renderer3d->cam.size() > 1){
+                    renderer3d->cam.erase(renderer3d->cam.begin() + renderer3d->m_camSelection);
+                    renderer3d->m_camSelection = renderer3d->m_camSelection - 1;
+
+                    if(renderer3d->m_camSelection < 0){
+                        renderer3d->m_camSelection = renderer3d->cam.size() - 1;
+                    }
+                }
             }
         }
 	}
@@ -627,6 +657,7 @@ void ofApp::deleteSelection3D() {
             delete ptr_obj3d;
             i--;
             size--;
+            m_selectionIndex--;
         }
     }
 }
@@ -762,7 +793,7 @@ void ofApp::buttonPressed(const void * sender){
         }
 
         else if(btnName == "CatmullRom Curve"){
-            if(renderer3d->m_controls.size() == 4){
+            if(renderer3d->m_controls.size() >=4){
                 buildCatmullRomCurve();
                 clearControlPoints();
                 renderer3d->m_controls.clear();

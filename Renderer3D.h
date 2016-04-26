@@ -83,6 +83,8 @@ public:
     std::vector<ofLight*> m_lights;
     std::vector<ofVec4f> m_controls;
 
-    ofCamera cam1;
+    int m_camSelection = 0;
+
+    vector<ofCamera> cam;
 
 };
