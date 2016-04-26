@@ -38,7 +38,7 @@ void CourbeCatmullRom::buildMesh(){
             int nbPoints = m_controls.size();
 
             int indexPoint;
-            int timeBegin;
+            int timeBegin = 0;
 
             for(int ii = 1; ii <= nbPoints - 3; ii++){
                 if((float)ii/(float)(nbPoints-3) > time1){
