@@ -414,7 +414,7 @@ void ofApp::draw(){
 		}
 		if (showGui3D) {
 			if (m_canSetPanelPos) {
-				shapesParamsPanel.setPosition(0, 5 + shapes3DPanel.getHeight() + menuPanel.getHeight());
+				shapesParamsPanel.setPosition(ofGetWindowWidth() - shapesParamsPanel.getWidth() - 5, 0);
 				m_canSetPanelPos = false;
 			}
 			shapesParamsPanel.draw();
@@ -422,6 +422,7 @@ void ofApp::draw(){
 		}
         if (showCamera){
             ofDrawBitmapString(s, ofPoint(ofGetWidth()-202, ofGetHeight()-270));
+			cameraPanel.setPosition(ofGetWindowWidth() - cameraPanel.getWidth() - 5, shapesParamsPanel.getHeight() + 5);
             cameraPanel.draw();
         }
 	}
